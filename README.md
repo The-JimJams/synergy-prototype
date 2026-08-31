@@ -77,7 +77,7 @@ algorithms testable without launching Gazebo.
 | Algorithm | Status |
 |---|---|
 | Data models + config | ✅ Complete |
-| WorldModel | 🔲 Not started |
+| WorldModel | ✅ Complete |
 | ConflictDetector | 🔲 Not started |
 | PriorityEngine | 🔲 Not started |
 | ReservationManager | 🔲 Not started |
@@ -87,6 +87,20 @@ algorithms testable without launching Gazebo.
 | NetworkMonitor | 🔲 Not started |
 | ReconciliationManager | 🔲 Not started |
 | DecisionLogger | 🔲 Not started |
+
+## WorldModel Subsystem
+
+The `WorldModel` (`fleet_coordination/algorithm/world_model.py`) is the **local, private state store** for a single robot's Fleet Coordination Agent.
+
+### Core Architectural Characteristics:
+- **Local State Store**: Maintains one AMR's working memory (`_own_state`, `_own_intent`, `_peer_states`, `_peer_intents`, `_reservations`, `_tasks`). There is NO centralized server or shared database.
+- **Own vs. Peer Isolation**: Local robot state and intent are stored separately and are never mixed with peer broadcast tables.
+- **Timestamp Monotonicity**: Incoming peer updates with timestamps $\le$ stored timestamps are rejected to preserve monotonic state ordering and deterministic behavior.
+- **Freshness Evaluation**: Peer states are evaluated against `config.timeouts.peer_state_max_age_seconds` using an explicitly supplied `now` parameter.
+- **Query-Time Expiry**: Active queries (`get_active_peer_intents(now)`, `get_active_reservations(now)`) dynamically filter out expired records at query time.
+- **Cleanup / Garbage Collection**: `cleanup_expired(now)` is strictly an optional memory management utility. Query correctness never depends on cleanup having been executed.
+- **ROS Boundary**: Pure Python with zero ROS/rclpy dependencies. Operates strictly on domain dataclasses.
+- **Non-Responsibilities**: WorldModel contains NO decision logic — it does not calculate priorities, allocate tasks, resolve conflicts, grant reservations, or detect deadlocks.
 
 ## Assumptions
 
