@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# ROS / Build artifacts
+build/
+install/
+log/
+*.log
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*~
