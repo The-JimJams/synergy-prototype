@@ -34,6 +34,12 @@ class PriorityWeights:
     w_wait: float = 0.5
     w_battery: float = 0.3
 
+    # Normalization scale for intent commitment age (seconds)
+    max_wait_seconds: float = 120.0
+
+    # Tolerance threshold for floating-point near-equality before robot_id tie-break
+    score_epsilon: float = 1e-9
+
 
 @dataclass
 class TimeoutConfig:

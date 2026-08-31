@@ -79,7 +79,7 @@ algorithms testable without launching Gazebo.
 | Data models + config | ✅ Complete |
 | WorldModel | ✅ Complete |
 | ConflictDetector | ✅ Complete |
-| PriorityEngine | 🔲 Not started |
+| PriorityEngine | ✅ Complete |
 | ReservationManager | 🔲 Not started |
 | TaskAllocator | 🔲 Not started |
 | DeadlockDetector | 🔲 Not started |
@@ -114,6 +114,18 @@ The `ConflictDetector` (`fleet_coordination/algorithm/conflict_detector.py`) is 
 - **Evidence Aggregation**: Multi-source evidence (intent vs. intent and intent vs. reservation) is grouped per `(peer_id, resource_id)` to form a bounding conflict window $[ \min(\text{start}), \max(\text{end}) ]$ with earliest onset determining severity.
 - **Severity & Determinism**: Classifies urgency (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`) and outputs reports deterministically sorted by `(severity_rank, overlap_start, robot_b_id)`.
 - **Zero Resolution**: Detects conflicts only. Does not calculate priorities, choose winners, or grant/deny claims.
+
+## PriorityEngine Subsystem
+
+The `PriorityEngine` (`fleet_coordination/algorithm/priority_engine.py`) is the pure algorithmic arbitration engine that resolves pairwise coordination conflicts over contested resources.
+
+### Core Architectural Characteristics:
+- **Deterministic Arbitration**: Given identical fleet telemetry and reference time `now`, every robot independently calculating priority reaches the exact same winner.
+- **Read-Only Immutability**: Queries `WorldModel` state without mutating records; creates no reservations or task allocations.
+- **Normalized Multi-Factor Scoring**: Evaluates task priority ($(p-1)/9.0$), deadline urgency ($1/\max(\Delta t, 1.0)$), intent commitment age proxy ($\min(\text{age}/\text{max\_wait}, 1.0)$), and battery urgency ($(100-\text{battery})/100.0$).
+- **Epsilon Tie-Breaking**: Compares composite scores with a tolerance threshold (`score_epsilon = 1e-9`) before applying the deterministic lexicographic `robot_id` tie-breaker.
+- **Decentralized Agreement & Symmetry**: Invariant to conflict report perspective ($\text{resolve}(A, B) \equiv \text{resolve}(B, A)$) guaranteeing fleet-wide coordination consensus without a central server.
+- **Explainable Decisions**: Produces a `PriorityDecision` detailing normalized factor breakdowns, composite scores, winner/loser IDs, and tie-break flags for auditability.
 
 ## Assumptions
 

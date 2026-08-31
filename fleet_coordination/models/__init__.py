@@ -9,6 +9,7 @@ from fleet_coordination.models.robot_intent import RobotIntent
 from fleet_coordination.models.reservation import Reservation
 from fleet_coordination.models.task import Task, TaskType, TaskStatus
 from fleet_coordination.models.conflict import ConflictReport, ConflictSeverity
+from fleet_coordination.models.priority_decision import PriorityDecision
 
 __all__ = [
     "Pose2D",
@@ -21,4 +22,5 @@ __all__ = [
     "TaskStatus",
     "ConflictReport",
     "ConflictSeverity",
+    "PriorityDecision",
 ]
