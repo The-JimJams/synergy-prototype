@@ -47,7 +47,7 @@
 
     <!-- AMR -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/amr</uri>
+      <uri>model://amr</uri>
       <name>amr</name>
       <pose>0 0 0.05 0 0 0</pose>
     </include>

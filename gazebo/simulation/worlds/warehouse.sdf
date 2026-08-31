@@ -225,22 +225,22 @@
     <!-- INDUSTRIAL RACK SHELVING (NW, NE, SW, SE)         -->
     <!-- ================================================= -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/shelf</uri>
+      <uri>model://shelf</uri>
       <name>shelf_rack_NW</name>
       <pose>-4.8 4.5 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/shelf</uri>
+      <uri>model://shelf</uri>
       <name>shelf_rack_NE</name>
       <pose>4.8 4.5 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/shelf</uri>
+      <uri>model://shelf</uri>
       <name>shelf_rack_SW</name>
       <pose>-4.8 -1.0 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/shelf</uri>
+      <uri>model://shelf</uri>
       <name>shelf_rack_SE</name>
       <pose>4.8 -1.0 0 0 0 0</pose>
     </include>
@@ -249,23 +249,23 @@
     <!-- LOGISTICS PROPS                                    -->
     <!-- ================================================= -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/pallet_stack</uri>
+      <uri>model://pallet_stack</uri>
       <name>pallet_tower_1</name>
       <pose>-5.2 -4.8 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/pallet_stack</uri>
+      <uri>model://pallet_stack</uri>
       <name>pallet_tower_2</name>
       <pose>5.2 6.0 0 0 0 0</pose>
     </include>
     <!-- Extra scattered box near NW aisle entrance -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/pallet_stack</uri>
+      <uri>model://pallet_stack</uri>
       <name>pallet_tower_3</name>
       <pose>-8.0 1.75 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/dumpster</uri>
+      <uri>model://dumpster</uri>
       <name>green_dumpster_container</name>
       <pose>-2.8 -4.8 0 0 0 0</pose>
     </include>
@@ -441,22 +441,22 @@
     <!-- STATIONS & ZONES                                   -->
     <!-- ================================================= -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/pickup_station</uri>
+      <uri>model://pickup_station</uri>
       <name>pickup_P1</name>
       <pose>0 -3.2 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/pickup_station</uri>
+      <uri>model://pickup_station</uri>
       <name>pickup_P2</name>
       <pose>-5.5 -4.5 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/drop_station</uri>
+      <uri>model://drop_station</uri>
       <name>drop_pack_D1</name>
       <pose>0 -5.6 0 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/charging_station</uri>
+      <uri>model://charging_station</uri>
       <name>charging_bay</name>
       <pose>5.5 -5.0 0 0 0 0</pose>
     </include>
@@ -465,7 +465,7 @@
     <!-- BLOCKED AISLE OBSTACLE                            -->
     <!-- ================================================= -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/obstacle</uri>
+      <uri>model://obstacle</uri>
       <name>blocked_aisle_obstacle</name>
       <pose>0 3.3 0 0 0 0</pose>
     </include>
@@ -475,17 +475,17 @@
     <!--   A = BLUE  | B = GREEN | C = ORANGE              -->
     <!-- ================================================= -->
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/amr_blue</uri>
+      <uri>model://amr_blue</uri>
       <name>amr_a</name>
       <pose>-3.5 1.75 0.05 0 0 0</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/amr_green</uri>
+      <uri>model://amr_green</uri>
       <name>amr_b</name>
       <pose>0 6.0 0.05 0 0 -1.570796</pose>
     </include>
     <include>
-      <uri>file:///Users/itz_ats_sama/amr_project/simulation/models/amr_orange</uri>
+      <uri>model://amr_orange</uri>
       <name>amr_c</name>
       <pose>3.5 -4.0 0.05 0 0 3.141592</pose>
     </include>
