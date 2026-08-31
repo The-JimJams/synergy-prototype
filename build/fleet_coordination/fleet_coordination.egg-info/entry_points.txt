@@ -1,0 +1,2 @@
+[console_scripts]
+fleet_agent_node = fleet_coordination.fleet_agent_node:main

@@ -1,0 +1,25 @@
+[2.686s] Invoking command in '/home/aditi/amr_ws/src/fleet_coordination': AMENT_PREFIX_PATH=/home/aditi/amr_ws/install/fleet_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/aditi/amr_ws/install/fleet_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/aditi/amr_ws/install/fleet_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/aditi/amr_ws/build/fleet_coordination/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/fleet_coordination build --build-base /home/aditi/amr_ws/build/fleet_coordination/build install --record /home/aditi/amr_ws/build/fleet_coordination/install.log --install-scripts $base/lib/fleet_coordination --single-version-externally-managed install_data
+[3.294s] running egg_info
+[3.340s] writing ../../build/fleet_coordination/fleet_coordination.egg-info/PKG-INFO
+[3.342s] writing dependency_links to ../../build/fleet_coordination/fleet_coordination.egg-info/dependency_links.txt
+[3.343s] writing entry points to ../../build/fleet_coordination/fleet_coordination.egg-info/entry_points.txt
+[3.346s] writing requirements to ../../build/fleet_coordination/fleet_coordination.egg-info/requires.txt
+[3.351s] writing top-level names to ../../build/fleet_coordination/fleet_coordination.egg-info/top_level.txt
+[3.461s] reading manifest file '../../build/fleet_coordination/fleet_coordination.egg-info/SOURCES.txt'
+[3.462s] writing manifest file '../../build/fleet_coordination/fleet_coordination.egg-info/SOURCES.txt'
+[3.463s] running build
+[3.463s] running build_py
+[3.463s] copying fleet_coordination/fleet_agent_node.py -> /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination
+[3.463s] copying fleet_coordination/__init__.py -> /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination
+[3.464s] running install
+[3.471s] running install_lib
+[3.514s] running install_data
+[3.515s] copying resource/fleet_coordination -> /home/aditi/amr_ws/install/fleet_coordination/share/ament_index/resource_index/packages
+[3.515s] copying package.xml -> /home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination
+[3.516s] running install_egg_info
+[3.574s] removing '/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination-0.0.0-py3.14.egg-info' (and everything under it)
+[3.575s] Copying ../../build/fleet_coordination/fleet_coordination.egg-info to /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination-0.0.0-py3.14.egg-info
+[3.577s] running install_scripts
+[3.908s] Installing fleet_agent_node script to /home/aditi/amr_ws/install/fleet_coordination/lib/fleet_coordination
+[3.908s] writing list of installed files to '/home/aditi/amr_ws/build/fleet_coordination/install.log'
+[3.981s] Invoked command in '/home/aditi/amr_ws/src/fleet_coordination' returned '0': AMENT_PREFIX_PATH=/home/aditi/amr_ws/install/fleet_msgs:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/aditi/amr_ws/install/fleet_msgs:${CMAKE_PREFIX_PATH} LD_LIBRARY_PATH=/home/aditi/amr_ws/install/fleet_msgs/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/aditi/amr_ws/build/fleet_coordination/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/fleet_coordination build --build-base /home/aditi/amr_ws/build/fleet_coordination/build install --record /home/aditi/amr_ws/build/fleet_coordination/install.log --install-scripts $base/lib/fleet_coordination --single-version-externally-managed install_data

@@ -1,0 +1,395 @@
+[-1788204709319703040.000s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build']
+[-1788204709319703040.000s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=8, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7d3e9b407610>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7d3e9b3f6a50>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7d3e9b3f6a50>>)
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[-1788204709319703040.000s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/aditi/amr_ws'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/dashboard_bridge) by extension 'ros'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dashboard_bridge' with type 'ros.ament_python' and name 'dashboard_bridge'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_coordination) by extension 'ros'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.package_identification:Package 'src/fleet_coordination' with type 'ros.ament_python' and name 'fleet_coordination'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/fleet_msgs) by extension 'ros'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.package_identification:Package 'src/fleet_msgs' with type 'ros.ament_cmake' and name 'fleet_msgs'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/robot_bringup) by extension 'ros'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.package_identification:Package 'src/robot_bringup' with type 'ros.ament_python' and name 'robot_bringup'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extensions ['ignore', 'ignore_ament_install']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extension 'ignore'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extension 'ignore_ament_install'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extensions ['colcon_pkg']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extension 'colcon_pkg'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extensions ['colcon_meta']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extension 'colcon_meta'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extensions ['ros']
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_identification:_identify(src/task_allocator) by extension 'ros'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.package_identification:Package 'src/task_allocator' with type 'ros.ament_python' and name 'task_allocator'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[-1788204709319703040.000s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/aditi/amr_ws/install/task_allocator' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[-1788204709319703040.000s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/aditi/amr_ws/install/robot_bringup' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[-1788204709319703040.000s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/aditi/amr_ws/install/fleet_coordination' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[-1788204709319703040.000s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/aditi/amr_ws/install/dashboard_bridge' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[-1788204709319703040.000s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/aditi/amr_ws/install/fleet_msgs' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[-1788204709319703040.000s] WARNING:colcon.colcon_ros.prefix_path.catkin:The path '/home/aditi/amr_ws/install/fleet_msgs' in the environment variable CMAKE_PREFIX_PATH doesn't exist
+[-1788204709319703040.000s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/aditi/amr_ws/install
+[-1788204709319703040.000s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 287 installed packages in /opt/ros/lyrical
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'cmake_target' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'cmake_clean_cache' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'cmake_clean_first' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'cmake_force_configure' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'ament_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'catkin_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_msgs' build argument 'catkin_skip_building_tests' from command line to 'False'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.verb:Building package 'fleet_msgs' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/aditi/amr_ws/build/fleet_msgs', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/aditi/amr_ws/install/fleet_msgs', 'merge_install': False, 'path': '/home/aditi/amr_ws/src/fleet_msgs', 'symlink_install': False, 'test_result_base': None}
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'cmake_target' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'cmake_clean_cache' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'cmake_clean_first' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'cmake_force_configure' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'ament_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'catkin_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'robot_bringup' build argument 'catkin_skip_building_tests' from command line to 'False'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.verb:Building package 'robot_bringup' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/aditi/amr_ws/build/robot_bringup', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/aditi/amr_ws/install/robot_bringup', 'merge_install': False, 'path': '/home/aditi/amr_ws/src/robot_bringup', 'symlink_install': False, 'test_result_base': None}
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'cmake_target' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'cmake_clean_cache' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'cmake_clean_first' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'cmake_force_configure' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'ament_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'catkin_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'dashboard_bridge' build argument 'catkin_skip_building_tests' from command line to 'False'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.verb:Building package 'dashboard_bridge' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/aditi/amr_ws/build/dashboard_bridge', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/aditi/amr_ws/install/dashboard_bridge', 'merge_install': False, 'path': '/home/aditi/amr_ws/src/dashboard_bridge', 'symlink_install': False, 'test_result_base': None}
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'cmake_target' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'cmake_clean_cache' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'cmake_clean_first' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'cmake_force_configure' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'ament_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'catkin_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'fleet_coordination' build argument 'catkin_skip_building_tests' from command line to 'False'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.verb:Building package 'fleet_coordination' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/aditi/amr_ws/build/fleet_coordination', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/aditi/amr_ws/install/fleet_coordination', 'merge_install': False, 'path': '/home/aditi/amr_ws/src/fleet_coordination', 'symlink_install': False, 'test_result_base': None}
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'cmake_target' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'cmake_clean_cache' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'cmake_clean_first' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'cmake_force_configure' from command line to 'False'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'ament_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'catkin_cmake_args' from command line to 'None'
+[-1788204709319703040.000s] Level 5:colcon.colcon_core.verb:set package 'task_allocator' build argument 'catkin_skip_building_tests' from command line to 'False'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.verb:Building package 'task_allocator' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/aditi/amr_ws/build/task_allocator', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/aditi/amr_ws/install/task_allocator', 'merge_install': False, 'path': '/home/aditi/amr_ws/src/task_allocator', 'symlink_install': False, 'test_result_base': None}
+[-1788204709319703040.000s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[-1788204709319703040.000s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[-1788204709319703040.000s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/aditi/amr_ws/src/fleet_msgs' with build type 'ament_cmake'
+[-1788204709319703040.000s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/aditi/amr_ws/src/fleet_msgs'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/aditi/amr_ws/src/robot_bringup' with build type 'ament_python'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('robot_bringup', 'ament_prefix_path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/hook/ament_prefix_path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/hook/ament_prefix_path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/hook/ament_prefix_path.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/build/fleet_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical /usr/bin/cmake /home/aditi/amr_ws/src/fleet_msgs -DCMAKE_INSTALL_PREFIX=/home/aditi/amr_ws/install/fleet_msgs
+[-1788204709319703040.000s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/aditi/amr_ws/src/robot_bringup'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: install_data, install_headers, sdist, alias, build_scripts, build_clib, egg_info, install_lib, setopt, rotate, saveopts, clean, bdist_rpm, build_ext, install_scripts, install, bdist, init_catalog, update_catalog, bdist_egg, build_py, extract_messages, check, symlink_data, develop, easy_install, install_egg_info, dist_info, compile_catalog, bdist_wheel, bdist_dumb, editable_wheel, build
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/src/robot_bringup': PYTHONPATH=/home/aditi/amr_ws/build/robot_bringup/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/robot_bringup build --build-base /home/aditi/amr_ws/build/robot_bringup/build install --record /home/aditi/amr_ws/build/robot_bringup/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/src/robot_bringup' returned '0': PYTHONPATH=/home/aditi/amr_ws/build/robot_bringup/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/robot_bringup build --build-base /home/aditi/amr_ws/build/robot_bringup/build install --record /home/aditi/amr_ws/build/robot_bringup/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup' for CMake module files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup' for CMake config files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup/lib'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup/lib/pkgconfig/robot_bringup.pc'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('robot_bringup', 'pythonpath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/hook/pythonpath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/hook/pythonpath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/hook/pythonpath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/robot_bringup/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(robot_bringup)
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/package.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/package.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/package.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/package.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/package.zsh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/aditi/amr_ws/install/robot_bringup/share/colcon-core/packages/robot_bringup)
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/build/fleet_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical /usr/bin/cmake /home/aditi/amr_ws/src/fleet_msgs -DCMAKE_INSTALL_PREFIX=/home/aditi/amr_ws/install/fleet_msgs
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/build/fleet_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical /usr/bin/cmake --build /home/aditi/amr_ws/build/fleet_msgs -- -j8 -l8
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/build/fleet_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical /usr/bin/cmake --build /home/aditi/amr_ws/build/fleet_msgs -- -j8 -l8
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/build/fleet_msgs': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical /usr/bin/cmake --install /home/aditi/amr_ws/build/fleet_msgs
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(fleet_msgs)
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs' for CMake module files
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/build/fleet_msgs' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical /usr/bin/cmake --install /home/aditi/amr_ws/build/fleet_msgs
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs' for CMake config files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_msgs', 'cmake_prefix_path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/cmake_prefix_path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/cmake_prefix_path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/cmake_prefix_path.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/lib'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_msgs', 'ld_library_path_lib')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/ld_library_path_lib.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/ld_library_path_lib.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/ld_library_path_lib.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/lib/pkgconfig/fleet_msgs.pc'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_msgs', 'pythonpath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/pythonpath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/pythonpath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/pythonpath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/bin'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.zsh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/aditi/amr_ws/install/fleet_msgs/share/colcon-core/packages/fleet_msgs)
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(fleet_msgs)
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs' for CMake module files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs' for CMake config files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_msgs', 'cmake_prefix_path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/cmake_prefix_path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/cmake_prefix_path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/cmake_prefix_path.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/lib'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_msgs', 'ld_library_path_lib')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/ld_library_path_lib.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/ld_library_path_lib.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/ld_library_path_lib.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/lib/pkgconfig/fleet_msgs.pc'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_msgs', 'pythonpath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/pythonpath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/pythonpath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/hook/pythonpath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_msgs/bin'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.zsh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/aditi/amr_ws/install/fleet_msgs/share/colcon-core/packages/fleet_msgs)
+[-1788204709319703040.000s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/aditi/amr_ws/src/dashboard_bridge' with build type 'ament_python'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('dashboard_bridge', 'ament_prefix_path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/ament_prefix_path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/ament_prefix_path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/ament_prefix_path.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/aditi/amr_ws/src/fleet_coordination' with build type 'ament_python'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_coordination', 'ament_prefix_path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/ament_prefix_path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/ament_prefix_path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/ament_prefix_path.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/aditi/amr_ws/src/task_allocator' with build type 'ament_python'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('task_allocator', 'ament_prefix_path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/ament_prefix_path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/ament_prefix_path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/ament_prefix_path.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/aditi/amr_ws/src/dashboard_bridge'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/aditi/amr_ws/src/fleet_coordination'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/aditi/amr_ws/src/task_allocator'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: install_data, install_headers, sdist, alias, build_scripts, build_clib, egg_info, install_lib, setopt, rotate, saveopts, clean, bdist_rpm, build_ext, install_scripts, install, bdist, init_catalog, update_catalog, bdist_egg, build_py, extract_messages, check, symlink_data, develop, easy_install, install_egg_info, dist_info, compile_catalog, bdist_wheel, bdist_dumb, editable_wheel, build
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/src/dashboard_bridge': PYTHONPATH=/home/aditi/amr_ws/build/dashboard_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/dashboard_bridge build --build-base /home/aditi/amr_ws/build/dashboard_bridge/build install --record /home/aditi/amr_ws/build/dashboard_bridge/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: install_data, install_headers, sdist, alias, build_scripts, build_clib, egg_info, install_lib, setopt, rotate, saveopts, clean, bdist_rpm, build_ext, install_scripts, install, bdist, init_catalog, update_catalog, bdist_egg, build_py, extract_messages, check, symlink_data, develop, easy_install, install_egg_info, dist_info, compile_catalog, bdist_wheel, bdist_dumb, editable_wheel, build
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/src/task_allocator': PYTHONPATH=/home/aditi/amr_ws/build/task_allocator/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/task_allocator build --build-base /home/aditi/amr_ws/build/task_allocator/build install --record /home/aditi/amr_ws/build/task_allocator/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: install_data, install_headers, sdist, alias, build_scripts, build_clib, egg_info, install_lib, setopt, rotate, saveopts, clean, bdist_rpm, build_ext, install_scripts, install, bdist, init_catalog, update_catalog, bdist_egg, build_py, extract_messages, check, symlink_data, develop, easy_install, install_egg_info, dist_info, compile_catalog, bdist_wheel, bdist_dumb, editable_wheel, build
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/aditi/amr_ws/src/fleet_coordination': PYTHONPATH=/home/aditi/amr_ws/build/fleet_coordination/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/fleet_coordination build --build-base /home/aditi/amr_ws/build/fleet_coordination/build install --record /home/aditi/amr_ws/build/fleet_coordination/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge' for CMake module files
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/src/dashboard_bridge' returned '0': PYTHONPATH=/home/aditi/amr_ws/build/dashboard_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/dashboard_bridge build --build-base /home/aditi/amr_ws/build/dashboard_bridge/build install --record /home/aditi/amr_ws/build/dashboard_bridge/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge' for CMake config files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge/lib'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('dashboard_bridge', 'path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/path.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge/lib/pkgconfig/dashboard_bridge.pc'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('dashboard_bridge', 'pythonpath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/pythonpath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/pythonpath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/pythonpath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/dashboard_bridge/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('dashboard_bridge', 'pythonscriptspath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/pythonscriptspath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/pythonscriptspath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/hook/pythonscriptspath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dashboard_bridge)
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/package.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/package.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/package.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/package.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge/package.zsh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/aditi/amr_ws/install/dashboard_bridge/share/colcon-core/packages/dashboard_bridge)
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination' for CMake module files
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/src/fleet_coordination' returned '0': PYTHONPATH=/home/aditi/amr_ws/build/fleet_coordination/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/fleet_coordination build --build-base /home/aditi/amr_ws/build/fleet_coordination/build install --record /home/aditi/amr_ws/build/fleet_coordination/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination' for CMake config files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination/lib'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_coordination', 'path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/path.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination/lib/pkgconfig/fleet_coordination.pc'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_coordination', 'pythonpath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/pythonpath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/pythonpath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/pythonpath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/fleet_coordination/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('fleet_coordination', 'pythonscriptspath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/pythonscriptspath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/pythonscriptspath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/hook/pythonscriptspath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(fleet_coordination)
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/package.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/package.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/package.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/package.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination/package.zsh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/aditi/amr_ws/install/fleet_coordination/share/colcon-core/packages/fleet_coordination)
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator' for CMake module files
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/aditi/amr_ws/src/task_allocator' returned '0': PYTHONPATH=/home/aditi/amr_ws/build/task_allocator/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/task_allocator build --build-base /home/aditi/amr_ws/build/task_allocator/build install --record /home/aditi/amr_ws/build/task_allocator/install.log --single-version-externally-managed install_data
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator' for CMake config files
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator/lib'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('task_allocator', 'path')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/path.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/path.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/path.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator/lib/pkgconfig/task_allocator.pc'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('task_allocator', 'pythonpath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/pythonpath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/pythonpath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/pythonpath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:checking '/home/aditi/amr_ws/install/task_allocator/bin'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.shell:create_environment_hook('task_allocator', 'pythonscriptspath')
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/pythonscriptspath.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/pythonscriptspath.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/hook/pythonscriptspath.sh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(task_allocator)
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/package.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/package.dsv'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/package.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/package.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating package script '/home/aditi/amr_ws/install/task_allocator/share/task_allocator/package.zsh'
+[-1788204709319703040.000s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/aditi/amr_ws/install/task_allocator/share/colcon-core/packages/task_allocator)
+[-1788204709319703040.000s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[-1788204709319703040.000s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[-1788204709319703040.000s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[-1788204709319703040.000s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[-1788204709319703040.000s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[-1788204709319703040.000s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[-1788204709319703040.000s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.Notifications was not provided by any .service files
+[-1788204709319703040.000s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/aditi/amr_ws/install/local_setup.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/aditi/amr_ws/install/_local_setup_util_ps1.py'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/aditi/amr_ws/install/setup.ps1'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/aditi/amr_ws/install/local_setup.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/aditi/amr_ws/install/_local_setup_util_sh.py'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/aditi/amr_ws/install/setup.sh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/aditi/amr_ws/install/local_setup.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/aditi/amr_ws/install/setup.bash'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/aditi/amr_ws/install/local_setup.zsh'
+[-1788204709319703040.000s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/aditi/amr_ws/install/setup.zsh'
