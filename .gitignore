@@ -1,8 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.Python
+env/
+venv/
+.venv/
 
 # Distribution
 *.egg-info/
@@ -15,11 +26,13 @@ build/
 .coverage
 htmlcov/
 
-# IDE
+# ROS / Build artifacts
+install/
+log/
+*.log
+
+# Editor directories
 .vscode/
 .idea/
 *.swp
-
-# OS
-.DS_Store
-Thumbs.db
+*~

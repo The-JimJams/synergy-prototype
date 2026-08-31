@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="dumpster">
+    <static>true</static>
+    <link name="link">
+      <collision name="col">
+        <pose>0 0 0.5 0 0 0</pose>
+        <geometry><box><size>1.2 0.8 1.0</size></box></geometry>
+      </collision>
+      <!-- Main Green Industrial Body -->
+      <visual name="body">
+        <pose>0 0 0.52 0 0 0</pose>
+        <geometry><box><size>1.18 0.78 0.85</size></box></geometry>
+        <material><ambient>0.08 0.45 0.18 1</ambient><diffuse>0.10 0.58 0.24 1</diffuse></material>
+      </visual>
+      <!-- Dark Lid Frame -->
+      <visual name="lid">
+        <pose>0 0 0.96 0 0 0</pose>
+        <geometry><box><size>1.22 0.82 0.08</size></box></geometry>
+        <material><ambient>0.05 0.30 0.12 1</ambient><diffuse>0.07 0.38 0.16 1</diffuse></material>
+      </visual>
+      <!-- Black Wheels & Base Frame -->
+      <visual name="w_fl"><pose>0.45 0.32 0.08 1.57 0 0</pose><geometry><cylinder><radius>0.08</radius><length>0.06</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual>
+      <visual name="w_fr"><pose>0.45 -0.32 0.08 1.57 0 0</pose><geometry><cylinder><radius>0.08</radius><length>0.06</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual>
+      <visual name="w_rl"><pose>-0.45 0.32 0.08 1.57 0 0</pose><geometry><cylinder><radius>0.08</radius><length>0.06</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual>
+      <visual name="w_rr"><pose>-0.45 -0.32 0.08 1.57 0 0</pose><geometry><cylinder><radius>0.08</radius><length>0.06</length></cylinder></geometry><material><ambient>0.1 0.1 0.1 1</ambient><diffuse>0.15 0.15 0.15 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>
