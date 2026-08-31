@@ -24,27 +24,31 @@ Designed for testing fleet management, multi-agent path planning, collision avoi
 ## 🌟 Project Overview
 
 This simulation replicates a real-world automated logistics fulfillment center featuring:
-- **3 Color-Coded AMRs** with distinct namespaces (`amr_a`, `amr_b`, `amr_c`), 2D planar LiDARs, differential-drive controllers, and wheel odometry.
-- **Dedicated Staging Zones**: 2 Intake Pickup Stations (**P1**, **P2**), an Order Packing/Drop Station (**D1**), an Automated Wireless Charging Bay, and a critical central traffic intersection (**I1**).
-- **Industrial Storage Racks**: 4 High-Bay Shelving Units (**S1**, **S2**, **S3**, **S4**) with stacked pallet cargo boxes and high-contrast identification numbers.
-- **Safety Navigation Markings**: 5m × 5m concrete floor grid, directional traffic flow arrows, wall skirting, I-beam perimeter structural pillars, and wall-mounted industrial LED lighting.
+- **3 Color-Coded AMRs** with distinct namespaces (`amr_blue`, `amr_green`, `amr_orange`), 2D planar LiDARs, differential-drive controllers, and wheel odometry.
+- **Dedicated Staging Zones**: 2 Intake Pickup Stations (**P1**, **P2**), an Order Packing/Drop Station (**D1**), an Automated Wireless Charging Bay, and 2 critical traffic intersections (**I1**, **I2**).
+- **Industrial Storage Racks**: 8 High-Bay Shelving Units (**S1** through **S8**) with stacked pallet cargo boxes and high-contrast identification numbers.
+- **Safety Navigation Markings**: 5m × 5m concrete floor grid, wall skirting, I-beam perimeter structural pillars, and wall-mounted industrial LED lighting.
 
 ```mermaid
 graph TD
     subgraph Warehouse Environment
-        NW[Shelf S1 - NW] --- I1[Intersection I1 Zone]
-        NE[Shelf S2 - NE] --- I1
-        SW[Shelf S3 - SW] --- I1
-        SE[Shelf S4 - SE] --- I1
+        NW1[Shelf S1 - NW1] --- I1[Intersection I1 Zone]
+        NE1[Shelf S2 - NE1] --- I1
+        NW2[Shelf S3 - NW2] --- I1
+        NE2[Shelf S4 - NE2] --- I1
+        SW2[Shelf S5 - SW2] --- I2[Intersection I2 Zone]
+        SE2[Shelf S6 - SE2] --- I2
+        SW1[Shelf S7 - SW1] --- I2
+        SE1[Shelf S8 - SE1] --- I2
         I1 --- P1[Pickup Station P1]
-        I1 --- P2[Pickup Station P2]
-        I1 --- D1[Drop Station D1]
-        I1 --- CH[Charging Bay]
+        I2 --- P2[Pickup Station P2]
+        I2 --- D1[Drop Station D1]
+        I2 --- CH[Charging Bay]
     end
     subgraph Autonomous Fleet
-        AMR_A[AMR A - Blue] --> I1
-        AMR_B[AMR B - Green] --> I1
-        AMR_C[AMR C - Orange] --> I1
+        AMR_Blue[AMR Blue] --> I1
+        AMR_Green[AMR Green] --> I1
+        AMR_Orange[AMR Orange] --> I2
     end
 ```
 
@@ -155,19 +159,24 @@ scripts\launch_sim.bat
 
 ## 🗺️ Warehouse Zone & Coordinate Map
 
-The warehouse is enclosed in a **20.0m × 15.0m × 2.5m** perimeter. Origin `(0, 0, 0)` is at the geometric center of the concrete floor.
+The warehouse is enclosed in a **20.0m × 20.0m × 2.5m** perimeter. Origin `(0, 0, 0)` is at the geometric center of the concrete floor.
 
 | Zone / Asset | Coordinates `(X, Y, Z)` | Visual Marker | Functional Purpose |
 | :--- | :--- | :--- | :--- |
-| **Pickup Station P1** | `(0.0, -3.2, 0.0)` | 🟢 Emerald Green **P** | Primary intake staging pad |
-| **Pickup Station P2** | `(-5.5, -4.5, 0.0)` | 🟢 Emerald Green **P** | Auxiliary cargo receiving bay |
-| **Drop Station D1** | `(0.0, -5.6, 0.0)` | 🔵 Royal Blue **D** | Packing, sorting, and dispatch area |
-| **Charging Station** | `(5.5, -5.0, 0.0)` | 🟡 Gold Battery + ⚡ Bolt | Autonomous induction docking station |
-| **Intersection I1** | `(0.0, 1.75, 0.0)` | 🔴 Red Cross + Bollards | High-traffic central aisle intersection |
-| **Shelf Rack S1 (NW)**| `(-4.8, 4.5, 0.0)` | ⬛ Black **S1** (on top) | High-bay pallet inventory rack 1 |
-| **Shelf Rack S2 (NE)**| `(4.8, 4.5, 0.0)` | ⬛ Black **S2** (on top) | High-bay pallet inventory rack 2 |
-| **Shelf Rack S3 (SW)**| `(-4.8, -1.0, 0.0)`| ⬛ Black **S3** (on top) | High-bay pallet inventory rack 3 |
-| **Shelf Rack S4 (SE)**| `(4.8, -1.0, 0.0)`| ⬛ Black **S4** (on top) | High-bay pallet inventory rack 4 |
+| **Pickup Station P1** | `(0.0, 8.0, 0.0)` | 🟢 Emerald Green **P** | Primary intake staging pad (North bay) |
+| **Pickup Station P2** | `(-5.5, -7.0, 0.0)` | 🟢 Emerald Green **P** | Auxiliary cargo receiving bay (SW zone) |
+| **Drop Station D1** | `(0.0, -8.1, 0.0)` | 🔵 Royal Blue **D** | Packing, sorting, and dispatch area (South bay) |
+| **Charging Station** | `(5.5, -7.5, 0.0)` | 🟡 Gold Battery + ⚡ Bolt | Autonomous induction docking station (SE zone) |
+| **Intersection I1** | `(0.0, 5.2, 0.0)` | 🔴 Red Cross + Bollards | High-traffic north corridor intersection |
+| **Intersection I2** | `(0.0, -0.7, 0.0)` | 🔴 Red Cross + Bollards | High-traffic south corridor intersection |
+| **Shelf Rack S1 (NW1)**| `(-4.8, 7.5, 0.0)` | ⬛ Black **S1** (on top) | High-bay pallet inventory rack 1 |
+| **Shelf Rack S2 (NE1)**| `(4.8, 7.5, 0.0)` | ⬛ Black **S2** (on top) | High-bay pallet inventory rack 2 |
+| **Shelf Rack S3 (NW2)**| `(-4.8, 3.0, 0.0)` | ⬛ Black **S3** (on top) | High-bay pallet inventory rack 3 |
+| **Shelf Rack S4 (NE2)**| `(4.8, 3.0, 0.0)` | ⬛ Black **S4** (on top) | High-bay pallet inventory rack 4 |
+| **Shelf Rack S5 (SW2)**| `(-4.8, 1.5, 0.0)` | ⬛ Black **S5** (on top) | High-bay pallet inventory rack 5 |
+| **Shelf Rack S6 (SE2)**| `(4.8, 1.5, 0.0)` | ⬛ Black **S6** (on top) | High-bay pallet inventory rack 6 |
+| **Shelf Rack S7 (SW1)**| `(-4.8, -3.0, 0.0)`| ⬛ Black **S7** (on top) | High-bay pallet inventory rack 7 |
+| **Shelf Rack S8 (SE1)**| `(4.8, -3.0, 0.0)`| ⬛ Black **S8** (on top) | High-bay pallet inventory rack 8 |
 
 ---
 
@@ -181,32 +190,33 @@ All 3 AMRs operate under isolated namespaces to support true multi-robot decentr
                   └──────────────┬────────────────┘
          ┌───────────────────────┼───────────────────────┐
          ▼                       ▼                       ▼
-   [ AMR A (Blue) ]        [ AMR B (Green) ]       [ AMR C (Orange) ]
-   /amr_a/cmd_vel          /amr_b/cmd_vel          /amr_c/cmd_vel
-   /amr_a/odometry         /amr_b/odometry         /amr_c/odometry
-   /amr_a/scan             /amr_b/scan             /amr_c/scan
-   /amr_a/tf               /amr_b/tf               /amr_c/tf
+   [ AMR Blue ]            [ AMR Green ]           [ AMR Orange ]
+   /amr_blue/cmd_vel       /amr_green/cmd_vel      /amr_orange/cmd_vel
+   /amr_blue/odom          /amr_green/odom         /amr_orange/odom
+   /amr_blue/scan          /amr_green/scan         /amr_orange/scan
+   /amr_blue/tf            /amr_green/tf           /amr_orange/tf
+   /amr_blue_contact       /amr_green_contact      /amr_orange_contact
 ```
 
 ### Fleet Topic Specifications
 
-| Robot | Theme | Spawn `(X, Y)` | Velocity Control (Pub) | Odometry Feedback (Sub) | 2D LiDAR (Sub) |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **AMR A** | 🔵 Sapphire Blue | `(-6.0, 0.0)` | `/amr_a/cmd_vel` | `/amr_a/odometry` | `/amr_a/scan` |
-| **AMR B** | 🟢 Emerald Green | `(0.0, -0.5)` | `/amr_b/cmd_vel` | `/amr_b/odometry` | `/amr_b/scan` |
-| **AMR C** | 🟠 Safety Orange | `(6.0, -2.5)` | `/amr_c/cmd_vel` | `/amr_c/odometry` | `/amr_c/scan` |
+| Robot | Theme | Initial Spawn `(X, Y, Z)` | Velocity Control (Pub) | Odometry Feedback (Sub) | 2D LiDAR (Sub) | Bumper Contact (Sub) |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **AMR Blue** | 🔵 Sapphire Blue | `(-3.5, 5.25, 0.05)` | `/amr_blue/cmd_vel` | `/amr_blue/odom` | `/amr_blue/scan` | `/amr_blue_contact` |
+| **AMR Green** | 🟢 Emerald Green | `(0.5, 8.5, 0.05)` | `/amr_green/cmd_vel` | `/amr_green/odom` | `/amr_green/scan` | `/amr_green_contact` |
+| **AMR Orange**| 🟠 Safety Orange | `(3.5, -6.5, 0.05)` | `/amr_orange/cmd_vel` | `/amr_orange/odom` | `/amr_orange/scan` | `/amr_orange_contact` |
 
 ### Sample Velocity Commands (Gazebo CLI)
 
 ```bash
-# Drive AMR A (Blue) forward at 0.5 m/s
-gz topic -t "/amr_a/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.5}, angular: {z: 0.0}"
+# Drive AMR Blue forward at 0.5 m/s
+gz topic -t "/amr_blue/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.5}, angular: {z: 0.0}"
 
-# Rotate AMR B (Green) counter-clockwise at 0.8 rad/s
-gz topic -t "/amr_b/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.0}, angular: {z: 0.8}"
+# Rotate AMR Green counter-clockwise at 0.8 rad/s
+gz topic -t "/amr_green/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.0}, angular: {z: 0.8}"
 
-# Stop AMR C (Orange)
-gz topic -t "/amr_c/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.0}, angular: {z: 0.0}"
+# Stop AMR Orange
+gz topic -t "/amr_orange/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.0}, angular: {z: 0.0}"
 ```
 
 ---
@@ -224,9 +234,9 @@ gazebo/
 └── simulation/
     ├── models/                     # Modular simulation models (SDF 1.9)
     │   ├── amr/                    # Base AMR model template with lidar & diff-drive
-    │   ├── amr_blue/               # AMR A model instance (/amr_a)
-    │   ├── amr_green/              # AMR B model instance (/amr_b)
-    │   ├── amr_orange/             # AMR C model instance (/amr_c)
+    │   ├── amr_blue/               # AMR Blue model instance (/amr_blue)
+    │   ├── amr_green/              # AMR Green model instance (/amr_green)
+    │   ├── amr_orange/             # AMR Orange model instance (/amr_orange)
     │   ├── shelf/                  # 3-tier industrial warehouse rack with cargo boxes
     │   ├── pickup_station/         # Floor intake staging zone with 45° hazard lines
     │   ├── drop_station/           # Floor discharge zone with 45° hazard lines

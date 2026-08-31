@@ -59,12 +59,12 @@
       </visual>
 
       <sensor name="imu_sensor" type="imu">
-        <always_on>1</always_on><update_rate>50</update_rate><visualize>false</visualize><topic>imu_b</topic>
+        <always_on>1</always_on><update_rate>50</update_rate><visualize>false</visualize><topic>imu_green</topic>
       </sensor>
       <sensor name="chassis_contact_sensor" type="contact">
         <always_on>1</always_on><update_rate>30</update_rate>
         <contact><collision>chassis_collision</collision></contact>
-        <topic>amr_b_contact</topic>
+        <topic>amr_green_contact</topic>
       </sensor>
     </link>
 
@@ -73,7 +73,7 @@
       <inertial><mass>1.5</mass><inertia><ixx>0.00406</ixx><iyy>0.00406</iyy><izz>0.0075</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
       <collision name="collision"><geometry><cylinder><radius>0.10</radius><length>0.05</length></cylinder></geometry><surface><friction><ode><mu>1.2</mu><mu2>1.2</mu2></ode></friction></surface></collision>
       <visual name="visual"><geometry><cylinder><radius>0.10</radius><length>0.05</length></cylinder></geometry><material><ambient>0.12 0.12 0.14 1.0</ambient><diffuse>0.18 0.18 0.20 1.0</diffuse></material></visual>
-      <visual name="hubcap"><pose>0 0 0.026 0 0 0</pose><geometry><cylinder><radius>0.04</radius><length>0.005</length></cylinder></geometry><material><ambient>0.6 0.6 0.65 1.0</ambient><diffuse>0.7 0.7 0.75 1.0</diffuse></material></visual>
+      <visual name="hubcap"><pose>0 0 -0.026 0 0 0</pose><geometry><cylinder><radius>0.04</radius><length>0.005</length></cylinder></geometry><material><ambient>0.6 0.6 0.65 1.0</ambient><diffuse>0.7 0.7 0.75 1.0</diffuse></material></visual>
     </link>
     <link name="right_wheel">
       <pose>0 -0.25 0.10 -1.57079632679 0 0</pose>
@@ -92,13 +92,22 @@
       <axis><xyz>0 0 1</xyz><limit><lower>-1e16</lower><upper>1e16</upper></limit></axis>
     </joint>
 
-    <link name="caster">
+    <!-- Dual Casters for 4-Point Pitch/Roll Stability -->
+    <link name="caster_rear">
       <pose>-0.20 0 0.05 0 0 0</pose>
-      <inertial><mass>0.5</mass><inertia><ixx>0.0005</ixx><iyy>0.0005</iyy><izz>0.0005</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      <inertial><mass>0.25</mass><inertia><ixx>0.00025</ixx><iyy>0.00025</iyy><izz>0.00025</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
       <collision name="collision"><geometry><sphere><radius>0.05</radius></sphere></geometry><surface><friction><ode><mu>0.01</mu><mu2>0.01</mu2><slip1>1.0</slip1><slip2>1.0</slip2></ode></friction></surface></collision>
       <visual name="visual"><geometry><sphere><radius>0.05</radius></sphere></geometry><material><ambient>0.2 0.2 0.2 1.0</ambient><diffuse>0.3 0.3 0.3 1.0</diffuse></material></visual>
     </link>
-    <joint name="caster_joint" type="ball"><parent>base_link</parent><child>caster</child></joint>
+    <joint name="caster_rear_joint" type="ball"><parent>base_link</parent><child>caster_rear</child></joint>
+
+    <link name="caster_front">
+      <pose>0.20 0 0.05 0 0 0</pose>
+      <inertial><mass>0.25</mass><inertia><ixx>0.00025</ixx><iyy>0.00025</iyy><izz>0.00025</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      <collision name="collision"><geometry><sphere><radius>0.05</radius></sphere></geometry><surface><friction><ode><mu>0.01</mu><mu2>0.01</mu2><slip1>1.0</slip1><slip2>1.0</slip2></ode></friction></surface></collision>
+      <visual name="visual"><geometry><sphere><radius>0.05</radius></sphere></geometry><material><ambient>0.2 0.2 0.2 1.0</ambient><diffuse>0.3 0.3 0.3 1.0</diffuse></material></visual>
+    </link>
+    <joint name="caster_front_joint" type="ball"><parent>base_link</parent><child>caster_front</child></joint>
 
     <link name="lidar_link">
       <pose>0.14 0 0.26 0 0 0</pose>
@@ -113,7 +122,7 @@
           <range><min>0.10</min><max>10.0</max><resolution>0.01</resolution></range>
           <noise><type>gaussian</type><mean>0.0</mean><stddev>0.01</stddev></noise>
         </ray>
-        <topic>amr_b/scan</topic>
+        <topic>amr_green/scan</topic>
       </sensor>
     </link>
     <joint name="lidar_joint" type="fixed"><parent>base_link</parent><child>lidar_link</child></joint>
@@ -121,13 +130,18 @@
     <plugin filename="gz-sim-diff-drive-system" name="gz::sim::systems::DiffDrive">
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
-      <wheel_separation>0.50</wheel_separation><wheel_radius>0.10</wheel_radius>
+      <wheel_separation>0.50</wheel_separation>
+      <wheel_radius>0.10</wheel_radius>
       <odom_publish_frequency>20</odom_publish_frequency>
-      <topic>amr_b/cmd_vel</topic><odom_topic>amr_b/odom</odom_topic>
-      <tf_topic>amr_b/tf</tf_topic>
-      <frame_id>amr_b/odom</frame_id><child_frame_id>amr_b/base_link</child_frame_id>
-      <max_linear_velocity>1.2</max_linear_velocity><min_linear_velocity>-1.2</min_linear_velocity>
-      <max_angular_velocity>2.0</max_angular_velocity><min_angular_velocity>-2.0</min_angular_velocity>
+      <topic>amr_green/cmd_vel</topic>
+      <odom_topic>amr_green/odom</odom_topic>
+      <tf_topic>amr_green/tf</tf_topic>
+      <frame_id>amr_green/odom</frame_id>
+      <child_frame_id>amr_green/base_link</child_frame_id>
+      <max_linear_velocity>1.2</max_linear_velocity>
+      <min_linear_velocity>-1.2</min_linear_velocity>
+      <max_angular_velocity>2.0</max_angular_velocity>
+      <min_angular_velocity>-2.0</min_angular_velocity>
     </plugin>
   </model>
 </sdf>
