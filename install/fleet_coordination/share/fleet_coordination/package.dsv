@@ -1,0 +1,12 @@
+source;share/fleet_coordination/hook/path.ps1
+source;share/fleet_coordination/hook/path.dsv
+source;share/fleet_coordination/hook/path.sh
+source;share/fleet_coordination/hook/pythonpath.ps1
+source;share/fleet_coordination/hook/pythonpath.dsv
+source;share/fleet_coordination/hook/pythonpath.sh
+source;share/fleet_coordination/hook/pythonscriptspath.ps1
+source;share/fleet_coordination/hook/pythonscriptspath.dsv
+source;share/fleet_coordination/hook/pythonscriptspath.sh
+source;share/fleet_coordination/hook/ament_prefix_path.ps1
+source;share/fleet_coordination/hook/ament_prefix_path.dsv
+source;share/fleet_coordination/hook/ament_prefix_path.sh

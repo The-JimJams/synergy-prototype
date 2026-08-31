@@ -1,0 +1,6 @@
+/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/RobotState.idl
+/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/RobotIntent.idl
+/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/ResourceClaim.idl
+/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/TaskAnnouncement.idl
+/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/TaskBid.idl
+/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/Heartbeat.idl

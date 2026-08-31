@@ -1,0 +1,821 @@
+[0.000000] (-) TimerEvent: {}
+[0.000817] (fleet_msgs) JobQueued: {'identifier': 'fleet_msgs', 'dependencies': OrderedDict()}
+[0.000970] (robot_bringup) JobQueued: {'identifier': 'robot_bringup', 'dependencies': OrderedDict()}
+[0.001055] (dashboard_bridge) JobQueued: {'identifier': 'dashboard_bridge', 'dependencies': OrderedDict({'fleet_msgs': '/home/aditi/amr_ws/install/fleet_msgs'})}
+[0.001173] (fleet_coordination) JobQueued: {'identifier': 'fleet_coordination', 'dependencies': OrderedDict({'fleet_msgs': '/home/aditi/amr_ws/install/fleet_msgs'})}
+[0.001301] (task_allocator) JobQueued: {'identifier': 'task_allocator', 'dependencies': OrderedDict({'fleet_msgs': '/home/aditi/amr_ws/install/fleet_msgs'})}
+[0.001383] (fleet_msgs) JobStarted: {'identifier': 'fleet_msgs'}
+[0.012124] (robot_bringup) JobStarted: {'identifier': 'robot_bringup'}
+[0.026650] (fleet_msgs) JobProgress: {'identifier': 'fleet_msgs', 'progress': 'cmake'}
+[0.030731] (fleet_msgs) Command: {'cmd': ['/usr/bin/cmake', '/home/aditi/amr_ws/src/fleet_msgs', '-DCMAKE_INSTALL_PREFIX=/home/aditi/amr_ws/install/fleet_msgs'], 'cwd': '/home/aditi/amr_ws/build/fleet_msgs', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/fleet_msgs', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[0.098363] (-) TimerEvent: {}
+[0.186694] (fleet_msgs) StdoutLine: {'line': b'-- The C compiler identification is GNU 15.2.0\n'}
+[0.198535] (-) TimerEvent: {}
+[0.299119] (-) TimerEvent: {}
+[0.399711] (-) TimerEvent: {}
+[0.500449] (-) TimerEvent: {}
+[0.600977] (-) TimerEvent: {}
+[0.644098] (fleet_msgs) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 15.2.0\n'}
+[0.701229] (-) TimerEvent: {}
+[0.801852] (-) TimerEvent: {}
+[0.902620] (-) TimerEvent: {}
+[0.990299] (fleet_msgs) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[1.002814] (-) TimerEvent: {}
+[1.103244] (-) TimerEvent: {}
+[1.192319] (fleet_msgs) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[1.203425] (-) TimerEvent: {}
+[1.223774] (fleet_msgs) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[1.224429] (fleet_msgs) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[1.225396] (fleet_msgs) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[1.251438] (fleet_msgs) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[1.303656] (-) TimerEvent: {}
+[1.404248] (-) TimerEvent: {}
+[1.505043] (-) TimerEvent: {}
+[1.599199] (fleet_msgs) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[1.605205] (-) TimerEvent: {}
+[1.649709] (fleet_msgs) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[1.650372] (fleet_msgs) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[1.654406] (fleet_msgs) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[1.673475] (fleet_msgs) StdoutLine: {'line': b'-- Found ament_cmake: 2.8.8 (/opt/ros/lyrical/share/ament_cmake/cmake)\n'}
+[1.705398] (-) TimerEvent: {}
+[1.748522] (robot_bringup) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/robot_bringup', 'build', '--build-base', '/home/aditi/amr_ws/build/robot_bringup/build', 'install', '--record', '/home/aditi/amr_ws/build/robot_bringup/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/aditi/amr_ws/src/robot_bringup', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/robot_bringup', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/build/robot_bringup/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}, 'shell': False}
+[1.805536] (-) TimerEvent: {}
+[1.906051] (-) TimerEvent: {}
+[2.006722] (-) TimerEvent: {}
+[2.107537] (-) TimerEvent: {}
+[2.208322] (-) TimerEvent: {}
+[2.309156] (-) TimerEvent: {}
+[2.410052] (-) TimerEvent: {}
+[2.510927] (-) TimerEvent: {}
+[2.557808] (fleet_msgs) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.8.1 (/opt/ros/lyrical/share/rosidl_default_generators/cmake)\n'}
+[2.582868] (fleet_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[2.611241] (-) TimerEvent: {}
+[2.649688] (robot_bringup) StdoutLine: {'line': b'running egg_info\n'}
+[2.694716] (robot_bringup) StdoutLine: {'line': b'creating ../../build/robot_bringup/robot_bringup.egg-info\n'}
+[2.695329] (robot_bringup) StdoutLine: {'line': b'writing ../../build/robot_bringup/robot_bringup.egg-info/PKG-INFO\n'}
+[2.695728] (fleet_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[2.696293] (robot_bringup) StdoutLine: {'line': b'writing dependency_links to ../../build/robot_bringup/robot_bringup.egg-info/dependency_links.txt\n'}
+[2.696844] (robot_bringup) StdoutLine: {'line': b'writing requirements to ../../build/robot_bringup/robot_bringup.egg-info/requires.txt\n'}
+[2.697347] (robot_bringup) StdoutLine: {'line': b'writing top-level names to ../../build/robot_bringup/robot_bringup.egg-info/top_level.txt\n'}
+[2.697558] (robot_bringup) StdoutLine: {'line': b"writing manifest file '../../build/robot_bringup/robot_bringup.egg-info/SOURCES.txt'\n"}
+[2.711423] (-) TimerEvent: {}
+[2.756427] (fleet_msgs) StdoutLine: {'line': b'-- Found rosidl_adapter: 5.2.1 (/opt/ros/lyrical/share/rosidl_adapter/cmake)\n'}
+[2.768659] (robot_bringup) StdoutLine: {'line': b"reading manifest file '../../build/robot_bringup/robot_bringup.egg-info/SOURCES.txt'\n"}
+[2.769868] (robot_bringup) StdoutLine: {'line': b"writing manifest file '../../build/robot_bringup/robot_bringup.egg-info/SOURCES.txt'\n"}
+[2.770424] (robot_bringup) StdoutLine: {'line': b'running build\n'}
+[2.770900] (robot_bringup) StdoutLine: {'line': b'running build_py\n'}
+[2.771136] (robot_bringup) StdoutLine: {'line': b'creating /home/aditi/amr_ws/build/robot_bringup/build/lib/robot_bringup\n'}
+[2.772723] (robot_bringup) StdoutLine: {'line': b'copying robot_bringup/__init__.py -> /home/aditi/amr_ws/build/robot_bringup/build/lib/robot_bringup\n'}
+[2.774058] (robot_bringup) StdoutLine: {'line': b'running install\n'}
+[2.784492] (robot_bringup) StdoutLine: {'line': b'running install_lib\n'}
+[2.811590] (-) TimerEvent: {}
+[2.831272] (robot_bringup) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages/robot_bringup\n'}
+[2.832145] (robot_bringup) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/robot_bringup/build/lib/robot_bringup/__init__.py -> /home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages/robot_bringup\n'}
+[2.833442] (robot_bringup) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages/robot_bringup/__init__.py to __init__.cpython-314.pyc\n'}
+[2.834535] (robot_bringup) StdoutLine: {'line': b'running install_data\n'}
+[2.835162] (robot_bringup) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/robot_bringup/share/ament_index/resource_index/packages\n'}
+[2.837326] (robot_bringup) StdoutLine: {'line': b'copying resource/robot_bringup -> /home/aditi/amr_ws/install/robot_bringup/share/ament_index/resource_index/packages\n'}
+[2.837916] (robot_bringup) StdoutLine: {'line': b'copying package.xml -> /home/aditi/amr_ws/install/robot_bringup/share/robot_bringup\n'}
+[2.838634] (robot_bringup) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/launch\n'}
+[2.839781] (robot_bringup) StdoutLine: {'line': b'copying launch/.keep -> /home/aditi/amr_ws/install/robot_bringup/share/robot_bringup/launch\n'}
+[2.840469] (robot_bringup) StdoutLine: {'line': b'running install_egg_info\n'}
+[2.881721] (robot_bringup) StdoutLine: {'line': b'Copying ../../build/robot_bringup/robot_bringup.egg-info to /home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages/robot_bringup-0.0.0-py3.14.egg-info\n'}
+[2.884552] (robot_bringup) StdoutLine: {'line': b'running install_scripts\n'}
+[2.911799] (-) TimerEvent: {}
+[2.986438] (fleet_msgs) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.14.4") found components: Interpreter\n'}
+[3.012018] (-) TimerEvent: {}
+[3.055394] (robot_bringup) StdoutLine: {'line': b"writing list of installed files to '/home/aditi/amr_ws/build/robot_bringup/install.log'\n"}
+[3.112763] (robot_bringup) CommandEnded: {'returncode': 0}
+[3.113631] (-) TimerEvent: {}
+[3.135746] (robot_bringup) JobEnded: {'identifier': 'robot_bringup', 'rc': 0}
+[3.213955] (-) TimerEvent: {}
+[3.314538] (-) TimerEvent: {}
+[3.415030] (-) TimerEvent: {}
+[3.515515] (-) TimerEvent: {}
+[3.616127] (-) TimerEvent: {}
+[3.716765] (-) TimerEvent: {}
+[3.817435] (-) TimerEvent: {}
+[3.918119] (-) TimerEvent: {}
+[4.018769] (-) TimerEvent: {}
+[4.119403] (-) TimerEvent: {}
+[4.220143] (-) TimerEvent: {}
+[4.320747] (-) TimerEvent: {}
+[4.421479] (-) TimerEvent: {}
+[4.522096] (-) TimerEvent: {}
+[4.622738] (-) TimerEvent: {}
+[4.723397] (-) TimerEvent: {}
+[4.824058] (-) TimerEvent: {}
+[4.869364] (fleet_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[4.924380] (-) TimerEvent: {}
+[5.025081] (-) TimerEvent: {}
+[5.125821] (-) TimerEvent: {}
+[5.226487] (-) TimerEvent: {}
+[5.327350] (-) TimerEvent: {}
+[5.428016] (-) TimerEvent: {}
+[5.528705] (-) TimerEvent: {}
+[5.629449] (-) TimerEvent: {}
+[5.730116] (-) TimerEvent: {}
+[5.830793] (-) TimerEvent: {}
+[5.931323] (-) TimerEvent: {}
+[6.011446] (fleet_msgs) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[6.031665] (-) TimerEvent: {}
+[6.132378] (-) TimerEvent: {}
+[6.233206] (-) TimerEvent: {}
+[6.333990] (-) TimerEvent: {}
+[6.434584] (-) TimerEvent: {}
+[6.535324] (-) TimerEvent: {}
+[6.635943] (-) TimerEvent: {}
+[6.736853] (-) TimerEvent: {}
+[6.852305] (-) TimerEvent: {}
+[6.952792] (-) TimerEvent: {}
+[6.965665] (fleet_msgs) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.14.4") found components: Interpreter Development NumPy Development.Module Development.Embed\n'}
+[7.053173] (-) TimerEvent: {}
+[7.154322] (-) TimerEvent: {}
+[7.159508] (fleet_msgs) StdoutLine: {'line': b'-- Found Python3: /usr/bin/python3 (found version "3.14.4") found components: Interpreter\n'}
+[7.227755] (fleet_msgs) StdoutLine: {'line': b'-- Configuring done (7.2s)\n'}
+[7.254656] (-) TimerEvent: {}
+[7.355445] (-) TimerEvent: {}
+[7.456435] (-) TimerEvent: {}
+[7.473679] (fleet_msgs) StdoutLine: {'line': b'-- Generating done (0.2s)\n'}
+[7.547540] (fleet_msgs) StdoutLine: {'line': b'-- Build files have been written to: /home/aditi/amr_ws/build/fleet_msgs\n'}
+[7.556669] (-) TimerEvent: {}
+[7.574506] (fleet_msgs) CommandEnded: {'returncode': 0}
+[7.579587] (fleet_msgs) JobProgress: {'identifier': 'fleet_msgs', 'progress': 'build'}
+[7.579836] (fleet_msgs) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/aditi/amr_ws/build/fleet_msgs', '--', '-j8', '-l8'], 'cwd': '/home/aditi/amr_ws/build/fleet_msgs', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/fleet_msgs', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[7.657129] (-) TimerEvent: {}
+[7.757329] (fleet_msgs) StdoutLine: {'line': b'[  2%] \x1b[1m\x1b[34mGenerating type hashes for ROS interfaces\x1b[0m\n'}
+[7.758019] (-) TimerEvent: {}
+[7.758455] (fleet_msgs) StdoutLine: {'line': b'[  2%] \x1b[1m\x1b[34mGenerating Rust code for ROS interfaces\x1b[0m\n'}
+[7.858267] (-) TimerEvent: {}
+[7.959008] (-) TimerEvent: {}
+[8.059649] (-) TimerEvent: {}
+[8.160180] (-) TimerEvent: {}
+[8.260618] (-) TimerEvent: {}
+[8.361289] (-) TimerEvent: {}
+[8.408538] (fleet_msgs) StdoutLine: {'line': b'[  2%] Built target fleet_msgs__rosidl_generator_type_description\n'}
+[8.434183] (fleet_msgs) StdoutLine: {'line': b'[  3%] \x1b[1m\x1b[34mGenerating C code for ROS interfaces\x1b[0m\n'}
+[8.461548] (-) TimerEvent: {}
+[8.470166] (fleet_msgs) StdoutLine: {'line': b'[  4%] \x1b[1m\x1b[34mGenerating C++ code for ROS interfaces\x1b[0m\n'}
+[8.549949] (fleet_msgs) StdoutLine: {'line': b'[  4%] Built target fleet_msgs__rs\n'}
+[8.561836] (-) TimerEvent: {}
+[8.662533] (-) TimerEvent: {}
+[8.763225] (-) TimerEvent: {}
+[8.863711] (-) TimerEvent: {}
+[8.964217] (-) TimerEvent: {}
+[9.064679] (-) TimerEvent: {}
+[9.165165] (-) TimerEvent: {}
+[9.265790] (-) TimerEvent: {}
+[9.366699] (-) TimerEvent: {}
+[9.467530] (-) TimerEvent: {}
+[9.568142] (-) TimerEvent: {}
+[9.611822] (fleet_msgs) StdoutLine: {'line': b'[  4%] Built target fleet_msgs__cpp\n'}
+[9.668294] (-) TimerEvent: {}
+[9.768949] (-) TimerEvent: {}
+[9.869552] (-) TimerEvent: {}
+[9.918913] (fleet_msgs) StdoutLine: {'line': b'[  5%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/robot_state__type_support.c.o\x1b[0m\n'}
+[9.919531] (fleet_msgs) StdoutLine: {'line': b'[  7%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/robot_intent__type_support.c.o\x1b[0m\n'}
+[9.923072] (fleet_msgs) StdoutLine: {'line': b'[  8%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/robot_state__functions.c.o\x1b[0m\n'}
+[9.923459] (fleet_msgs) StdoutLine: {'line': b'[  9%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/robot_state__description.c.o\x1b[0m\n'}
+[9.924006] (fleet_msgs) StdoutLine: {'line': b'[ 10%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/resource_claim__description.c.o\x1b[0m\n'}
+[9.924515] (fleet_msgs) StdoutLine: {'line': b'[ 11%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/robot_intent__description.c.o\x1b[0m\n'}
+[9.924777] (fleet_msgs) StdoutLine: {'line': b'[ 12%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/robot_intent__functions.c.o\x1b[0m\n'}
+[9.969746] (-) TimerEvent: {}
+[10.031394] (fleet_msgs) StdoutLine: {'line': b'[ 14%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/resource_claim__functions.c.o\x1b[0m\n'}
+[10.042182] (fleet_msgs) StdoutLine: {'line': b'[ 15%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/resource_claim__type_support.c.o\x1b[0m\n'}
+[10.049529] (fleet_msgs) StdoutLine: {'line': b'[ 16%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/task_announcement__description.c.o\x1b[0m\n'}
+[10.053521] (fleet_msgs) StdoutLine: {'line': b'[ 17%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/task_announcement__functions.c.o\x1b[0m\n'}
+[10.067677] (fleet_msgs) StdoutLine: {'line': b'[ 18%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/task_bid__description.c.o\x1b[0m\n'}
+[10.069903] (-) TimerEvent: {}
+[10.084231] (fleet_msgs) StdoutLine: {'line': b'[ 20%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/task_announcement__type_support.c.o\x1b[0m\n'}
+[10.084544] (fleet_msgs) StdoutLine: {'line': b'[ 21%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/task_bid__functions.c.o\x1b[0m\n'}
+[10.085926] (fleet_msgs) StdoutLine: {'line': b'[ 22%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/task_bid__type_support.c.o\x1b[0m\n'}
+[10.114170] (fleet_msgs) StdoutLine: {'line': b'[ 23%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/heartbeat__description.c.o\x1b[0m\n'}
+[10.137988] (fleet_msgs) StdoutLine: {'line': b'[ 24%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/heartbeat__functions.c.o\x1b[0m\n'}
+[10.138490] (fleet_msgs) StdoutLine: {'line': b'[ 25%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_c.dir/rosidl_generator_c/fleet_msgs/msg/detail/heartbeat__type_support.c.o\x1b[0m\n'}
+[10.170046] (-) TimerEvent: {}
+[10.214945] (fleet_msgs) StdoutLine: {'line': b'[ 27%] \x1b[1m\x1b[32mLinking C shared library libfleet_msgs__rosidl_generator_c.so\x1b[0m\n'}
+[10.270299] (-) TimerEvent: {}
+[10.329112] (fleet_msgs) StdoutLine: {'line': b'[ 27%] Built target fleet_msgs__rosidl_generator_c\n'}
+[10.372680] (fleet_msgs) StdoutLine: {'line': b'[ 30%] \x1b[1m\x1b[34mGenerating C type support for eProsima Fast-RTPS\x1b[0m\n'}
+[10.373815] (-) TimerEvent: {}
+[10.375251] (fleet_msgs) StdoutLine: {'line': b'[ 30%] \x1b[1m\x1b[34mGenerating C++ type support dispatch for ROS interfaces\x1b[0m\n'}
+[10.375844] (fleet_msgs) StdoutLine: {'line': b'[ 30%] \x1b[1m\x1b[34mGenerating C introspection for ROS interfaces\x1b[0m\n'}
+[10.377559] (fleet_msgs) StdoutLine: {'line': b'[ 31%] \x1b[1m\x1b[34mGenerating C type support dispatch for ROS interfaces\x1b[0m\n'}
+[10.381133] (fleet_msgs) StdoutLine: {'line': b'[ 32%] \x1b[1m\x1b[34mGenerating C++ type support for eProsima Fast-RTPS\x1b[0m\n'}
+[10.382655] (fleet_msgs) StdoutLine: {'line': b'[ 34%] \x1b[1m\x1b[34mGenerating C++ introspection for ROS interfaces\x1b[0m\n'}
+[10.474013] (-) TimerEvent: {}
+[10.576263] (-) TimerEvent: {}
+[10.676785] (-) TimerEvent: {}
+[10.777286] (-) TimerEvent: {}
+[10.877839] (-) TimerEvent: {}
+[10.978386] (-) TimerEvent: {}
+[11.078906] (-) TimerEvent: {}
+[11.179391] (-) TimerEvent: {}
+[11.279883] (-) TimerEvent: {}
+[11.324035] (fleet_msgs) StdoutLine: {'line': b'[ 35%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/fleet_msgs/msg/robot_intent__type_support.cpp.o\x1b[0m\n'}
+[11.324377] (fleet_msgs) StdoutLine: {'line': b'[ 36%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/fleet_msgs/msg/robot_state__type_support.cpp.o\x1b[0m\n'}
+[11.325383] (fleet_msgs) StdoutLine: {'line': b'[ 37%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/fleet_msgs/msg/resource_claim__type_support.cpp.o\x1b[0m\n'}
+[11.355720] (fleet_msgs) StdoutLine: {'line': b'[ 38%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/fleet_msgs/msg/robot_state__type_support.cpp.o\x1b[0m\n'}
+[11.380005] (-) TimerEvent: {}
+[11.463083] (fleet_msgs) StdoutLine: {'line': b'[ 40%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/fleet_msgs/msg/robot_intent__type_support.cpp.o\x1b[0m\n'}
+[11.480145] (-) TimerEvent: {}
+[11.571005] (fleet_msgs) StdoutLine: {'line': b'[ 41%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/fleet_msgs/msg/resource_claim__type_support.cpp.o\x1b[0m\n'}
+[11.584236] (-) TimerEvent: {}
+[11.676328] (fleet_msgs) StdoutLine: {'line': b'[ 42%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/fleet_msgs/msg/task_announcement__type_support.cpp.o\x1b[0m\n'}
+[11.684355] (-) TimerEvent: {}
+[11.723809] (fleet_msgs) StdoutLine: {'line': b'[ 43%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/fleet_msgs/msg/detail/robot_state__type_support.cpp.o\x1b[0m\n'}
+[11.757194] (fleet_msgs) StdoutLine: {'line': b'[ 44%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/fleet_msgs/msg/detail/robot_state__type_support.c.o\x1b[0m\n'}
+[11.771399] (fleet_msgs) StdoutLine: {'line': b'[ 45%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/fleet_msgs/msg/task_bid__type_support.cpp.o\x1b[0m\n'}
+[11.784480] (-) TimerEvent: {}
+[11.853035] (fleet_msgs) StdoutLine: {'line': b'[ 47%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/fleet_msgs/msg/detail/robot_intent__type_support.c.o\x1b[0m\n'}
+[11.872302] (fleet_msgs) StdoutLine: {'line': b'[ 48%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_c.dir/rosidl_typesupport_c/fleet_msgs/msg/heartbeat__type_support.cpp.o\x1b[0m\n'}
+[11.884611] (-) TimerEvent: {}
+[11.940315] (fleet_msgs) StdoutLine: {'line': b'[ 49%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/fleet_msgs/msg/detail/resource_claim__type_support.c.o\x1b[0m\n'}
+[11.967671] (fleet_msgs) StdoutLine: {'line': b'[ 50%] \x1b[1m\x1b[32mLinking CXX shared library libfleet_msgs__rosidl_typesupport_c.so\x1b[0m\n'}
+[11.984740] (-) TimerEvent: {}
+[12.025573] (fleet_msgs) StdoutLine: {'line': b'[ 51%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/fleet_msgs/msg/detail/task_announcement__type_support.c.o\x1b[0m\n'}
+[12.084888] (-) TimerEvent: {}
+[12.122594] (fleet_msgs) StdoutLine: {'line': b'[ 52%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/fleet_msgs/msg/detail/dds_fastrtps/robot_state__type_support.cpp.o\x1b[0m\n'}
+[12.131110] (fleet_msgs) StdoutLine: {'line': b'[ 54%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/fleet_msgs/msg/detail/task_bid__type_support.c.o\x1b[0m\n'}
+[12.152338] (fleet_msgs) StdoutLine: {'line': b'[ 54%] Built target fleet_msgs__rosidl_typesupport_c\n'}
+[12.185077] (-) TimerEvent: {}
+[12.227577] (fleet_msgs) StdoutLine: {'line': b'[ 55%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/fleet_msgs/msg/detail/heartbeat__type_support.c.o\x1b[0m\n'}
+[12.288307] (-) TimerEvent: {}
+[12.320481] (fleet_msgs) StdoutLine: {'line': b'[ 56%] \x1b[1m\x1b[32mLinking C shared library libfleet_msgs__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[12.325543] (fleet_msgs) StdoutLine: {'line': b'[ 57%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/fleet_msgs/msg/detail/robot_state__type_support_c.cpp.o\x1b[0m\n'}
+[12.388649] (-) TimerEvent: {}
+[12.456754] (fleet_msgs) StdoutLine: {'line': b'[ 57%] Built target fleet_msgs__rosidl_typesupport_introspection_c\n'}
+[12.488791] (-) TimerEvent: {}
+[12.589386] (-) TimerEvent: {}
+[12.690048] (-) TimerEvent: {}
+[12.790948] (-) TimerEvent: {}
+[12.810854] (fleet_msgs) StdoutLine: {'line': b'[ 58%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/fleet_msgs/msg/detail/robot_intent__type_support_c.cpp.o\x1b[0m\n'}
+[12.845673] (fleet_msgs) StdoutLine: {'line': b'[ 60%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/fleet_msgs/msg/task_announcement__type_support.cpp.o\x1b[0m\n'}
+[12.857685] (fleet_msgs) StdoutLine: {'line': b'[ 61%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/fleet_msgs/msg/detail/resource_claim__type_support_c.cpp.o\x1b[0m\n'}
+[12.891246] (-) TimerEvent: {}
+[12.991799] (-) TimerEvent: {}
+[13.092684] (-) TimerEvent: {}
+[13.176733] (fleet_msgs) StdoutLine: {'line': b'[ 62%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/fleet_msgs/msg/detail/robot_intent__type_support.cpp.o\x1b[0m\n'}
+[13.196297] (-) TimerEvent: {}
+[13.297003] (-) TimerEvent: {}
+[13.397514] (-) TimerEvent: {}
+[13.476488] (fleet_msgs) StdoutLine: {'line': b'[ 63%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/fleet_msgs/msg/detail/dds_fastrtps/robot_intent__type_support.cpp.o\x1b[0m\n'}
+[13.497700] (-) TimerEvent: {}
+[13.598257] (-) TimerEvent: {}
+[13.699066] (-) TimerEvent: {}
+[13.799970] (-) TimerEvent: {}
+[13.903399] (-) TimerEvent: {}
+[14.003901] (-) TimerEvent: {}
+[14.104800] (-) TimerEvent: {}
+[14.140012] (fleet_msgs) StdoutLine: {'line': b'[ 64%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/fleet_msgs/msg/detail/task_announcement__type_support_c.cpp.o\x1b[0m\n'}
+[14.162194] (fleet_msgs) StdoutLine: {'line': b'[ 65%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/fleet_msgs/msg/detail/task_bid__type_support_c.cpp.o\x1b[0m\n'}
+[14.165367] (fleet_msgs) StdoutLine: {'line': b'[ 67%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/fleet_msgs/msg/task_bid__type_support.cpp.o\x1b[0m\n'}
+[14.208253] (-) TimerEvent: {}
+[14.308698] (-) TimerEvent: {}
+[14.409228] (-) TimerEvent: {}
+[14.509708] (-) TimerEvent: {}
+[14.610476] (-) TimerEvent: {}
+[14.652390] (fleet_msgs) StdoutLine: {'line': b'[ 68%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/fleet_msgs/msg/heartbeat__type_support.cpp.o\x1b[0m\n'}
+[14.712243] (fleet_msgs) StdoutLine: {'line': b'[ 69%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/fleet_msgs/msg/detail/task_announcement__type_support.cpp.o\x1b[0m\n'}
+[14.712644] (-) TimerEvent: {}
+[14.712854] (fleet_msgs) StdoutLine: {'line': b'[ 70%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/fleet_msgs/msg/detail/resource_claim__type_support.cpp.o\x1b[0m\n'}
+[14.713064] (fleet_msgs) StdoutLine: {'line': b'[ 71%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/fleet_msgs/msg/detail/heartbeat__type_support_c.cpp.o\x1b[0m\n'}
+[14.812797] (-) TimerEvent: {}
+[14.913258] (-) TimerEvent: {}
+[15.013700] (-) TimerEvent: {}
+[15.116606] (-) TimerEvent: {}
+[15.217068] (-) TimerEvent: {}
+[15.317600] (-) TimerEvent: {}
+[15.420258] (-) TimerEvent: {}
+[15.504186] (fleet_msgs) StdoutLine: {'line': b'[ 74%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/fleet_msgs/msg/detail/dds_fastrtps/resource_claim__type_support.cpp.o\x1b[0m\n'}
+[15.504592] (fleet_msgs) StdoutLine: {'line': b'[ 74%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/fleet_msgs/msg/detail/task_bid__type_support.cpp.o\x1b[0m\n'}
+[15.520396] (-) TimerEvent: {}
+[15.620867] (-) TimerEvent: {}
+[15.724618] (-) TimerEvent: {}
+[15.825084] (-) TimerEvent: {}
+[15.925534] (-) TimerEvent: {}
+[16.053355] (-) TimerEvent: {}
+[16.057174] (fleet_msgs) StdoutLine: {'line': b'[ 75%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/fleet_msgs/msg/detail/dds_fastrtps/task_announcement__type_support.cpp.o\x1b[0m\n'}
+[16.153583] (-) TimerEvent: {}
+[16.226443] (fleet_msgs) StdoutLine: {'line': b'[ 76%] \x1b[1m\x1b[32mLinking CXX shared library libfleet_msgs__rosidl_typesupport_cpp.so\x1b[0m\n'}
+[16.240604] (fleet_msgs) StdoutLine: {'line': b'[ 78%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/fleet_msgs/msg/detail/heartbeat__type_support.cpp.o\x1b[0m\n'}
+[16.241054] (fleet_msgs) StdoutLine: {'line': b'[ 78%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/fleet_msgs/msg/detail/dds_fastrtps/task_bid__type_support.cpp.o\x1b[0m\n'}
+[16.253720] (-) TimerEvent: {}
+[16.354229] (-) TimerEvent: {}
+[16.405775] (fleet_msgs) StdoutLine: {'line': b'[ 78%] Built target fleet_msgs__rosidl_typesupport_cpp\n'}
+[16.454421] (-) TimerEvent: {}
+[16.554995] (-) TimerEvent: {}
+[16.622985] (fleet_msgs) StdoutLine: {'line': b'[ 80%] \x1b[1m\x1b[32mLinking CXX shared library libfleet_msgs__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[16.655260] (-) TimerEvent: {}
+[16.756313] (-) TimerEvent: {}
+[16.826437] (fleet_msgs) StdoutLine: {'line': b'[ 80%] Built target fleet_msgs__rosidl_typesupport_fastrtps_c\n'}
+[16.856473] (-) TimerEvent: {}
+[16.956914] (-) TimerEvent: {}
+[17.057578] (-) TimerEvent: {}
+[17.158113] (-) TimerEvent: {}
+[17.258684] (-) TimerEvent: {}
+[17.271146] (fleet_msgs) StdoutLine: {'line': b'[ 81%] \x1b[32mBuilding CXX object CMakeFiles/fleet_msgs__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/fleet_msgs/msg/detail/dds_fastrtps/heartbeat__type_support.cpp.o\x1b[0m\n'}
+[17.358892] (-) TimerEvent: {}
+[17.432729] (fleet_msgs) StdoutLine: {'line': b'[ 82%] \x1b[1m\x1b[32mLinking CXX shared library libfleet_msgs__rosidl_typesupport_introspection_cpp.so\x1b[0m\n'}
+[17.459078] (-) TimerEvent: {}
+[17.559587] (-) TimerEvent: {}
+[17.622025] (fleet_msgs) StdoutLine: {'line': b'[ 82%] Built target fleet_msgs__rosidl_typesupport_introspection_cpp\n'}
+[17.659782] (-) TimerEvent: {}
+[17.760397] (-) TimerEvent: {}
+[17.860887] (-) TimerEvent: {}
+[17.961450] (-) TimerEvent: {}
+[18.062008] (-) TimerEvent: {}
+[18.162534] (-) TimerEvent: {}
+[18.263389] (-) TimerEvent: {}
+[18.364260] (-) TimerEvent: {}
+[18.464900] (-) TimerEvent: {}
+[18.565428] (-) TimerEvent: {}
+[18.614756] (fleet_msgs) StdoutLine: {'line': b'[ 83%] \x1b[1m\x1b[32mLinking CXX shared library libfleet_msgs__rosidl_typesupport_fastrtps_cpp.so\x1b[0m\n'}
+[18.665660] (-) TimerEvent: {}
+[18.766449] (-) TimerEvent: {}
+[18.862659] (fleet_msgs) StdoutLine: {'line': b'[ 83%] Built target fleet_msgs__rosidl_typesupport_fastrtps_cpp\n'}
+[18.866753] (-) TimerEvent: {}
+[18.924057] (fleet_msgs) StdoutLine: {'line': b'[ 83%] Built target fleet_msgs\n'}
+[18.967094] (-) TimerEvent: {}
+[18.984978] (fleet_msgs) StdoutLine: {'line': b'[ 84%] \x1b[1m\x1b[34mGenerating Python code for ROS interfaces\x1b[0m\n'}
+[19.067518] (-) TimerEvent: {}
+[19.168411] (-) TimerEvent: {}
+[19.269304] (-) TimerEvent: {}
+[19.370125] (-) TimerEvent: {}
+[19.470723] (-) TimerEvent: {}
+[19.571289] (-) TimerEvent: {}
+[19.671979] (-) TimerEvent: {}
+[19.772464] (-) TimerEvent: {}
+[19.873016] (-) TimerEvent: {}
+[19.973656] (-) TimerEvent: {}
+[20.074197] (-) TimerEvent: {}
+[20.174888] (-) TimerEvent: {}
+[20.275676] (-) TimerEvent: {}
+[20.376700] (-) TimerEvent: {}
+[20.477388] (-) TimerEvent: {}
+[20.577911] (-) TimerEvent: {}
+[20.678360] (-) TimerEvent: {}
+[20.778788] (-) TimerEvent: {}
+[20.879258] (-) TimerEvent: {}
+[20.979804] (-) TimerEvent: {}
+[21.057740] (fleet_msgs) StdoutLine: {'line': b'[ 84%] Built target fleet_msgs__py\n'}
+[21.079982] (-) TimerEvent: {}
+[21.092479] (fleet_msgs) StdoutLine: {'line': b'[ 87%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_py.dir/rosidl_generator_py/fleet_msgs/msg/_robot_intent_s.c.o\x1b[0m\n'}
+[21.092850] (fleet_msgs) StdoutLine: {'line': b'[ 87%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_py.dir/rosidl_generator_py/fleet_msgs/msg/_robot_state_s.c.o\x1b[0m\n'}
+[21.093380] (fleet_msgs) StdoutLine: {'line': b'[ 88%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_py.dir/rosidl_generator_py/fleet_msgs/msg/_resource_claim_s.c.o\x1b[0m\n'}
+[21.093737] (fleet_msgs) StdoutLine: {'line': b'[ 89%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_py.dir/rosidl_generator_py/fleet_msgs/msg/_heartbeat_s.c.o\x1b[0m\n'}
+[21.094001] (fleet_msgs) StdoutLine: {'line': b'[ 90%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_py.dir/rosidl_generator_py/fleet_msgs/msg/_task_bid_s.c.o\x1b[0m\n'}
+[21.094267] (fleet_msgs) StdoutLine: {'line': b'[ 91%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs__rosidl_generator_py.dir/rosidl_generator_py/fleet_msgs/msg/_task_announcement_s.c.o\x1b[0m\n'}
+[21.112486] (fleet_msgs) StdoutLine: {'line': b'[ 91%] Built target ament_cmake_python_sync_fleet_msgs\n'}
+[21.180187] (-) TimerEvent: {}
+[21.280721] (-) TimerEvent: {}
+[21.381542] (-) TimerEvent: {}
+[21.434240] (fleet_msgs) StdoutLine: {'line': b'[ 92%] \x1b[1m\x1b[32mLinking C shared library libfleet_msgs__rosidl_generator_py.so\x1b[0m\n'}
+[21.481699] (-) TimerEvent: {}
+[21.535641] (fleet_msgs) StdoutLine: {'line': b'[ 92%] Built target fleet_msgs__rosidl_generator_py\n'}
+[21.566753] (fleet_msgs) StdoutLine: {'line': b'[ 95%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs_s__rosidl_typesupport_c.dir/rosidl_generator_py/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_c.c.o\x1b[0m\n'}
+[21.567270] (fleet_msgs) StdoutLine: {'line': b'[ 95%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs_s__rosidl_typesupport_introspection_c.dir/rosidl_generator_py/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_introspection_c.c.o\x1b[0m\n'}
+[21.567524] (fleet_msgs) StdoutLine: {'line': b'[ 96%] \x1b[32mBuilding C object CMakeFiles/fleet_msgs_s__rosidl_typesupport_fastrtps_c.dir/rosidl_generator_py/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_fastrtps_c.c.o\x1b[0m\n'}
+[21.581875] (-) TimerEvent: {}
+[21.659390] (fleet_msgs) StdoutLine: {'line': b'running egg_info\n'}
+[21.682084] (-) TimerEvent: {}
+[21.715475] (fleet_msgs) StdoutLine: {'line': b'creating fleet_msgs.egg-info\n'}
+[21.716888] (fleet_msgs) StdoutLine: {'line': b'writing fleet_msgs.egg-info/PKG-INFO\n'}
+[21.717762] (fleet_msgs) StdoutLine: {'line': b'writing dependency_links to fleet_msgs.egg-info/dependency_links.txt\n'}
+[21.718675] (fleet_msgs) StdoutLine: {'line': b'writing top-level names to fleet_msgs.egg-info/top_level.txt\n'}
+[21.719343] (fleet_msgs) StdoutLine: {'line': b"writing manifest file 'fleet_msgs.egg-info/SOURCES.txt'\n"}
+[21.773877] (fleet_msgs) StdoutLine: {'line': b'[ 97%] \x1b[1m\x1b[32mLinking C shared module rosidl_generator_py/fleet_msgs/fleet_msgs_s__rosidl_typesupport_introspection_c.so\x1b[0m\n'}
+[21.782249] (-) TimerEvent: {}
+[21.803476] (fleet_msgs) StdoutLine: {'line': b'[ 98%] \x1b[1m\x1b[32mLinking C shared module rosidl_generator_py/fleet_msgs/fleet_msgs_s__rosidl_typesupport_c.so\x1b[0m\n'}
+[21.821179] (fleet_msgs) StdoutLine: {'line': b'[100%] \x1b[1m\x1b[32mLinking C shared module rosidl_generator_py/fleet_msgs/fleet_msgs_s__rosidl_typesupport_fastrtps_c.so\x1b[0m\n'}
+[21.847788] (fleet_msgs) StdoutLine: {'line': b"reading manifest file 'fleet_msgs.egg-info/SOURCES.txt'\n"}
+[21.849713] (fleet_msgs) StdoutLine: {'line': b"writing manifest file 'fleet_msgs.egg-info/SOURCES.txt'\n"}
+[21.871363] (fleet_msgs) StdoutLine: {'line': b'[100%] Built target fleet_msgs_s__rosidl_typesupport_introspection_c\n'}
+[21.882396] (-) TimerEvent: {}
+[21.898721] (fleet_msgs) StdoutLine: {'line': b'[100%] Built target fleet_msgs_s__rosidl_typesupport_c\n'}
+[21.920826] (fleet_msgs) StdoutLine: {'line': b'[100%] Built target ament_cmake_python_build_fleet_msgs_egg\n'}
+[21.924370] (fleet_msgs) StdoutLine: {'line': b'[100%] Built target fleet_msgs_s__rosidl_typesupport_fastrtps_c\n'}
+[21.947731] (fleet_msgs) CommandEnded: {'returncode': 0}
+[21.949732] (fleet_msgs) JobProgress: {'identifier': 'fleet_msgs', 'progress': 'install'}
+[21.965652] (fleet_msgs) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/aditi/amr_ws/build/fleet_msgs'], 'cwd': '/home/aditi/amr_ws/build/fleet_msgs', 'env': OrderedDict({'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/fleet_msgs', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor:/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/opt/ros/lyrical', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}), 'shell': False}
+[21.981083] (fleet_msgs) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[21.982600] (-) TimerEvent: {}
+[21.983121] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/rosidl_interfaces/fleet_msgs\n'}
+[21.984022] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotState.json\n'}
+[21.984582] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotIntent.json\n'}
+[21.985115] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/ResourceClaim.json\n'}
+[21.985647] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskAnnouncement.json\n'}
+[21.986034] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskBid.json\n'}
+[21.986308] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/Heartbeat.json\n'}
+[21.986564] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs\n'}
+[21.987195] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg\n'}
+[21.987599] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_generator_c__visibility_control.h\n'}
+[21.988135] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_announcement.h\n'}
+[21.988913] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_bid.h\n'}
+[21.989256] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/resource_claim.h\n'}
+[21.989865] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_intent.h\n'}
+[21.990150] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_state.h\n'}
+[21.990333] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/heartbeat.h\n'}
+[21.990627] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail\n'}
+[21.991115] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__functions.h\n'}
+[21.991686] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__functions.c\n'}
+[21.992145] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__struct.h\n'}
+[21.992718] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.c\n'}
+[21.993177] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__functions.c\n'}
+[21.993740] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__description.c\n'}
+[21.994292] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.c\n'}
+[21.994763] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__functions.h\n'}
+[21.995222] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__struct.h\n'}
+[21.995840] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__struct.h\n'}
+[21.996384] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.h\n'}
+[21.996629] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.c\n'}
+[21.997115] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.h\n'}
+[21.997816] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__description.c\n'}
+[21.998576] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.c\n'}
+[21.999196] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.c\n'}
+[21.999548] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.h\n'}
+[22.000006] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__description.c\n'}
+[22.000660] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__description.c\n'}
+[22.001356] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.h\n'}
+[22.001670] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__functions.h\n'}
+[22.002175] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__description.c\n'}
+[22.002469] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__struct.h\n'}
+[22.002806] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__description.c\n'}
+[22.003261] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__functions.c\n'}
+[22.003927] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.c\n'}
+[22.004490] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__functions.c\n'}
+[22.004943] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.h\n'}
+[22.005675] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__functions.h\n'}
+[22.006272] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.h\n'}
+[22.006807] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__functions.c\n'}
+[22.007406] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__functions.h\n'}
+[22.007708] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__functions.c\n'}
+[22.007903] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__struct.h\n'}
+[22.008029] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__functions.h\n'}
+[22.008136] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__struct.h\n'}
+[22.008730] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/library_path.sh\n'}
+[22.009052] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/library_path.dsv\n'}
+[22.009674] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_generator_c.so\n'}
+[22.009813] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_generator_c.so" to ""\n'}
+[22.010215] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs\n'}
+[22.010606] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg\n'}
+[22.010998] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h\n'}
+[22.011651] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail\n'}
+[22.011797] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_fastrtps_c.h\n'}
+[22.012055] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_fastrtps_c.h\n'}
+[22.012425] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_fastrtps_c.h\n'}
+[22.012549] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_fastrtps_c.h\n'}
+[22.012793] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_fastrtps_c.h\n'}
+[22.013111] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_fastrtps_c.h\n'}
+[22.013449] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_fastrtps_c.so\n'}
+[22.013807] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_fastrtps_c.so" to ""\n'}
+[22.014081] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs\n'}
+[22.014517] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg\n'}
+[22.015013] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h\n'}
+[22.015292] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail\n'}
+[22.015650] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_introspection_c.h\n'}
+[22.016022] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.c\n'}
+[22.016388] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.c\n'}
+[22.016658] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_introspection_c.h\n'}
+[22.016981] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_introspection_c.h\n'}
+[22.017334] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_introspection_c.h\n'}
+[22.017571] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_introspection_c.h\n'}
+[22.018140] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.c\n'}
+[22.018458] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.c\n'}
+[22.018924] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.c\n'}
+[22.019376] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_introspection_c.h\n'}
+[22.019698] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.c\n'}
+[22.020110] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_introspection_c.so\n'}
+[22.020477] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_introspection_c.so" to ""\n'}
+[22.021082] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_c.so\n'}
+[22.021434] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_c.so" to ""\n'}
+[22.022000] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs\n'}
+[22.022514] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg\n'}
+[22.022778] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_intent.hpp\n'}
+[22.023350] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_bid.hpp\n'}
+[22.023653] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_generator_cpp__visibility_control.hpp\n'}
+[22.024375] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_state.hpp\n'}
+[22.025335] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/resource_claim.hpp\n'}
+[22.025790] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_announcement.hpp\n'}
+[22.026198] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/heartbeat.hpp\n'}
+[22.026408] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail\n'}
+[22.026960] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__struct.hpp\n'}
+[22.027521] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.hpp\n'}
+[22.027986] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__traits.hpp\n'}
+[22.028223] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__builder.hpp\n'}
+[22.028414] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.hpp\n'}
+[22.028590] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__traits.hpp\n'}
+[22.028857] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__struct.hpp\n'}
+[22.029376] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__struct.hpp\n'}
+[22.029688] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__builder.hpp\n'}
+[22.030133] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.hpp\n'}
+[22.030793] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__builder.hpp\n'}
+[22.031306] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__struct.hpp\n'}
+[22.031627] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__struct.hpp\n'}
+[22.031942] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__builder.hpp\n'}
+[22.032493] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__traits.hpp\n'}
+[22.032634] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__builder.hpp\n'}
+[22.032826] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.hpp\n'}
+[22.032955] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__struct.hpp\n'}
+[22.033413] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.hpp\n'}
+[22.033598] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.hpp\n'}
+[22.033916] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__traits.hpp\n'}
+[22.034420] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__traits.hpp\n'}
+[22.034576] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__builder.hpp\n'}
+[22.034700] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__traits.hpp\n'}
+[22.034902] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs\n'}
+[22.035027] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg\n'}
+[22.035199] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h\n'}
+[22.035456] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail\n'}
+[22.035647] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/dds_fastrtps\n'}
+[22.035794] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[22.036293] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[22.036537] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[22.036657] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[22.037041] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[22.037278] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_fastrtps_cpp.hpp\n'}
+[22.037688] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_fastrtps_cpp.so\n'}
+[22.037946] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_fastrtps_cpp.so" to ""\n'}
+[22.038213] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs\n'}
+[22.038867] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg\n'}
+[22.039365] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail\n'}
+[22.039644] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.cpp\n'}
+[22.040038] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.cpp\n'}
+[22.040572] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.cpp\n'}
+[22.040746] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_introspection_cpp.hpp\n'}
+[22.040984] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_introspection_cpp.hpp\n'}
+[22.041320] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.cpp\n'}
+[22.041550] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_introspection_cpp.hpp\n'}
+[22.041742] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.cpp\n'}
+[22.041950] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_introspection_cpp.hpp\n'}
+[22.042399] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_introspection_cpp.hpp\n'}
+[22.042719] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_introspection_cpp.hpp\n'}
+[22.043160] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.cpp\n'}
+[22.043450] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_introspection_cpp.so\n'}
+[22.043934] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_introspection_cpp.so" to ""\n'}
+[22.044496] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_cpp.so\n'}
+[22.044819] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_cpp.so" to ""\n'}
+[22.045419] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/pythonpath.sh\n'}
+[22.045719] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/pythonpath.dsv\n'}
+[22.046116] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_fastrtps_c.so\n'}
+[22.046413] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_fastrtps_c.so" to ""\n'}
+[22.046796] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_introspection_c.so\n'}
+[22.046937] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_introspection_c.so" to ""\n'}
+[22.047110] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_c.so\n'}
+[22.047225] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_c.so" to ""\n'}
+[22.047581] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_generator_py.so\n'}
+[22.048070] (fleet_msgs) StdoutLine: {'line': b'-- Set non-toolchain portion of runtime path of "/home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_generator_py.so" to ""\n'}
+[22.048436] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust\n'}
+[22.048565] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src\n'}
+[22.048936] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/lib.rs\n'}
+[22.049445] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/msg.rs\n'}
+[22.049895] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/msg\n'}
+[22.050065] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/msg/rmw.rs\n'}
+[22.050181] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/Cargo.toml\n'}
+[22.050509] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/build.rs\n'}
+[22.050986] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotState.idl\n'}
+[22.051488] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotIntent.idl\n'}
+[22.051711] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/ResourceClaim.idl\n'}
+[22.052029] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskAnnouncement.idl\n'}
+[22.052638] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskBid.idl\n'}
+[22.052840] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/Heartbeat.idl\n'}
+[22.053254] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotState.msg\n'}
+[22.053799] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotIntent.msg\n'}
+[22.054437] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/ResourceClaim.msg\n'}
+[22.055059] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskAnnouncement.msg\n'}
+[22.055721] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskBid.msg\n'}
+[22.056204] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/Heartbeat.msg\n'}
+[22.056697] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/package_run_dependencies/fleet_msgs\n'}
+[22.057247] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/parent_prefix_path/fleet_msgs\n'}
+[22.057800] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/ament_prefix_path.sh\n'}
+[22.058191] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/ament_prefix_path.dsv\n'}
+[22.058853] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/path.sh\n'}
+[22.059371] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/path.dsv\n'}
+[22.059785] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.bash\n'}
+[22.060336] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.fish\n'}
+[22.060481] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.sh\n'}
+[22.060727] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.zsh\n'}
+[22.061077] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.dsv\n'}
+[22.061362] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.dsv\n'}
+[22.062006] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/packages/fleet_msgs\n'}
+[22.062342] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_cExport.cmake\n'}
+[22.062802] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_cExport-noconfig.cmake\n'}
+[22.062990] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cExport.cmake\n'}
+[22.063169] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake\n'}
+[22.063340] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cExport.cmake\n'}
+[22.063455] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake\n'}
+[22.063713] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cExport.cmake\n'}
+[22.064043] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cExport-noconfig.cmake\n'}
+[22.064482] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_cppExport.cmake\n'}
+[22.064724] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cppExport.cmake\n'}
+[22.065179] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake\n'}
+[22.065574] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cppExport.cmake\n'}
+[22.066001] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake\n'}
+[22.066139] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cppExport.cmake\n'}
+[22.066549] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cppExport-noconfig.cmake\n'}
+[22.066905] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_pyExport.cmake\n'}
+[22.067156] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_pyExport-noconfig.cmake\n'}
+[22.067754] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info\n'}
+[22.067916] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/top_level.txt\n'}
+[22.068107] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/dependency_links.txt\n'}
+[22.068368] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/PKG-INFO\n'}
+[22.068561] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/SOURCES.txt\n'}
+[22.068694] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs\n'}
+[22.068898] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_introspection_c.so\n'}
+[22.069062] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_c.so\n'}
+[22.069221] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/__init__.py\n'}
+[22.069462] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/py.typed\n'}
+[22.069584] (fleet_msgs) StdoutLine: {'line': b'-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_fastrtps_c.so\n'}
+[22.069687] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_fastrtps_c.c\n'}
+[22.069852] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_introspection_c.c\n'}
+[22.070021] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg\n'}
+[22.070248] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_state_s.c\n'}
+[22.070437] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_bid.py\n'}
+[22.070624] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_state.py\n'}
+[22.070744] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_intent.py\n'}
+[22.070848] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/__init__.py\n'}
+[22.071086] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_heartbeat_s.c\n'}
+[22.071279] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_resource_claim_s.c\n'}
+[22.071390] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_announcement.py\n'}
+[22.071495] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_announcement_s.c\n'}
+[22.071596] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_intent_s.c\n'}
+[22.071698] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_bid_s.c\n'}
+[22.071847] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_resource_claim.py\n'}
+[22.072072] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_heartbeat.py\n'}
+[22.072364] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_c.c\n'}
+[22.082858] (-) TimerEvent: {}
+[22.183494] (-) TimerEvent: {}
+[22.226724] (fleet_msgs) StdoutLine: {'line': b"Listing '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs'...\n"}
+[22.227397] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/__init__.py'...\n"}
+[22.228013] (fleet_msgs) StdoutLine: {'line': b"Listing '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg'...\n"}
+[22.228572] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/__init__.py'...\n"}
+[22.228948] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_heartbeat.py'...\n"}
+[22.229291] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_resource_claim.py'...\n"}
+[22.229556] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_intent.py'...\n"}
+[22.229879] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_state.py'...\n"}
+[22.230073] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_announcement.py'...\n"}
+[22.230274] (fleet_msgs) StdoutLine: {'line': b"Compiling '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_bid.py'...\n"}
+[22.251200] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake-extras.cmake\n'}
+[22.252419] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_include_directories-extras.cmake\n'}
+[22.253601] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_libraries-extras.cmake\n'}
+[22.254887] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_targets-extras.cmake\n'}
+[22.255845] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake\n'}
+[22.256699] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[22.257451] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake\n'}
+[22.258314] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake_aggregate_target-extras.cmake\n'}
+[22.258738] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgsConfig.cmake\n'}
+[22.258988] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgsConfig-version.cmake\n'}
+[22.259184] (fleet_msgs) StdoutLine: {'line': b'-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.xml\n'}
+[22.265502] (fleet_msgs) CommandEnded: {'returncode': 0}
+[22.284057] (-) TimerEvent: {}
+[22.362849] (fleet_msgs) JobEnded: {'identifier': 'fleet_msgs', 'rc': 0}
+[22.368488] (dashboard_bridge) JobStarted: {'identifier': 'dashboard_bridge'}
+[22.384852] (-) TimerEvent: {}
+[22.390804] (fleet_coordination) JobStarted: {'identifier': 'fleet_coordination'}
+[22.422882] (task_allocator) JobStarted: {'identifier': 'task_allocator'}
+[22.485206] (-) TimerEvent: {}
+[22.586071] (-) TimerEvent: {}
+[22.687000] (-) TimerEvent: {}
+[22.787905] (-) TimerEvent: {}
+[22.888908] (-) TimerEvent: {}
+[22.989935] (-) TimerEvent: {}
+[23.090932] (-) TimerEvent: {}
+[23.191773] (-) TimerEvent: {}
+[23.292495] (-) TimerEvent: {}
+[23.392980] (-) TimerEvent: {}
+[23.493507] (-) TimerEvent: {}
+[23.594116] (-) TimerEvent: {}
+[23.694777] (-) TimerEvent: {}
+[23.795613] (-) TimerEvent: {}
+[23.896300] (-) TimerEvent: {}
+[23.996963] (-) TimerEvent: {}
+[24.097669] (-) TimerEvent: {}
+[24.198416] (-) TimerEvent: {}
+[24.299037] (-) TimerEvent: {}
+[24.399578] (-) TimerEvent: {}
+[24.500145] (-) TimerEvent: {}
+[24.600819] (-) TimerEvent: {}
+[24.701345] (-) TimerEvent: {}
+[24.801806] (-) TimerEvent: {}
+[24.902383] (-) TimerEvent: {}
+[25.002879] (-) TimerEvent: {}
+[25.103422] (-) TimerEvent: {}
+[25.203923] (-) TimerEvent: {}
+[25.304445] (-) TimerEvent: {}
+[25.405035] (-) TimerEvent: {}
+[25.505754] (-) TimerEvent: {}
+[25.573586] (dashboard_bridge) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/dashboard_bridge', 'build', '--build-base', '/home/aditi/amr_ws/build/dashboard_bridge/build', 'install', '--record', '/home/aditi/amr_ws/build/dashboard_bridge/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/aditi/amr_ws/src/dashboard_bridge', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/dashboard_bridge', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/build/dashboard_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}, 'shell': False}
+[25.605973] (-) TimerEvent: {}
+[25.619783] (task_allocator) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/task_allocator', 'build', '--build-base', '/home/aditi/amr_ws/build/task_allocator/build', 'install', '--record', '/home/aditi/amr_ws/build/task_allocator/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/aditi/amr_ws/src/task_allocator', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/task_allocator', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/build/task_allocator/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}, 'shell': False}
+[25.652253] (fleet_coordination) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../../build/fleet_coordination', 'build', '--build-base', '/home/aditi/amr_ws/build/fleet_coordination/build', 'install', '--record', '/home/aditi/amr_ws/build/fleet_coordination/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/aditi/amr_ws/src/fleet_coordination', 'env': {'LESSOPEN': '| /usr/bin/lesspipe %s', 'AI_AGENT': 'github_copilot_vscode_agent', 'USER': 'aditi', 'GIT_EDITOR': ':', 'GIT_ASKPASS': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/home/aditi/amr_ws/install/fleet_msgs/lib:/opt/ros/lyrical/opt/gz_math_vendor/lib:/opt/ros/lyrical/opt/gz_utils_vendor/lib:/opt/ros/lyrical/opt/rviz_ogre_vendor/lib:/opt/ros/lyrical/lib/x86_64-linux-gnu:/opt/ros/lyrical/opt/gz_cmake_vendor/lib:/opt/ros/lyrical/lib', 'COPILOT_AGENT': '1', 'HOME': '/home/aditi', 'OLDPWD': '/home/aditi/amr_ws', 'TERM_PROGRAM_VERSION': '1.135.0', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-f20b4c05-ba03-4796-b9fe-a44693847bfc.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/node', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'WSL_DISTRO_NAME': 'Ubuntu', 'WAYLAND_DISPLAY': 'wayland-0', 'COLCON_PREFIX_PATH': '/home/aditi/amr_ws/install', 'ROS_DISTRO': 'lyrical', 'LOGNAME': 'aditi', 'NAME': 'DESKTOP-RPS3BKC', 'WSL_INTEROP': '/run/WSL/463_interop', 'PULSE_SERVER': 'unix:/mnt/wslg/PulseServer', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm-256color', 'HISTCONTROL': 'ignorespace', 'PATH': '/home/aditi/amr_ws/install/task_allocator/bin:/home/aditi/amr_ws/install/fleet_coordination/bin:/home/aditi/amr_ws/install/dashboard_bridge/bin:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/aditi/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/aditi/.vscode-server/bin/08d4889f9ec4a1685d257b9b95de036c8e1ce1e5/bin/remote-cli:/opt/ros/lyrical/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/best/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/best/AppData/Local/Python/bin:/mnt/c/Users/best/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin', 'XDG_RUNTIME_DIR': '/run/user/1000', 'DISPLAY': ':0', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=00:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.avif=01;35:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:*~=00;90:*#=00;90:*.bak=00;90:*.old=00;90:*.orig=00;90:*.part=00;90:*.rej=00;90:*.swp=00;90:*.tmp=00;90:*.dpkg-dist=00;90:*.dpkg-old=00;90:*.ucf-dist=00;90:*.ucf-new=00;90:*.ucf-old=00;90:*.rpmnew=00;90:*.rpmorig=00;90:*.rpmsave=00;90:', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-b665d4f52e.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/aditi/amr_ws/install/task_allocator:/home/aditi/amr_ws/install/robot_bringup:/home/aditi/amr_ws/install/fleet_coordination:/home/aditi/amr_ws/install/dashboard_bridge:/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical', 'DEBIAN_FRONTEND': 'noninteractive', 'SHELL': '/bin/bash', 'LESSCLOSE': '/usr/bin/lesspipe %s %s', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'GIT_PAGER': 'cat', 'PWD': '/home/aditi/amr_ws/build/fleet_coordination', 'GIT_MERGE_AUTOEDIT': 'no', 'COPILOT_DEBUG_NONCE': '25699d9c64f2baf40a09a7ee354c6df4', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/aditi/amr_ws/build/fleet_coordination/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages', 'COLCON': '1', 'WSL2_GUI_APPS_ENABLED': '1', 'HOSTTYPE': 'x86_64', 'CMAKE_PREFIX_PATH': '/home/aditi/amr_ws/install/fleet_msgs:/opt/ros/lyrical/opt/gz_math_vendor:/opt/ros/lyrical/opt/gz_utils_vendor:/opt/ros/lyrical/opt/gz_cmake_vendor', 'WSLENV': 'VSCODE_WSL_EXT_LOCATION/up'}, 'shell': False}
+[25.706152] (-) TimerEvent: {}
+[25.806730] (-) TimerEvent: {}
+[25.907243] (-) TimerEvent: {}
+[26.007807] (-) TimerEvent: {}
+[26.108437] (-) TimerEvent: {}
+[26.126250] (dashboard_bridge) StdoutLine: {'line': b'running egg_info\n'}
+[26.167228] (dashboard_bridge) StdoutLine: {'line': b'creating ../../build/dashboard_bridge/dashboard_bridge.egg-info\n'}
+[26.168112] (dashboard_bridge) StdoutLine: {'line': b'writing ../../build/dashboard_bridge/dashboard_bridge.egg-info/PKG-INFO\n'}
+[26.169848] (dashboard_bridge) StdoutLine: {'line': b'writing dependency_links to ../../build/dashboard_bridge/dashboard_bridge.egg-info/dependency_links.txt\n'}
+[26.170475] (dashboard_bridge) StdoutLine: {'line': b'writing entry points to ../../build/dashboard_bridge/dashboard_bridge.egg-info/entry_points.txt\n'}
+[26.171019] (dashboard_bridge) StdoutLine: {'line': b'writing requirements to ../../build/dashboard_bridge/dashboard_bridge.egg-info/requires.txt\n'}
+[26.171457] (dashboard_bridge) StdoutLine: {'line': b'writing top-level names to ../../build/dashboard_bridge/dashboard_bridge.egg-info/top_level.txt\n'}
+[26.171736] (dashboard_bridge) StdoutLine: {'line': b"writing manifest file '../../build/dashboard_bridge/dashboard_bridge.egg-info/SOURCES.txt'\n"}
+[26.201765] (task_allocator) StdoutLine: {'line': b'running egg_info\n'}
+[26.208642] (-) TimerEvent: {}
+[26.211318] (fleet_coordination) StdoutLine: {'line': b'running egg_info\n'}
+[26.236359] (task_allocator) StdoutLine: {'line': b'creating ../../build/task_allocator/task_allocator.egg-info\n'}
+[26.237510] (task_allocator) StdoutLine: {'line': b'writing ../../build/task_allocator/task_allocator.egg-info/PKG-INFO\n'}
+[26.238878] (task_allocator) StdoutLine: {'line': b'writing dependency_links to ../../build/task_allocator/task_allocator.egg-info/dependency_links.txt\n'}
+[26.239432] (task_allocator) StdoutLine: {'line': b'writing entry points to ../../build/task_allocator/task_allocator.egg-info/entry_points.txt\n'}
+[26.239822] (task_allocator) StdoutLine: {'line': b'writing requirements to ../../build/task_allocator/task_allocator.egg-info/requires.txt\n'}
+[26.240333] (task_allocator) StdoutLine: {'line': b'writing top-level names to ../../build/task_allocator/task_allocator.egg-info/top_level.txt\n'}
+[26.240615] (task_allocator) StdoutLine: {'line': b"writing manifest file '../../build/task_allocator/task_allocator.egg-info/SOURCES.txt'\n"}
+[26.245898] (dashboard_bridge) StdoutLine: {'line': b"reading manifest file '../../build/dashboard_bridge/dashboard_bridge.egg-info/SOURCES.txt'\n"}
+[26.247078] (dashboard_bridge) StdoutLine: {'line': b"writing manifest file '../../build/dashboard_bridge/dashboard_bridge.egg-info/SOURCES.txt'\n"}
+[26.247590] (dashboard_bridge) StdoutLine: {'line': b'running build\n'}
+[26.247880] (dashboard_bridge) StdoutLine: {'line': b'running build_py\n'}
+[26.248295] (dashboard_bridge) StdoutLine: {'line': b'creating /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge\n'}
+[26.248417] (fleet_coordination) StdoutLine: {'line': b'creating ../../build/fleet_coordination/fleet_coordination.egg-info\n'}
+[26.248808] (fleet_coordination) StdoutLine: {'line': b'writing ../../build/fleet_coordination/fleet_coordination.egg-info/PKG-INFO\n'}
+[26.249189] (dashboard_bridge) StdoutLine: {'line': b'copying dashboard_bridge/__init__.py -> /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge\n'}
+[26.249730] (dashboard_bridge) StdoutLine: {'line': b'copying dashboard_bridge/dashboard_bridge_node.py -> /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge\n'}
+[26.250108] (fleet_coordination) StdoutLine: {'line': b'writing dependency_links to ../../build/fleet_coordination/fleet_coordination.egg-info/dependency_links.txt\n'}
+[26.250722] (fleet_coordination) StdoutLine: {'line': b'writing entry points to ../../build/fleet_coordination/fleet_coordination.egg-info/entry_points.txt\n'}
+[26.251267] (dashboard_bridge) StdoutLine: {'line': b'running install\n'}
+[26.251535] (fleet_coordination) StdoutLine: {'line': b'writing requirements to ../../build/fleet_coordination/fleet_coordination.egg-info/requires.txt\n'}
+[26.251790] (fleet_coordination) StdoutLine: {'line': b'writing top-level names to ../../build/fleet_coordination/fleet_coordination.egg-info/top_level.txt\n'}
+[26.252090] (fleet_coordination) StdoutLine: {'line': b"writing manifest file '../../build/fleet_coordination/fleet_coordination.egg-info/SOURCES.txt'\n"}
+[26.262774] (dashboard_bridge) StdoutLine: {'line': b'running install_lib\n'}
+[26.302747] (dashboard_bridge) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge\n'}
+[26.303231] (dashboard_bridge) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge/__init__.py -> /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge\n'}
+[26.303773] (dashboard_bridge) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge/dashboard_bridge_node.py -> /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge\n'}
+[26.304700] (dashboard_bridge) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge/__init__.py to __init__.cpython-314.pyc\n'}
+[26.305432] (dashboard_bridge) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge/dashboard_bridge_node.py to dashboard_bridge_node.cpython-314.pyc\n'}
+[26.306227] (dashboard_bridge) StdoutLine: {'line': b'running install_data\n'}
+[26.306620] (dashboard_bridge) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/dashboard_bridge/share/ament_index/resource_index/packages\n'}
+[26.308016] (dashboard_bridge) StdoutLine: {'line': b'copying resource/dashboard_bridge -> /home/aditi/amr_ws/install/dashboard_bridge/share/ament_index/resource_index/packages\n'}
+[26.308573] (dashboard_bridge) StdoutLine: {'line': b'copying package.xml -> /home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge\n'}
+[26.308985] (-) TimerEvent: {}
+[26.309305] (dashboard_bridge) StdoutLine: {'line': b'running install_egg_info\n'}
+[26.315267] (task_allocator) StdoutLine: {'line': b"reading manifest file '../../build/task_allocator/task_allocator.egg-info/SOURCES.txt'\n"}
+[26.317005] (task_allocator) StdoutLine: {'line': b"writing manifest file '../../build/task_allocator/task_allocator.egg-info/SOURCES.txt'\n"}
+[26.317844] (task_allocator) StdoutLine: {'line': b'running build\n'}
+[26.318324] (task_allocator) StdoutLine: {'line': b'running build_py\n'}
+[26.318599] (task_allocator) StdoutLine: {'line': b'creating /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator\n'}
+[26.320741] (task_allocator) StdoutLine: {'line': b'copying task_allocator/__init__.py -> /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator\n'}
+[26.321333] (task_allocator) StdoutLine: {'line': b'copying task_allocator/task_allocator_node.py -> /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator\n'}
+[26.321944] (task_allocator) StdoutLine: {'line': b'running install\n'}
+[26.334318] (task_allocator) StdoutLine: {'line': b'running install_lib\n'}
+[26.337631] (fleet_coordination) StdoutLine: {'line': b"reading manifest file '../../build/fleet_coordination/fleet_coordination.egg-info/SOURCES.txt'\n"}
+[26.338871] (fleet_coordination) StdoutLine: {'line': b"writing manifest file '../../build/fleet_coordination/fleet_coordination.egg-info/SOURCES.txt'\n"}
+[26.339378] (fleet_coordination) StdoutLine: {'line': b'running build\n'}
+[26.339716] (fleet_coordination) StdoutLine: {'line': b'running build_py\n'}
+[26.339920] (fleet_coordination) StdoutLine: {'line': b'creating /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination\n'}
+[26.340968] (fleet_coordination) StdoutLine: {'line': b'copying fleet_coordination/fleet_agent_node.py -> /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination\n'}
+[26.341512] (fleet_coordination) StdoutLine: {'line': b'copying fleet_coordination/__init__.py -> /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination\n'}
+[26.341902] (fleet_coordination) StdoutLine: {'line': b'running install\n'}
+[26.348969] (fleet_coordination) StdoutLine: {'line': b'running install_lib\n'}
+[26.357065] (dashboard_bridge) StdoutLine: {'line': b'Copying ../../build/dashboard_bridge/dashboard_bridge.egg-info to /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge-0.0.0-py3.14.egg-info\n'}
+[26.359226] (dashboard_bridge) StdoutLine: {'line': b'running install_scripts\n'}
+[26.376712] (task_allocator) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator\n'}
+[26.377689] (task_allocator) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator/__init__.py -> /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator\n'}
+[26.378143] (task_allocator) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator/task_allocator_node.py -> /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator\n'}
+[26.379351] (task_allocator) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator/__init__.py to __init__.cpython-314.pyc\n'}
+[26.380528] (task_allocator) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator/task_allocator_node.py to task_allocator_node.cpython-314.pyc\n'}
+[26.381600] (task_allocator) StdoutLine: {'line': b'running install_data\n'}
+[26.382206] (task_allocator) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/task_allocator/share/ament_index/resource_index/packages\n'}
+[26.382958] (fleet_coordination) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination\n'}
+[26.383591] (fleet_coordination) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination/fleet_agent_node.py -> /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination\n'}
+[26.383884] (fleet_coordination) StdoutLine: {'line': b'copying /home/aditi/amr_ws/build/fleet_coordination/build/lib/fleet_coordination/__init__.py -> /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination\n'}
+[26.384277] (task_allocator) StdoutLine: {'line': b'copying resource/task_allocator -> /home/aditi/amr_ws/install/task_allocator/share/ament_index/resource_index/packages\n'}
+[26.385039] (task_allocator) StdoutLine: {'line': b'copying package.xml -> /home/aditi/amr_ws/install/task_allocator/share/task_allocator\n'}
+[26.385437] (fleet_coordination) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination/fleet_agent_node.py to fleet_agent_node.cpython-314.pyc\n'}
+[26.385559] (task_allocator) StdoutLine: {'line': b'running install_egg_info\n'}
+[26.387264] (fleet_coordination) StdoutLine: {'line': b'byte-compiling /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination/__init__.py to __init__.cpython-314.pyc\n'}
+[26.387643] (fleet_coordination) StdoutLine: {'line': b'running install_data\n'}
+[26.388058] (fleet_coordination) StdoutLine: {'line': b'creating /home/aditi/amr_ws/install/fleet_coordination/share/ament_index/resource_index/packages\n'}
+[26.389481] (fleet_coordination) StdoutLine: {'line': b'copying resource/fleet_coordination -> /home/aditi/amr_ws/install/fleet_coordination/share/ament_index/resource_index/packages\n'}
+[26.389909] (fleet_coordination) StdoutLine: {'line': b'copying package.xml -> /home/aditi/amr_ws/install/fleet_coordination/share/fleet_coordination\n'}
+[26.390286] (fleet_coordination) StdoutLine: {'line': b'running install_egg_info\n'}
+[26.409180] (-) TimerEvent: {}
+[26.423305] (fleet_coordination) StdoutLine: {'line': b'Copying ../../build/fleet_coordination/fleet_coordination.egg-info to /home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages/fleet_coordination-0.0.0-py3.14.egg-info\n'}
+[26.426234] (fleet_coordination) StdoutLine: {'line': b'running install_scripts\n'}
+[26.440436] (task_allocator) StdoutLine: {'line': b'Copying ../../build/task_allocator/task_allocator.egg-info to /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator-0.0.0-py3.14.egg-info\n'}
+[26.442933] (task_allocator) StdoutLine: {'line': b'running install_scripts\n'}
+[26.509393] (-) TimerEvent: {}
+[26.556997] (dashboard_bridge) StdoutLine: {'line': b'Installing dashboard_bridge_node script to /home/aditi/amr_ws/install/dashboard_bridge/bin\n'}
+[26.557895] (dashboard_bridge) StdoutLine: {'line': b"writing list of installed files to '/home/aditi/amr_ws/build/dashboard_bridge/install.log'\n"}
+[26.609578] (-) TimerEvent: {}
+[26.612042] (fleet_coordination) StdoutLine: {'line': b'Installing fleet_agent_node script to /home/aditi/amr_ws/install/fleet_coordination/bin\n'}
+[26.613584] (fleet_coordination) StdoutLine: {'line': b"writing list of installed files to '/home/aditi/amr_ws/build/fleet_coordination/install.log'\n"}
+[26.632275] (dashboard_bridge) CommandEnded: {'returncode': 0}
+[26.645695] (task_allocator) StdoutLine: {'line': b'Installing task_allocator_node script to /home/aditi/amr_ws/install/task_allocator/bin\n'}
+[26.646757] (task_allocator) StdoutLine: {'line': b"writing list of installed files to '/home/aditi/amr_ws/build/task_allocator/install.log'\n"}
+[26.669654] (dashboard_bridge) JobEnded: {'identifier': 'dashboard_bridge', 'rc': 0}
+[26.708286] (fleet_coordination) CommandEnded: {'returncode': 0}
+[26.710068] (-) TimerEvent: {}
+[26.739315] (fleet_coordination) JobEnded: {'identifier': 'fleet_coordination', 'rc': 0}
+[26.742169] (task_allocator) CommandEnded: {'returncode': 0}
+[26.768988] (task_allocator) JobEnded: {'identifier': 'task_allocator', 'rc': 0}
+[26.772434] (-) EventReactorShutdown: {}

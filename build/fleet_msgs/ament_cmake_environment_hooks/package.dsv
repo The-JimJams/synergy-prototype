@@ -1,0 +1,5 @@
+source;share/fleet_msgs/local_setup.bash
+source;share/fleet_msgs/local_setup.dsv
+source;share/fleet_msgs/local_setup.fish
+source;share/fleet_msgs/local_setup.sh
+source;share/fleet_msgs/local_setup.zsh
