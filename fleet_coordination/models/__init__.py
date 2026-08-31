@@ -13,6 +13,11 @@ from fleet_coordination.models.priority_decision import PriorityDecision
 from fleet_coordination.models.reservation_decision import ReservationDecision
 from fleet_coordination.models.task_bid import TaskBid
 from fleet_coordination.models.assignment_decision import AssignmentDecision
+from fleet_coordination.models.health import (
+    PeerHealthStatus,
+    PeerHealthAssessment,
+    FleetHealthReport,
+)
 
 __all__ = [
     "Pose2D",
@@ -29,5 +34,8 @@ __all__ = [
     "ReservationDecision",
     "TaskBid",
     "AssignmentDecision",
+    "PeerHealthStatus",
+    "PeerHealthAssessment",
+    "FleetHealthReport",
 ]
 
