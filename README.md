@@ -71,6 +71,8 @@ algorithms testable without launching Gazebo.
 | `Reservation` | Temporary claim on a shared resource |
 | `Task` | Unit of work to be assigned |
 | `ConflictReport` | Output of conflict detection |
+| `PriorityDecision` | Output of PriorityEngine arbitration |
+| `ReservationDecision` | Output of ReservationManager lifecycle operations |
 
 ## Algorithms (Implementation Status)
 
@@ -80,7 +82,7 @@ algorithms testable without launching Gazebo.
 | WorldModel | ✅ Complete |
 | ConflictDetector | ✅ Complete |
 | PriorityEngine | ✅ Complete |
-| ReservationManager | 🔲 Not started |
+| ReservationManager | ✅ Complete |
 | TaskAllocator | 🔲 Not started |
 | DeadlockDetector | 🔲 Not started |
 | FailureDetector | 🔲 Not started |
@@ -126,6 +128,21 @@ The `PriorityEngine` (`fleet_coordination/algorithm/priority_engine.py`) is the 
 - **Epsilon Tie-Breaking**: Compares composite scores with a tolerance threshold (`score_epsilon = 1e-9`) before applying the deterministic lexicographic `robot_id` tie-breaker.
 - **Decentralized Agreement & Symmetry**: Invariant to conflict report perspective ($\text{resolve}(A, B) \equiv \text{resolve}(B, A)$) guaranteeing fleet-wide coordination consensus without a central server.
 - **Explainable Decisions**: Produces a `PriorityDecision` detailing normalized factor breakdowns, composite scores, winner/loser IDs, and tie-break flags for auditability.
+
+## ReservationManager Subsystem
+
+The `ReservationManager` (`fleet_coordination/algorithm/reservation_manager.py`) is the stateless algorithmic service responsible for validating and executing the local robot's resource reservation lifecycle.
+
+### Core Architectural Characteristics:
+- **Stateless Service**: ReservationManager holds no internal state. All persistent state lives exclusively inside the `WorldModel` passed to each method call.
+- **WorldModel Mutation Scope (INV-5)**: ONLY `WorldModel._reservations` is ever mutated. `_own_state`, `_own_intent`, `_peer_states`, `_peer_intents`, and `_tasks` are never touched.
+- **Local Single-View Mutual Exclusion (INV-1)**: Within a single consistent WorldModel view, ReservationManager never accepts a new reservation that overlaps a known non-expired peer reservation on the same exclusive resource.
+- **Non-Preemption (INV-8)**: An active, granted reservation is never preempted or revoked by a competing request, regardless of priority.
+- **Atomic-on-Failure Renewal**: `renew_reservation()` constructs the replacement `Reservation` object fully before writing to WorldModel. If any validation step fails, WorldModel remains 100% unchanged.
+- **Optimistic Concurrency**: Two robots with stale WorldModel views may both locally accept conflicting reservations. Stale decisions are reconciled deterministically when peer reservation information is eventually exchanged (via `ConflictDetector` + `PriorityEngine` on the next coordination cycle).
+- **Idempotent Release (INV-4)**: `release_reservation()` with an unknown `claim_id` returns `accepted=True, reason="ALREADY_RELEASED"` — treating already-gone claims as safe no-ops.
+- **PriorityDecision Score Authority**: When a `PriorityDecision` is provided, `Reservation.priority` is set authoritatively from the winner's score in the decision, preventing score divergence across decentralized WorldModel instances.
+- **Expiry Semantics**: Consistent with `WorldModel` and `ConflictDetector` — expired reservations (`now > expires_at`) never block new requests. Grace period reservations (`end_time < now ≤ expires_at`) are still live and block overlapping requests.
 
 ## Assumptions
 

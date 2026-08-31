@@ -10,6 +10,7 @@ from fleet_coordination.models.reservation import Reservation
 from fleet_coordination.models.task import Task, TaskType, TaskStatus
 from fleet_coordination.models.conflict import ConflictReport, ConflictSeverity
 from fleet_coordination.models.priority_decision import PriorityDecision
+from fleet_coordination.models.reservation_decision import ReservationDecision
 
 __all__ = [
     "Pose2D",
@@ -23,4 +24,5 @@ __all__ = [
     "ConflictReport",
     "ConflictSeverity",
     "PriorityDecision",
+    "ReservationDecision",
 ]
