@@ -36,12 +36,34 @@ EXPIRY SEMANTICS SUMMARY (matches WorldModel & ConflictDetector):
   start_time <= now <= end_time     → Active            (blocks overlaps)
   end_time < now <= expires_at      → Grace Period      (blocks overlaps)
   now > expires_at                  → Expired           (never blocks)
+
+ALREADY_RESERVED SEMANTICS:
+  If the requesting robot already holds a non-expired reservation on the
+  same resource whose window overlaps the new request, the operation is
+  treated as idempotent. reason='ALREADY_RESERVED', accepted=True, and
+  the existing reservation's claim_id is returned. A second UUID is NOT
+  created. Non-overlapping intervals on the same resource are always
+  granted as independent reservations.
+
+EXPIRED CLAIM RENEWAL:
+  renew_reservation() on a claim whose is_expired(now)==True returns
+  accepted=False, reason='INVALID_INTERVAL'. This reuses the existing
+  invalid-interval reason code rather than introducing a new enum value.
+  Callers who need to distinguish 'expired' from 'inverted interval'
+  should check whether the claim exists and is_expired() before calling
+  renew_reservation().
+
+UNKNOWN CLAIM ASYMMETRY:
+  release_reservation(unknown_claim_id) → accepted=True, reason='ALREADY_RELEASED'
+    (idempotent: the claim is already gone)
+  renew_reservation(unknown_claim_id)   → accepted=False, reason='ALREADY_RELEASED'
+    (logical error: cannot extend a non-existent claim)
 """
 
 from __future__ import annotations
 
+import math
 import time
-import uuid
 
 from fleet_coordination.algorithm.world_model import WorldModel
 from fleet_coordination.config.coordination_config import CoordinationConfig
@@ -87,9 +109,11 @@ class ReservationManager:
         """Validate and grant/deny a resource claim for the local robot.
 
         Validation order:
+          0. Finite-number check (now, start_time, end_time must be finite)
           1. Interval validity (end_time > start_time, end_time > now)
           2. PriorityDecision freshness and winner check (if provided)
           3. Peer reservation conflict scan (local single-view exclusion)
+          3b. Own-reservation overlap check (ALREADY_RESERVED idempotency)
           4. Grant: construct and store the Reservation
 
         Authoritative priority score:
@@ -110,6 +134,21 @@ class ReservationManager:
             accepted=False with a reason code on rejection.
         """
         robot_id = world_model.robot_id
+
+        # ------------------------------------------------------------------
+        # Step 0 — Finite-number validation (NaN/Infinity are never valid)
+        # ------------------------------------------------------------------
+        for val in (now, start_time, end_time):
+            if not math.isfinite(val):
+                return ReservationDecision(
+                    accepted=False,
+                    robot_id=robot_id,
+                    resource_id=resource_id,
+                    start_time=start_time,
+                    end_time=end_time,
+                    reason="INVALID_INTERVAL",
+                    decided_at=time.time(),
+                )
 
         # ------------------------------------------------------------------
         # Step 1 — Interval validity
@@ -202,6 +241,29 @@ class ReservationManager:
             )
 
         # ------------------------------------------------------------------
+        # Step 3b — Own-reservation overlap check (idempotency, INV-ALREADY)
+        # If this robot already holds a non-expired reservation on the same
+        # resource that overlaps this window, return it rather than creating
+        # a second UUID reservation.
+        # ------------------------------------------------------------------
+        own_claim_id = self._find_own_overlapping_reservation(
+            world_model, candidate, now
+        )
+        if own_claim_id is not None:
+            existing_own = world_model.get_reservation(own_claim_id)
+            return ReservationDecision(
+                accepted=True,
+                robot_id=robot_id,
+                resource_id=resource_id,
+                start_time=start_time,
+                end_time=end_time,
+                claim_id=own_claim_id,
+                reason="ALREADY_RESERVED",
+                reservation=existing_own,
+                decided_at=time.time(),
+            )
+
+        # ------------------------------------------------------------------
         # Step 4 — Grant: store the reservation
         # ------------------------------------------------------------------
         world_model.add_reservation(candidate)
@@ -243,8 +305,31 @@ class ReservationManager:
         Returns:
             ReservationDecision with accepted=True and reason="RENEWED" on
             success, or accepted=False with a reason code on rejection.
+
+        NOTE on expired claims:
+            If the claim exists but is_expired(now) is True, this method
+            returns accepted=False with reason='INVALID_INTERVAL'. Callers
+            that need to distinguish "expired" from "inverted interval"
+            should call world_model.get_reservation(claim_id) and check
+            is_expired(now) before calling renew_reservation().
         """
         robot_id = world_model.robot_id
+
+        # ------------------------------------------------------------------
+        # Step 0 — Finite-number validation (NaN/Infinity are never valid)
+        # ------------------------------------------------------------------
+        for val in (now, new_end_time):
+            if not math.isfinite(val):
+                return ReservationDecision(
+                    accepted=False,
+                    robot_id=robot_id,
+                    resource_id="",
+                    start_time=0.0,
+                    end_time=new_end_time,
+                    claim_id=claim_id,
+                    reason="INVALID_INTERVAL",
+                    decided_at=time.time(),
+                )
 
         # ------------------------------------------------------------------
         # Lookup: claim must exist and not be expired
@@ -515,6 +600,43 @@ class ReservationManager:
             if res.resource_id != candidate.resource_id:
                 continue
             # Temporal overlap check — boundary-touching is NOT a conflict (INV-7)
+            if candidate.overlaps_temporally(res):
+                return claim_id
+        return None
+
+    def _find_own_overlapping_reservation(
+        self,
+        world_model: WorldModel,
+        candidate: Reservation,
+        now: float,
+    ) -> str | None:
+        """Return the claim_id of the first non-expired OWN reservation on the
+        same resource that temporally overlaps the candidate, or None.
+
+        Used by request_reservation() to implement ALREADY_RESERVED idempotency:
+        if this robot already holds a valid overlapping claim, a second UUID is
+        not created. Non-overlapping own reservations on the same resource are
+        not returned — they represent independent time slots.
+
+        Args:
+            world_model:  WorldModel to scan.
+            candidate:    Proposed reservation to check against.
+            now:          Current reference time.
+
+        Returns:
+            claim_id of the first overlapping own reservation, or None.
+        """
+        for claim_id, res in world_model.get_all_reservations().items():
+            # Only self-owned reservations
+            if res.robot_id != candidate.robot_id:
+                continue
+            # Expired own reservations are not blocking
+            if res.is_expired(now):
+                continue
+            # Resource must match
+            if res.resource_id != candidate.resource_id:
+                continue
+            # Temporal overlap (boundary-touching is not a conflict)
             if candidate.overlaps_temporally(res):
                 return claim_id
         return None

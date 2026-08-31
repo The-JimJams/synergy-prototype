@@ -1,11 +1,11 @@
 """
-Tests for ReservationManager — Phase 5.
-=========================================
+Tests for ReservationManager — Phase 5 (including hardening fixes).
+=====================================================================
 
-30 unit tests across 9 categories, verifying all correctness invariants
-defined in the Phase 5 design document.
+49 unit tests across 15 categories, verifying all correctness invariants
+defined in the Phase 5 design document and Phase 5 hardening audit.
 
-Test Categories:
+Original test categories (30 tests):
   1. Local Single-View Mutual Exclusion           (4 tests)
   2. Optimistic Stale Concurrency & Reconciliation (4 tests)
   3. Non-Preemption of Active Claims              (3 tests)
@@ -16,9 +16,18 @@ Test Categories:
   8. Input Validation                             (2 tests)
   9. Multi-Robot & Immutability                   (2 tests)
 
+Hardening categories (19 tests — Phase 5 audit fixes):
+  10. ALREADY_RESERVED Idempotency                (3 tests) [FIX 1]
+  11. check_availability Coverage                 (5 tests) [FIX 2]
+  12. Finite Numeric Validation                   (7 tests) [FIX 3]
+  13. Unknown Claim Asymmetry                     (1 test)  [FIX 4]
+  14. Post-Reconciliation & Both-Side Detection   (2 tests) [FIX 5, FIX 6]
+  15. Priority Freshness Boundary                 (1 test)  [FIX 7]
+  (FIX 8 integrated into category 9; FIX 9 = documentation only)
+
 Time conventions used throughout:
-  T=100.0  — reference "now" for most tests
-  T=0.0    — the past (before "now")
+  T=100.0  -- reference "now" for most tests
+  T=0.0    -- the past (before "now")
 """
 
 from __future__ import annotations
@@ -860,10 +869,14 @@ class TestMultiRobotAndImmutability:
         )
         wm.add_task(task)
 
-        # Snapshot pre-operation
+        # Snapshot pre-operation — including peer_intents (FIX 8)
         snap_own_state = wm.get_own_state()
         snap_own_intent = wm.get_own_intent()
         snap_peer_states = wm.get_all_peer_states()
+        # FIX 8: snapshot peer_intents via known peer IDs (no get_all_peer_intents on WorldModel)
+        snap_peer_intents = {
+            pid: wm.get_peer_intent(pid) for pid in wm.get_known_peer_ids()
+        }
         snap_tasks = wm.get_all_tasks()
 
         # Perform a request (accepted) and a release
@@ -875,4 +888,436 @@ class TestMultiRobotAndImmutability:
         assert wm.get_own_state() is snap_own_state
         assert wm.get_own_intent() is snap_own_intent
         assert wm.get_all_peer_states() == snap_peer_states
+        # FIX 8: verify peer_intents unchanged after reservation operations
+        current_peer_intents = {
+            pid: wm.get_peer_intent(pid) for pid in wm.get_known_peer_ids()
+        }
+        assert current_peer_intents == snap_peer_intents
         assert wm.get_all_tasks() == snap_tasks
+
+
+# ===========================================================================
+# Category 10 \u2014 ALREADY_RESERVED Idempotency [FIX 1]
+# ===========================================================================
+
+class TestAlreadyReservedIdempotency:
+    """When the requesting robot already holds a non-expired reservation on the
+    same resource that overlaps the new request, the manager returns
+    ALREADY_RESERVED (accepted=True) instead of creating a duplicate UUID."""
+
+    def test_identical_request_returns_already_reserved(self):
+        """Exact re-request of same resource/window returns existing claim."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        dec1 = manager.request_reservation(wm, "I1", 100.0, 130.0, priority=0.5, now=now)
+        assert dec1.accepted is True
+        assert dec1.reason == "ACCEPTED"
+        original_claim_id = dec1.claim_id
+
+        dec2 = manager.request_reservation(wm, "I1", 100.0, 130.0, priority=0.5, now=now)
+        assert dec2.accepted is True
+        assert dec2.reason == "ALREADY_RESERVED"
+        assert dec2.claim_id == original_claim_id
+        assert dec2.reservation is not None
+        assert dec2.reservation.claim_id == original_claim_id
+
+        # WorldModel must contain exactly one reservation for amr_01 on I1
+        own_res = [r for r in wm.get_all_reservations().values() if r.robot_id == "amr_01"]
+        assert len(own_res) == 1
+
+    def test_overlapping_own_interval_returns_already_reserved(self):
+        """Partially overlapping re-request returns existing claim (not a new UUID)."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        dec1 = manager.request_reservation(wm, "I1", 100.0, 150.0, priority=0.5, now=now)
+        assert dec1.accepted is True
+        original_claim_id = dec1.claim_id
+
+        # Partial overlap [130, 200] — ALREADY_RESERVED
+        dec2 = manager.request_reservation(wm, "I1", 130.0, 200.0, priority=0.5, now=now)
+        assert dec2.accepted is True
+        assert dec2.reason == "ALREADY_RESERVED"
+        assert dec2.claim_id == original_claim_id
+
+        own_res = [r for r in wm.get_all_reservations().values() if r.robot_id == "amr_01"]
+        assert len(own_res) == 1
+
+    def test_non_overlapping_own_interval_creates_new_reservation(self):
+        """Non-overlapping consecutive window creates a second independent reservation."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        dec1 = manager.request_reservation(wm, "I1", 100.0, 130.0, priority=0.5, now=now)
+        assert dec1.accepted is True
+
+        # Boundary-touching non-overlapping future window [130, 160]
+        dec2 = manager.request_reservation(wm, "I1", 130.0, 160.0, priority=0.5, now=now)
+        assert dec2.accepted is True
+        assert dec2.reason == "ACCEPTED"
+        assert dec2.claim_id != dec1.claim_id  # distinct UUID
+
+        own_res = [r for r in wm.get_all_reservations().values() if r.robot_id == "amr_01"]
+        assert len(own_res) == 2
+
+
+# ===========================================================================
+# Category 11 \u2014 check_availability Coverage [FIX 2]
+# ===========================================================================
+
+class TestCheckAvailability:
+    """Public read-only API: check_availability() returns (bool, Reservation|None)."""
+
+    def test_available_resource_returns_true_none(self):
+        """No reservations on resource \u2192 (True, None)."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        ok, blocking = manager.check_availability(wm, "I1", 100.0, 130.0, "amr_01", now=now)
+        assert ok is True
+        assert blocking is None
+
+    def test_peer_reservation_blocks_availability(self):
+        """A non-expired peer reservation on the resource \u2192 (False, blocking_reservation)."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        peer_res = make_peer_reservation("amr_02", "I1", 100.0, 130.0)
+        wm.add_reservation(peer_res)
+
+        ok, blocking = manager.check_availability(wm, "I1", 105.0, 125.0, "amr_01", now=now)
+        assert ok is False
+        assert blocking is not None
+        assert blocking.claim_id == peer_res.claim_id
+        assert blocking.robot_id == "amr_02"
+
+    def test_own_reservation_does_not_block_own_availability_check(self):
+        """check_availability excludes the requesting robot's own reservations."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        dec = manager.request_reservation(wm, "I1", 100.0, 130.0, now=now)
+        assert dec.accepted is True
+
+        ok, blocking = manager.check_availability(wm, "I1", 100.0, 130.0, "amr_01", now=now)
+        assert ok is True
+        assert blocking is None
+
+    def test_expired_peer_reservation_does_not_block_availability(self):
+        """Expired reservation (now > expires_at) is never blocking in availability check."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+
+        end_time = 130.0
+        expires_at = end_time + GRACE  # 160.0
+        peer_res = Reservation(
+            resource_id="I1",
+            robot_id="amr_02",
+            start_time=100.0,
+            end_time=end_time,
+            priority=0.5,
+            expires_at=expires_at,
+        )
+        wm.add_reservation(peer_res)
+
+        now = expires_at + 1.0  # 161.0 \u2014 strictly expired
+        assert peer_res.is_expired(now) is True
+
+        ok, blocking = manager.check_availability(
+            wm, "I1", now, now + 30.0, "amr_01", now=now
+        )
+        assert ok is True
+        assert blocking is None
+
+    def test_different_resource_does_not_block_availability(self):
+        """A peer reservation on a different resource never blocks availability."""
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        peer_res = make_peer_reservation("amr_02", "DOCK_A", 100.0, 130.0)
+        wm.add_reservation(peer_res)
+
+        ok, blocking = manager.check_availability(wm, "I1", 100.0, 130.0, "amr_01", now=now)
+        assert ok is True
+        assert blocking is None
+
+
+# ===========================================================================
+# Category 12 \u2014 Finite Numeric Validation [FIX 3]
+# ===========================================================================
+
+class TestFiniteNumericValidation:
+    """NaN and +/-Infinity must be rejected before any logic executes.
+    No Reservation must be stored in WorldModel when validation fails."""
+
+    def _assert_invalid(self, decision, wm):
+        assert decision.accepted is False
+        assert decision.reason == "INVALID_INTERVAL"
+        assert wm.get_all_reservations() == {}
+
+    def test_nan_now_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", 100.0, 130.0, now=float("nan"))
+        self._assert_invalid(dec, wm)
+
+    def test_nan_start_time_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", float("nan"), 130.0, now=100.0)
+        self._assert_invalid(dec, wm)
+
+    def test_nan_end_time_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", 100.0, float("nan"), now=100.0)
+        self._assert_invalid(dec, wm)
+
+    def test_pos_inf_start_time_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", float("inf"), 130.0, now=100.0)
+        self._assert_invalid(dec, wm)
+
+    def test_pos_inf_end_time_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", 100.0, float("inf"), now=100.0)
+        self._assert_invalid(dec, wm)
+
+    def test_neg_inf_start_time_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", float("-inf"), 130.0, now=100.0)
+        self._assert_invalid(dec, wm)
+
+    def test_neg_inf_end_time_rejected(self):
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        dec = manager.request_reservation(wm, "I1", 100.0, float("-inf"), now=100.0)
+        self._assert_invalid(dec, wm)
+
+
+# ===========================================================================
+# Category 13 \u2014 Unknown Claim Asymmetry [FIX 4]
+# ===========================================================================
+
+class TestUnknownClaimAsymmetry:
+    """Documents the deliberate asymmetry between release and renew for unknown claims:
+       release is idempotent (accepted=True); renew is a logical error (accepted=False)."""
+
+    def test_renew_unknown_claim_returns_already_released_and_rejected(self):
+        """renew_reservation on unknown claim_id \u2192 accepted=False, reason=ALREADY_RELEASED.
+
+        Contrasts with release_reservation which returns accepted=True for unknown
+        claims (idempotent). Renewing a non-existent claim is a logical error.
+        """
+        manager = make_manager()
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        dec = manager.renew_reservation(wm, "nonexistent-claim-id", new_end_time=160.0, now=now)
+        assert dec.accepted is False
+        assert dec.reason == "ALREADY_RELEASED"
+
+        # Contrast: release of same unknown claim_id returns accepted=True
+        rel = manager.release_reservation(wm, "nonexistent-claim-id", now=now)
+        assert rel.accepted is True
+        assert rel.reason == "ALREADY_RELEASED"
+
+
+# ===========================================================================
+# Category 14 \u2014 Post-Reconciliation & Both-Side Detection [FIX 5 + FIX 6]
+# ===========================================================================
+
+class TestPostReconciliationAndBothSideDetection:
+
+    def test_post_reconciliation_winner_retains_resource_loser_cannot_reclaim(self):
+        """FIX 5: Full reconciliation workflow end-to-end.
+
+        After stale acceptance, peer exchange, conflict detection, priority
+        arbitration, and loser release: winner retains its claim, loser's
+        release removes its reservation from its own WorldModel.
+        """
+        from fleet_coordination.models.robot_intent import RobotIntent
+        from fleet_coordination.models.robot_state import RobotState
+
+        manager = make_manager()
+        engine = PriorityEngine()
+        detector = ConflictDetector()
+        now = 100.0
+
+        wm_a = make_wm("amr_01")
+        wm_b = make_wm("amr_02")
+
+        # Step 1: both stale-accept locally
+        dec_a = manager.request_reservation(wm_a, "I1", 100.0, 130.0, priority=0.8, now=now)
+        dec_b = manager.request_reservation(wm_b, "I1", 100.0, 130.0, priority=0.6, now=now)
+        assert dec_a.accepted and dec_b.accepted
+
+        # Step 2: exchange reservations
+        wm_a.add_reservation(dec_b.reservation)
+        wm_b.add_reservation(dec_a.reservation)
+
+        # Step 3: populate intents and states for PriorityEngine
+        intent_a = RobotIntent(
+            robot_id="amr_01", target_resource_id="I1",
+            eta=105.0, valid_until=200.0, timestamp=99.0,
+        )
+        intent_b = RobotIntent(
+            robot_id="amr_02", target_resource_id="I1",
+            eta=105.0, valid_until=200.0, timestamp=98.0,
+        )
+        wm_a.set_own_intent(intent_a)
+        wm_a.update_peer_intent(intent_b)
+        wm_b.set_own_intent(intent_b)
+        wm_b.update_peer_intent(intent_a)
+
+        wm_a.set_own_state(RobotState(robot_id="amr_01", battery_percent=80.0, timestamp=99.0))
+        wm_a.update_peer_state(RobotState(robot_id="amr_02", battery_percent=60.0, timestamp=99.0))
+        wm_b.set_own_state(RobotState(robot_id="amr_02", battery_percent=60.0, timestamp=99.0))
+        wm_b.update_peer_state(RobotState(robot_id="amr_01", battery_percent=80.0, timestamp=99.0))
+
+        # Step 4: arbitrate \u2014 same winner from both perspectives
+        from fleet_coordination.models.conflict import ConflictReport, ConflictSeverity
+        conflict = ConflictReport(
+            robot_a_id="amr_01", robot_b_id="amr_02",
+            resource_id="I1", severity=ConflictSeverity.HIGH,
+            overlap_start=100.0, overlap_end=130.0,
+        )
+        pd_a = engine.resolve(conflict, wm_a, now=now)
+        pd_b = engine.resolve(conflict, wm_b, now=now)
+        assert pd_a.winner_id == pd_b.winner_id
+        winner_id = pd_a.winner_id
+        loser_id = pd_a.loser_id
+
+        # Step 5: loser releases its reservation
+        wm_loser = wm_a if loser_id == "amr_01" else wm_b
+        loser_claim = dec_a.claim_id if loser_id == "amr_01" else dec_b.claim_id
+        rel = manager.release_reservation(wm_loser, loser_claim, now=now)
+        assert rel.accepted is True
+        assert rel.reason == "RELEASED"
+
+        # Step 6: winner's reservation still intact
+        wm_winner = wm_a if winner_id == "amr_01" else wm_b
+        winner_claim = dec_a.claim_id if winner_id == "amr_01" else dec_b.claim_id
+        assert wm_winner.get_reservation(winner_claim) is not None
+
+        # Loser's reservation is gone from its own WorldModel
+        assert wm_loser.get_reservation(loser_claim) is None
+
+    def test_both_worldmodels_detect_same_conflict_after_exchange(self):
+        """FIX 6: ConflictDetector on wm_a and wm_b both identify the same conflict.
+
+        After stale acceptance and peer exchange, conflict detection must be
+        symmetric: both perspectives flag the same resource and the same robot pair.
+        """
+        from fleet_coordination.models.robot_intent import RobotIntent
+
+        manager = make_manager()
+        detector = ConflictDetector()
+        now = 100.0
+
+        wm_a = make_wm("amr_01")
+        wm_b = make_wm("amr_02")
+
+        # Both stale-accept
+        dec_a = manager.request_reservation(wm_a, "I1", 100.0, 130.0, now=now)
+        dec_b = manager.request_reservation(wm_b, "I1", 100.0, 130.0, now=now)
+        assert dec_a.accepted and dec_b.accepted
+
+        # Exchange reservations
+        wm_a.add_reservation(dec_b.reservation)
+        wm_b.add_reservation(dec_a.reservation)
+
+        # Provide intents for conflict detection
+        intent_a = RobotIntent(
+            robot_id="amr_01", target_resource_id="I1",
+            eta=105.0, valid_until=200.0, timestamp=99.0,
+        )
+        intent_b = RobotIntent(
+            robot_id="amr_02", target_resource_id="I1",
+            eta=105.0, valid_until=200.0, timestamp=98.0,
+        )
+        wm_a.set_own_intent(intent_a)
+        wm_a.update_peer_intent(intent_b)
+        wm_b.set_own_intent(intent_b)
+        wm_b.update_peer_intent(intent_a)
+
+        # Detect from A's perspective
+        conflicts_a = detector.detect_conflicts(wm_a, now=now)
+        resources_a = {c.resource_id for c in conflicts_a}
+        robots_a = {frozenset([c.robot_a_id, c.robot_b_id]) for c in conflicts_a}
+
+        # Detect from B's perspective
+        conflicts_b = detector.detect_conflicts(wm_b, now=now)
+        resources_b = {c.resource_id for c in conflicts_b}
+        robots_b = {frozenset([c.robot_a_id, c.robot_b_id]) for c in conflicts_b}
+
+        # Both must identify I1 as the conflicted resource
+        assert "I1" in resources_a, f"A missed conflict on I1. resources_a={resources_a}"
+        assert "I1" in resources_b, f"B missed conflict on I1. resources_b={resources_b}"
+
+        # Both must involve the same pair of robots
+        expected_pair = frozenset(["amr_01", "amr_02"])
+        assert expected_pair in robots_a
+        assert expected_pair in robots_b
+
+
+# ===========================================================================
+# Category 15 \u2014 Priority Freshness Boundary [FIX 7]
+# ===========================================================================
+
+class TestPriorityFreshnessBoundary:
+    """The staleness check uses strict greater-than: decision_age > max_age.
+    A decision aged exactly max_age is NOT stale (boundary is fresh)."""
+
+    def test_priority_decision_at_exact_max_age_boundary_is_accepted(self):
+        """decision_age == max_age \u2192 accepted (strict > means boundary is still fresh)."""
+        config = CoordinationConfig()
+        manager = ReservationManager(config=config)
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        max_age = config.timeouts.peer_intent_max_age_seconds
+        boundary_decided_at = now - max_age  # decision_age == max_age exactly
+
+        pd = make_priority_decision(
+            winner_id="amr_01", loser_id="amr_02",
+            score_winner=0.9, decided_at=boundary_decided_at,
+        )
+
+        decision = manager.request_reservation(
+            wm, "I1", 100.0, 130.0, priority_decision=pd, now=now
+        )
+        assert decision.accepted is True
+        assert decision.reason == "ACCEPTED"
+
+    def test_priority_decision_one_second_past_max_age_is_rejected(self):
+        """decision_age > max_age \u2192 rejected as stale (regression guard)."""
+        config = CoordinationConfig()
+        manager = ReservationManager(config=config)
+        wm = make_wm("amr_01")
+        now = 100.0
+
+        max_age = config.timeouts.peer_intent_max_age_seconds
+        stale_decided_at = now - max_age - 1.0  # strictly past boundary
+
+        pd = make_priority_decision(
+            winner_id="amr_01", loser_id="amr_02",
+            score_winner=0.9, decided_at=stale_decided_at,
+        )
+
+        decision = manager.request_reservation(
+            wm, "I1", 100.0, 130.0, priority_decision=pd, now=now
+        )
+        assert decision.accepted is False
+        assert decision.reason == "STALE_PRIORITY_DECISION"
