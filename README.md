@@ -78,7 +78,7 @@ algorithms testable without launching Gazebo.
 |---|---|
 | Data models + config | ✅ Complete |
 | WorldModel | ✅ Complete |
-| ConflictDetector | 🔲 Not started |
+| ConflictDetector | ✅ Complete |
 | PriorityEngine | 🔲 Not started |
 | ReservationManager | 🔲 Not started |
 | TaskAllocator | 🔲 Not started |
@@ -101,6 +101,19 @@ The `WorldModel` (`fleet_coordination/algorithm/world_model.py`) is the **local,
 - **Cleanup / Garbage Collection**: `cleanup_expired(now)` is strictly an optional memory management utility. Query correctness never depends on cleanup having been executed.
 - **ROS Boundary**: Pure Python with zero ROS/rclpy dependencies. Operates strictly on domain dataclasses.
 - **Non-Responsibilities**: WorldModel contains NO decision logic — it does not calculate priorities, allocate tasks, resolve conflicts, grant reservations, or detect deadlocks.
+
+## ConflictDetector Subsystem
+
+The `ConflictDetector` (`fleet_coordination/algorithm/conflict_detector.py`) is the pure algorithmic engine responsible for identifying spatial and temporal contention over shared warehouse resources.
+
+### Core Architectural Characteristics:
+- **Coordination Criterion**: A `ConflictReport` is generated when the configured coordination detection criteria are satisfied. This is a discrete resource coordination tool and does NOT provide certified physical collision avoidance.
+- **Read-Only Operation**: Reads intent and reservation state from `WorldModel`; performs zero state mutations.
+- **Option C Occupancy Modeling**: Derives resource occupancy as $[T_{\text{start}}, T_{\text{end}}]$ where $T_{\text{start}} = \max(\text{now}, \text{eta})$ and $T_{\text{end}} = \min(T_{\text{start}} + \Delta t_{\text{default}}, \text{valid\_until})$.
+- **Open-Interval Temporal Semantics**: Overlap requires $A_{\text{start}} < B_{\text{end}} \land B_{\text{start}} < A_{\text{end}}$. Boundary-touching intervals ($A_{\text{end}} == B_{\text{start}}$) are strictly non-conflicting.
+- **Evidence Aggregation**: Multi-source evidence (intent vs. intent and intent vs. reservation) is grouped per `(peer_id, resource_id)` to form a bounding conflict window $[ \min(\text{start}), \max(\text{end}) ]$ with earliest onset determining severity.
+- **Severity & Determinism**: Classifies urgency (`CRITICAL`, `HIGH`, `MEDIUM`, `LOW`) and outputs reports deterministically sorted by `(severity_rank, overlap_start, robot_b_id)`.
+- **Zero Resolution**: Detects conflicts only. Does not calculate priorities, choose winners, or grant/deny claims.
 
 ## Assumptions
 
