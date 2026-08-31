@@ -42,6 +42,28 @@ class PriorityWeights:
 
 
 @dataclass
+class TaskBidWeights:
+    """Weights and parameters for the deterministic task allocation bid scoring.
+
+    bid_score = (
+        w_battery * battery_factor
+        + w_priority * priority_factor
+        + w_deadline * deadline_factor
+    ) / (w_battery + w_priority + w_deadline)
+    """
+
+    w_battery: float = 0.40
+    w_priority: float = 0.35
+    w_deadline: float = 0.25
+
+    # Minimum battery percent required to be eligible for a task
+    min_battery_percent: float = 20.0
+
+    # Tolerance threshold for floating-point near-equality before robot_id tie-break
+    score_epsilon: float = 1e-9
+
+
+@dataclass
 class TimeoutConfig:
     """Timeout thresholds for freshness, heartbeats, and reservations.
 
@@ -126,6 +148,7 @@ class CoordinationConfig:
     """
 
     priority_weights: PriorityWeights = field(default_factory=PriorityWeights)
+    task_bid_weights: TaskBidWeights = field(default_factory=TaskBidWeights)
     timeouts: TimeoutConfig = field(default_factory=TimeoutConfig)
     network: NetworkThresholds = field(default_factory=NetworkThresholds)
     conflict_detection: ConflictDetectionConfig = field(

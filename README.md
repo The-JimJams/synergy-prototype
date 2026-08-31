@@ -73,6 +73,8 @@ algorithms testable without launching Gazebo.
 | `ConflictReport` | Output of conflict detection |
 | `PriorityDecision` | Output of PriorityEngine arbitration |
 | `ReservationDecision` | Output of ReservationManager lifecycle operations |
+| `TaskBid` | Individual robot bid score and eligibility factors |
+| `AssignmentDecision` | Output of TaskAllocator evaluation |
 
 ## Algorithms (Implementation Status)
 
@@ -83,12 +85,13 @@ algorithms testable without launching Gazebo.
 | ConflictDetector | ✅ Complete |
 | PriorityEngine | ✅ Complete |
 | ReservationManager | ✅ Complete |
-| TaskAllocator | 🔲 Not started |
+| TaskAllocator | ✅ Complete |
 | DeadlockDetector | 🔲 Not started |
 | FailureDetector | 🔲 Not started |
 | NetworkMonitor | 🔲 Not started |
 | ReconciliationManager | 🔲 Not started |
 | DecisionLogger | 🔲 Not started |
+
 
 ## WorldModel Subsystem
 
