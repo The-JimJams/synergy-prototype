@@ -1,6 +1,6 @@
 /**
- * SYNERGY Dashboard - Metrics & Evaluation Manager (Phase 12, 13, 14)
- * Real-time calculation and presentation of baseline vs proposed decentralized performance.
+ * SYNERGY Dashboard - Metrics & Evaluation Manager (Phase 12, 14, 15)
+ * Real-time calculation, benchmark comparison, chart rendering, and CSV experiment logging.
  */
 
 class MetricsEvaluator {
@@ -13,6 +13,49 @@ class MetricsEvaluator {
         };
 
         this.targetImprovementPercent = 20.0;
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        const btnBaseline = document.getElementById('btn-log-baseline');
+        const btnProposed = document.getElementById('btn-log-proposed');
+
+        btnBaseline?.addEventListener('click', () => this.logExperimentRun('baseline'));
+        btnProposed?.addEventListener('click', () => this.logExperimentRun('proposed'));
+    }
+
+    async logExperimentRun(mode) {
+        try {
+            const scenario = document.getElementById('scenario-selector')?.value || 'full_demo';
+            const res = await fetch('/api/experiments/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode, scenario })
+            });
+
+            const data = await res.json();
+            if (data.status === 'success') {
+                alert(`Successfully logged ${mode.toUpperCase()} experiment run (${data.run_id}) to CSV & JSON!`);
+                this.fetchAggregateMetrics();
+            }
+        } catch (err) {
+            console.error('Failed to log experiment run:', err);
+        }
+    }
+
+    async fetchAggregateMetrics() {
+        try {
+            const res = await fetch('/api/experiments/aggregate');
+            if (res.ok) {
+                const data = await res.json();
+                if (data.baseline && data.baseline.avg_total_time > 0) {
+                    this.baselineMetrics.total_task_time = data.baseline.avg_total_time;
+                    this.baselineMetrics.average_wait_time = data.baseline.avg_wait_time;
+                }
+            }
+        } catch (err) {
+            console.warn('Could not fetch aggregate metrics:', err);
+        }
     }
 
     calculateImprovement(baselineTime, proposedTime) {
@@ -54,5 +97,24 @@ class MetricsEvaluator {
             targetBadge.textContent = `BELOW TARGET (${improvement.toFixed(1)}%)`;
             targetBadge.className = 'target-badge badge-fail';
         }
+
+        // Render CSS Comparison Charts (Phase 15)
+        this.renderCharts(this.baselineMetrics.total_task_time, propTime, this.baselineMetrics.average_wait_time, propWait);
+    }
+
+    renderCharts(baseTime, propTime, baseWait, propWait) {
+        const maxTime = Math.max(baseTime, propTime, 1.0);
+        const maxWait = Math.max(baseWait, propWait, 1.0);
+
+        const barBaseTime = document.getElementById('chart-bar-base-time');
+        const barPropTime = document.getElementById('chart-bar-prop-time');
+        const barBaseWait = document.getElementById('chart-bar-base-wait');
+        const barPropWait = document.getElementById('chart-bar-prop-wait');
+
+        if (barBaseTime) barBaseTime.style.width = `${(baseTime / maxTime) * 100}%`;
+        if (barPropTime) barPropTime.style.width = `${(propTime / maxTime) * 100}%`;
+
+        if (barBaseWait) barBaseWait.style.width = `${(baseWait / maxWait) * 100}%`;
+        if (barPropWait) barPropWait.style.width = `${(propWait / maxWait) * 100}%`;
     }
 }

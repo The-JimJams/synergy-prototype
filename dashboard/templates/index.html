@@ -284,44 +284,63 @@
                 </div>
             </section>
 
-            <!-- EVALUATION & METRICS PANEL (PHASE 12, 14) -->
+            <!-- EVALUATION & METRICS PANEL (PHASE 14 & 15) -->
             <section class="card panel-evaluation">
                 <div class="card-header">
-                    <h3>Evaluation & Benchmark Comparison (Phase 12, 14)</h3>
-                    <span class="read-only-notice">Read-Only Observation</span>
+                    <h3>Evaluation & Benchmark Comparison (Phase 14 & 15)</h3>
+                    <div class="eval-btn-group">
+                        <button id="btn-log-baseline" class="btn-log btn-baseline">+ Log Baseline Run</button>
+                        <button id="btn-log-proposed" class="btn-log btn-proposed">+ Log Proposed Run</button>
+                    </div>
                 </div>
                 <div class="card-body eval-container">
-                    <table class="data-table eval-table">
-                        <thead>
-                            <tr>
-                                <th>Metric</th>
-                                <th>Baseline (Stop & Wait)</th>
-                                <th>Proposed (Decentralized)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Total Completion Time</td>
-                                <td><span id="eval-base-time">100.2 s</span></td>
-                                <td><span id="eval-prop-time">78.4 s</span></td>
-                            </tr>
-                            <tr>
-                                <td>Average Wait Time</td>
-                                <td><span id="eval-base-wait">15.1 s</span></td>
-                                <td><span id="eval-prop-wait">7.2 s</span></td>
-                            </tr>
-                            <tr>
-                                <td>Tasks Completed</td>
-                                <td><span id="eval-base-tasks">3</span></td>
-                                <td><span id="eval-prop-tasks">3</span></td>
-                            </tr>
-                            <tr>
-                                <td>Collisions Detected</td>
-                                <td><span id="eval-base-collisions">0</span></td>
-                                <td><span id="eval-prop-collisions">0</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="eval-tables-block">
+                        <table class="data-table eval-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Baseline (Stop & Wait)</th>
+                                    <th>Proposed (Decentralized)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Total Completion Time</td>
+                                    <td><span id="eval-base-time">100.2 s</span></td>
+                                    <td><span id="eval-prop-time">78.4 s</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Average Wait Time</td>
+                                    <td><span id="eval-base-wait">15.1 s</span></td>
+                                    <td><span id="eval-prop-wait">7.2 s</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Tasks Completed</td>
+                                    <td><span id="eval-base-tasks">3</span></td>
+                                    <td><span id="eval-prop-tasks">3</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Collisions Detected</td>
+                                    <td><span id="eval-base-collisions">0</span></td>
+                                    <td><span id="eval-prop-collisions">0</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- CSS COMPARISON CHARTS (PHASE 15) -->
+                        <div class="charts-container">
+                            <div class="chart-group">
+                                <span class="chart-title">Task Completion Time (sec)</span>
+                                <div class="bar-track"><div id="chart-bar-base-time" class="bar-fill bar-baseline" style="width: 100%;">Baseline</div></div>
+                                <div class="bar-track"><div id="chart-bar-prop-time" class="bar-fill bar-proposed" style="width: 78%;">Proposed</div></div>
+                            </div>
+                            <div class="chart-group">
+                                <span class="chart-title">Average Wait Time (sec)</span>
+                                <div class="bar-track"><div id="chart-bar-base-wait" class="bar-fill bar-baseline" style="width: 100%;">Baseline</div></div>
+                                <div class="bar-track"><div id="chart-bar-prop-wait" class="bar-fill bar-proposed" style="width: 47%;">Proposed</div></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="eval-summary-box">
                         <div class="eval-result-card">
