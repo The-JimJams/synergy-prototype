@@ -319,9 +319,9 @@ Weights        Weights       Config         Thresholds     Detection     Config
 
 1. **Occupancy Window Derivation (Option C Occupancy Modeling):**
 
-   $$T_{\text{start}} = \max(\text{now}, \text{eta})$$
+   $$T_{\text{start}} = \max(t_{\text{now}}, t_{\text{eta}})$$
 
-   $$T_{\text{end}} = \min(T_{\text{start}} + \Delta t_{\text{default}}, \text{valid\_until})$$
+   $$T_{\text{end}} = \min(T_{\text{start}} + \Delta t_{\text{default}}, t_{\text{valid}})$$
 
 2. **Open-Interval Contention Check:**
    Checks temporal overlap against active peer intents and reservations on the same resource:
@@ -329,13 +329,13 @@ Weights        Weights       Config         Thresholds     Detection     Config
    $$\text{overlap} = (A_{\text{start}} \lt B_{\text{end}}) \land (B_{\text{start}} \lt A_{\text{end}})$$
 
 3. **Horizon & Duration Filtering:**
-   Filters out overlaps where $\text{duration} \lt \text{min\_temporal\_overlap\_seconds}$ ($1.0\text{ s}$) or $\text{onset} \gt \text{planning\_horizon\_seconds}$ ($60.0\text{ s}$).
+   Filters out overlaps where $\Delta t_{\text{overlap}} \lt 1.0\text{ s}$ (`min_temporal_overlap_seconds`) or $\text{onset} \gt 60.0\text{ s}$ (`planning_horizon_seconds`).
 
 4. **Severity Classification:**
-   - **`CRITICAL`:** $\text{time\_to\_conflict} \le 0\text{ s}$
-   - **`HIGH`:** $0\text{ s} \lt \text{time\_to\_conflict} \lt 10\text{ s}$
-   - **`MEDIUM`:** $10\text{ s} \le \text{time\_to\_conflict} \le 30\text{ s}$
-   - **`LOW`:** $\text{time\_to\_conflict} \gt 30\text{ s}$
+   - **`CRITICAL`:** $\Delta t_{\text{conflict}} \le 0\text{ s}$
+   - **`HIGH`:** $0\text{ s} \lt \Delta t_{\text{conflict}} \lt 10\text{ s}$
+   - **`MEDIUM`:** $10\text{ s} \le \Delta t_{\text{conflict}} \le 30\text{ s}$
+   - **`LOW`:** $\Delta t_{\text{conflict}} \gt 30\text{ s}$
 
 ---
 
@@ -350,9 +350,9 @@ $$S_i = w_{\text{task}} \cdot p_{\text{task}} + w_{\text{deadline}} \cdot p_{\te
 
 Where each normalized factor $p \in [0.0, 1.0]$:
 1. **Task Priority Factor:** $p_{\text{task}} = \frac{\text{priority} - 1}{9.0}$ (maps 1..10 to 0.0..1.0).
-2. **Deadline Proximity Factor:** $p_{\text{deadline}} = \frac{1}{\max(\text{deadline} - \text{now}, 1.0)}$.
-3. **Wait Time Factor (Commitment Age):** $p_{\text{wait}} = \min\left(\frac{\text{now} - \text{intent.timestamp}}{\text{max\_wait\_seconds}}, 1.0\right)$.
-4. **Battery Drain Urgency:** $p_{\text{battery}} = \frac{100.0 - \text{battery\_percent}}{100.0}$.
+2. **Deadline Proximity Factor:** $p_{\text{deadline}} = \frac{1}{\max(t_{\text{deadline}} - t_{\text{now}}, 1.0)}$.
+3. **Wait Time Factor (Commitment Age):** $p_{\text{wait}} = \min\left(\frac{t_{\text{now}} - t_{\text{intent}}}{T_{\text{max}}}, 1.0\right)$ (normalized over $T_{\text{max}} = 120.0\text{ s}$).
+4. **Battery Drain Urgency:** $p_{\text{battery}} = \frac{100.0 - \text{battery}}{100.0}$.
 
 #### Deterministic Tie-Breaking (INV-3)
 If $|S_A - S_B| \le \epsilon$ ($10^{-9}$), the winner is selected via lexicographic string comparison (`"amr_a"` precedes `"amr_b"`).

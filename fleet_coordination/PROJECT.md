@@ -371,13 +371,13 @@ classDiagram
 ### How It Works
 1. Reads local robot's `own_intent`. If no intent or no `target_resource_id`, returns `[]`.
 2. Derives expected occupancy window $[T_{\text{start}}, T_{\text{end}}]$ using **Option C Occupancy Modeling**:
-   $$T_{\text{start}} = \max(\text{now}, \text{eta})$$
-   $$T_{\text{end}} = \min(T_{\text{start}} + \Delta t_{\text{default}}, \text{valid\_until})$$
+   $$T_{\text{start}} = \max(t_{\text{now}}, t_{\text{eta}})$$
+   $$T_{\text{end}} = \min(T_{\text{start}} + \Delta t_{\text{default}}, t_{\text{valid}})$$
 3. Compares `own_window` against all active peer intents targeting the same resource.
 4. Compares `own_window` against all active peer reservations on that resource.
 5. Checks open-interval overlap:
-   $$\text{overlap} = (A_{\text{start}} < B_{\text{end}}) \land (B_{\text{start}} < A_{\text{end}})$$
-6. If overlap duration $\ge \text{min\_temporal\_overlap\_seconds}$ (1.0s) and onset $\le \text{now} + \text{planning\_horizon\_seconds}$ (60s), creates a `ConflictReport`.
+   $$\text{overlap} = (A_{\text{start}} \lt B_{\text{end}}) \land (B_{\text{start}} \lt A_{\text{end}})$$
+6. If overlap duration $\ge 1.0\text{ s}$ (`min_temporal_overlap_seconds`) and onset $\le 60.0\text{ s}$ (`planning_horizon_seconds`), creates a `ConflictReport`.
 7. Aggregates multi-source evidence per `(peer_id, resource_id)` into a single bounding window and sorts deterministically by `(severity_rank, overlap_start, peer_id)`.
 
 ---
@@ -391,13 +391,13 @@ For each contender $i \in \{A, B\}$, the composite priority score $S_i$ is:
 $$S_i = w_{\text{task}} \cdot p_{\text{task}} + w_{\text{deadline}} \cdot p_{\text{deadline}} + w_{\text{wait}} \cdot p_{\text{wait}} + w_{\text{battery}} \cdot p_{\text{battery}}$$
 
 Where normalized factors $\in [0.0, 1.0]$ are:
-1. **Task Priority:** $p_{\text{task}} = \frac{\text{clamped\_priority} - 1}{9.0}$ (maps 1..10 to 0.0..1.0).
-2. **Deadline Urgency:** $p_{\text{deadline}} = \frac{1}{\max(\text{deadline} - \text{now}, 1.0)}$.
-3. **Waiting Time (Intent Commitment Age):** $p_{\text{wait}} = \min\left(\frac{\text{now} - \text{intent.timestamp}}{\text{max\_wait\_seconds}}, 1.0\right)$.
-4. **Battery Urgency:** $p_{\text{battery}} = \frac{100.0 - \text{clamped\_battery}}{100.0}$.
+1. **Task Priority:** $p_{\text{task}} = \frac{\text{priority} - 1}{9.0}$ (maps 1..10 to 0.0..1.0).
+2. **Deadline Urgency:** $p_{\text{deadline}} = \frac{1}{\max(t_{\text{deadline}} - t_{\text{now}}, 1.0)}$.
+3. **Waiting Time (Intent Commitment Age):** $p_{\text{wait}} = \min\left(\frac{t_{\text{now}} - t_{\text{intent}}}{T_{\max}}, 1.0\right)$.
+4. **Battery Urgency:** $p_{\text{battery}} = \frac{100.0 - \text{battery}}{100.0}$.
 
 ### Deterministic Tie-Breaking
-If $|S_A - S_B| \le \text{score\_epsilon}$ ($10^{-9}$), the winner is selected via lexicographic string comparison:
+If $|S_A - S_B| \le \epsilon$ ($10^{-9}$), the winner is selected via lexicographic string comparison:
 - `lower_id_wins_ties = True` $\implies \text{winner} = \min(\text{id}_A, \text{id}_B)$.
 
 ---
@@ -455,9 +455,9 @@ stateDiagram-v2
 `FailureDetector` (`fleet_coordination/algorithm/failure_detector.py`) is the stateless algorithmic service responsible for peer heartbeat health evaluation and task reclamation upon robot failure.
 
 ### Health Classification Rules
-- **`HEALTHY`:** Heartbeat age $\le \text{heartbeat\_suspect\_timeout\_seconds}$ (3.0s).
-- **`SUSPECTED`:** $3.0\text{s} < \text{age} \le \text{heartbeat\_failure\_timeout\_seconds}$ (10.0s).
-- **`FAILED`:** Age $> 10.0\text{s}$, or peer broadcast status is `RobotStatus.FAILED` or `RobotStatus.EMERGENCY_STOP`.
+- **`HEALTHY`:** Heartbeat age $\le 3.0\text{ s}$ (`heartbeat_suspect_timeout_seconds`).
+- **`SUSPECTED`:** $3.0\text{ s} \lt \text{age} \le 10.0\text{ s}$ (`heartbeat_failure_timeout_seconds`).
+- **`FAILED`:** Age $\gt 10.0\text{ s}$, or peer broadcast status is `RobotStatus.FAILED` or `RobotStatus.EMERGENCY_STOP`.
 
 ### Public Methods
 - **`evaluate_peer(peer_id, world_model, now) -> PeerHealthAssessment | None` (Read-Only):**

@@ -71,7 +71,7 @@ Visualizes fleet telemetry, intersection reservations, coordination events, netw
    - Dual filtering by **Event Type** and **Robot ID**.
 5. **Benchmark Evaluation Engine**:
    - Calculates percentage improvement:
-     $$\text{improvement\_percent} = \frac{\text{baseline\_time} - \text{proposed\_time}}{\text{baseline\_time}} \times 100$$
+     $$\text{Improvement\%} = \frac{T_{\text{baseline}} - T_{\text{proposed}}}{T_{\text{baseline}}} \times 100$$
    - Displays measured improvement alongside target goal ($\ge 20.0\%$).
    - Logs experiment runs to [`data/experiments/experiment_results.csv`](file:///c:/Users/avani/Desktop/SYNERGY/antig/dashboard/data/experiments/) without overwriting.
    - Exports event sequences to [`data/events/`](file:///c:/Users/avani/Desktop/SYNERGY/antig/dashboard/data/events/) in JSON and JSONL format.
