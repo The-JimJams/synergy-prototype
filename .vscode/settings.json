@@ -1,0 +1,11 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/p5_task_failure/.venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/p5_task_failure"
+  ],
+  "python.analysis.autoImportCompletions": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestPath": "${workspaceFolder}/p5_task_failure/.venv/Scripts/pytest.exe",
+  "python.testing.cwd": "${workspaceFolder}/p5_task_failure",
+  "python.testing.pytestArgs": ["tests"]
+}
