@@ -231,13 +231,13 @@ flowchart TD
     WM --> METRICS
 
     %% Motion Action Flow
-    RM -->|ReservationDecision: ACCEPTED / YIELD| NODE
-    NODE -.->|Velocity Gate: PROCEED (0.5m/s) / WAIT (0.0m/s)| NAV
+    RM -->|"ReservationDecision: ACCEPTED / YIELD"| NODE
+    NODE -.->|"Velocity Gate: PROCEED / WAIT"| NAV
     NAV -.->|/amr_x/cmd_vel| GZ
 
     %% Dashboard Bridge Flow
     ROS_GOSSIP --> DASH_BRIDGE
-    DASH_BRIDGE -->|HTTP / REST Telemetry| DASH_APP
+    DASH_BRIDGE -->|"HTTP / REST Telemetry"| DASH_APP
     DASH_APP --> DUI
 ```
 
