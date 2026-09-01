@@ -24,21 +24,30 @@ Future responsibility:
 from __future__ import annotations
 
 
+from typing import List
+from p5.models.task import Task, TaskStatus
+from p5.models.robot import Robot, RobotStatus
+from p5.allocation.capability import CapabilityChecker
+from p5.allocation.bidder import Bidder
+from p5.allocation.winner import WinnerSelector
+
 class TaskManager:
-    """Coordinates the full P5 allocation and failure recovery cycle.
+    def __init__(self):
+        self.capability_checker = CapabilityChecker()
+        self.bidder = Bidder()
+        self.winner_selector = WinnerSelector()
 
-    Phase 1: Stub only — raises NotImplementedError.
-    Phase 6: Will implement the task state machine and coordination loop.
-    """
-
-    def run_once(self) -> None:
-        """Execute one cycle of the task allocation loop.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 6.
-        """
-        raise NotImplementedError(
-            "TaskManager.run_once() is deferred to Phase 6."
-        )
+    def allocate_task(self, task: Task, robots: List[Robot]) -> None:
+        capable_robots = [r for r in robots if self.capability_checker.check(r, task).eligible]
+        bids = [self.bidder.create_bid(r, task) for r in capable_robots]
+        winner_bid = self.winner_selector.select_winner(bids)
+        
+        if winner_bid:
+            task.assigned_robot = winner_bid.robot_id
+            task.status = TaskStatus.ASSIGNED
+            
+            for r in robots:
+                if r.robot_id == winner_bid.robot_id:
+                    r.status = RobotStatus.BUSY
+                    r.current_task = task.task_id
+                    break

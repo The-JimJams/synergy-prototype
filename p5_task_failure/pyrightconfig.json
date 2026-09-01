@@ -1,0 +1,19 @@
+{
+  "pythonVersion": "3.13",
+  "pythonPlatform": "Windows",
+  "venvPath": ".",
+  "venv": ".venv",
+  "extraPaths": ["."],
+  "include": [
+    "p5",
+    "tests",
+    "simulation"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "**/.pytest_cache"
+  ],
+  "typeCheckingMode": "basic",
+  "useLibraryCodeForTypes": true,
+  "reportMissingModuleSource": "none"
+}

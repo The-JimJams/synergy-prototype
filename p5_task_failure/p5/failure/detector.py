@@ -24,45 +24,22 @@ from __future__ import annotations
 from p5.models.heartbeat import HeartbeatStatus
 
 
+from datetime import datetime, timedelta
+from p5.models.robot import Robot, RobotStatus
+from typing import Optional
+
 class FailureDetector:
-    """Detects robot failures based on heartbeat timing.
+    def __init__(self, timeout_seconds: float = 5.0):
+        self.timeout = timedelta(seconds=timeout_seconds)
 
-    Phase 1: Stub only — methods raise NotImplementedError.
-    Phase 10: Will implement FailureDetector protocol.
-    """
-
-    def is_failed(self, robot_id: str) -> bool:
-        """Return True if the robot is classified as FAILED.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 10.
-        """
-        raise NotImplementedError(
-            "FailureDetector.is_failed() is deferred to Phase 10."
-        )
-
-    def is_suspected(self, robot_id: str) -> bool:
-        """Return True if the robot is classified as SUSPECTED.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 10.
-        """
-        raise NotImplementedError(
-            "FailureDetector.is_suspected() is deferred to Phase 10."
-        )
-
-    def classify(self, robot_id: str) -> HeartbeatStatus:
-        """Return the full HeartbeatStatus classification for the robot.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 10.
-        """
-        raise NotImplementedError(
-            "FailureDetector.classify() is deferred to Phase 10."
-        )
+    def detect(self, robot: Robot, heartbeat: Optional[Heartbeat], current_time: datetime) -> bool:
+        if heartbeat is None:
+            robot.status = RobotStatus.FAILED
+            return True
+            
+        age = current_time - heartbeat.timestamp
+        if age > self.timeout:
+            robot.status = RobotStatus.FAILED
+            return True
+            
+        return False

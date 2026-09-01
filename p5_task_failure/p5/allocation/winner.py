@@ -27,21 +27,10 @@ from p5.models.bid import Bid
 
 
 class WinnerSelector:
-    """Selects the winning bid from a list of valid bids.
-
-    Phase 1: Not yet implemented — raises NotImplementedError.
-    Phase 5: Will implement WinnerSelector protocol.
-    """
-
     def select_winner(self, bids: List[Bid]) -> Optional[Bid]:
-        """Return the best Bid, or None if no valid bids exist.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 5.
-        """
-        raise NotImplementedError(
-            "WinnerSelector.select_winner() is deferred to Phase 5. "
-            "See docs/p5_architecture.md for the deferred work list."
-        )
+        valid_bids = [b for b in bids if b.valid]
+        if not valid_bids:
+            return None
+            
+        valid_bids.sort(key=lambda b: (b.score, b.robot_id))
+        return valid_bids[0]

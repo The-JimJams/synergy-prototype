@@ -23,33 +23,14 @@ Recovery flow (Phase 14):
 from __future__ import annotations
 
 
+from p5.models.task import Task, TaskStatus
+from p5.models.robot import Robot, RobotStatus
+
 class TaskRecoveryManager:
-    """Releases and re-announces tasks after a robot failure.
-
-    Phase 1: Stub only — methods raise NotImplementedError.
-    Phase 14: Will implement TaskRecoveryManager protocol.
-    """
-
-    def release_task(self, task_id: str) -> None:
-        """Move task to RECOVERY state and clear assigned_robot.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 11.
-        """
-        raise NotImplementedError(
-            "TaskRecoveryManager.release_task() is deferred to Phase 11."
-        )
-
-    def re_announce_task(self, task_id: str) -> None:
-        """Re-announce the task so remaining robots can bid.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 12.
-        """
-        raise NotImplementedError(
-            "TaskRecoveryManager.re_announce_task() is deferred to Phase 12."
-        )
+    def recover(self, task: Task, failed_robot: Robot) -> None:
+        if task.assigned_robot == failed_robot.robot_id:
+            task.assigned_robot = None
+            task.status = TaskStatus.AVAILABLE
+            
+        if failed_robot.current_task == task.task_id:
+            failed_robot.current_task = None

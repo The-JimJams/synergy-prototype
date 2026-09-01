@@ -24,44 +24,14 @@ from p5.models.heartbeat import Heartbeat
 
 
 class HeartbeatMonitor:
-    """Maintains the latest heartbeat for each robot.
-
-    Phase 1: Stub only — methods raise NotImplementedError.
-    Phase 9: Will implement HeartbeatSource protocol.
-    """
+    def __init__(self):
+        self._registry: Dict[str, Heartbeat] = {}
 
     def register(self, heartbeat: Heartbeat) -> None:
-        """Record an incoming heartbeat.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 9.
-        """
-        raise NotImplementedError(
-            "HeartbeatMonitor.register() is deferred to Phase 9."
-        )
+        self._registry[heartbeat.robot_id] = heartbeat
 
     def get_latest(self, robot_id: str) -> Optional[Heartbeat]:
-        """Return the most recent heartbeat from the robot.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 9.
-        """
-        raise NotImplementedError(
-            "HeartbeatMonitor.get_latest() is deferred to Phase 9."
-        )
+        return self._registry.get(robot_id)
 
     def get_all(self) -> List[Heartbeat]:
-        """Return the most recent heartbeat for every known robot.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 9.
-        """
-        raise NotImplementedError(
-            "HeartbeatMonitor.get_all() is deferred to Phase 9."
-        )
+        return list(self._registry.values())

@@ -127,6 +127,41 @@ ROBOT_RECOVERED`
 
 ---
 
+### CapabilityChecker (Phase 3)
+
+```python
+from p5.allocation.capability import CapabilityChecker, CapabilityResult
+
+checker = CapabilityChecker()
+result  = checker.check(robot, task)  # -> CapabilityResult
+```
+
+**CapabilityResult fields:**
+
+```python
+CapabilityResult(
+    eligible: bool,
+    robot_id: str,           # "<none>" when robot is None
+    task_id:  str,           # "<none>" when task is None
+    reasons:  Tuple[str, ...],
+)
+```
+
+**Reason codes:**
+`ROBOT_UNAVAILABLE | ROBOT_FAILED | ROBOT_OFFLINE | ROBOT_CHARGING |
+PAYLOAD_INSUFFICIENT | MISSING_CAPABILITY | TASK_INVALID |
+TASK_CANCELLED | TASK_COMPLETED`
+
+**Guarantees:**
+- Pure: never mutates `Robot` or `Task`.
+- Deterministic: identical inputs always produce identical output.
+- Safe: `None` inputs produce a clean ineligible result, never an `AttributeError`.
+- No external dependencies: uses only `p5.models.robot` and `p5.models.task`.
+
+**Status:** `INTERNAL — READY (Phase 3 complete)`
+
+---
+
 ## B. Future External Adapter Contract
 
 These concepts represent the boundary between P5 and external systems.
@@ -245,6 +280,7 @@ class ROS2TaskSource:
 |---|---|
 | Internal P5 models | ✅ READY |
 | Adapter interfaces (Protocols) | ✅ READY |
+| CapabilityChecker | ✅ READY (Phase 3) |
 | ROS 2 adapter implementations | ⏳ PLANNED Phase 7 |
 | Nav2 adapter | ⏳ PLANNED Phase 8 |
 | Heartbeat implementation | ⏳ PLANNED Phase 9 |

@@ -1,6 +1,6 @@
 # P5 — Distributed Task Allocation & Failure Recovery
 
-**Phase 1: Standalone Foundation**
+**End-to-End MVP: COMPLETE**
 
 This is the standalone P5 subsystem for the SYNERGY decentralised
 multi-AMR warehouse project.
@@ -11,9 +11,9 @@ multi-AMR warehouse project.
 
 | Responsibility | Status |
 |---|---|
-| Distributed task allocation | ⏳ Phase 4–5 |
-| Robot failure detection | ⏳ Phase 10 |
-| Task recovery after failure | ⏳ Phase 14 |
+| Distributed task allocation | ✅ MVP COMPLETE |
+| Robot failure detection | ✅ MVP COMPLETE |
+| Task recovery after failure | ✅ MVP COMPLETE |
 | Blocked-aisle resilience | ⏳ Phase 15 |
 | **Phase 1 foundation** | ✅ COMPLETE |
 
@@ -30,9 +30,9 @@ python simulation/standalone_demo.py
 
 Expected output:
 ```
-P5 STANDALONE DEMO  —  Phase 1 Foundation
+P5 STANDALONE DEMO  —  END-TO-END MVP
 ...
-P5 PHASE 1 — STANDALONE FOUNDATION  ✓  COMPLETE
+END-TO-END MVP  ✓  COMPLETE
 ```
 
 ### Run the test suite

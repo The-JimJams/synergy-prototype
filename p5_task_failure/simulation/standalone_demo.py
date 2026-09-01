@@ -1,8 +1,9 @@
 """
-P5 Standalone Demo — Phase 1
+P5 Standalone Demo — Phase 3
 ==============================
 
-Terminal-only demonstration of the P5 core data models.
+Terminal-only demonstration of the P5 core data models and
+Phase 3 capability checking.
 
 Usage
 -----
@@ -16,7 +17,8 @@ What this script does
 3. Creates a placeholder Bid (Robot A -> T01).
 4. Creates heartbeats for all three robots.
 5. Creates a sample P5 internal event.
-6. Prints a formatted report to the terminal.
+6. Runs Phase 3 capability checking for each robot against T01.
+7. Prints a formatted report to the terminal.
 
 What this script does NOT do (deferred)
 -----------------------------------------
@@ -55,6 +57,7 @@ from p5.models.task import Task, TaskStatus
 from p5.models.bid import Bid
 from p5.models.heartbeat import Heartbeat, HeartbeatStatus
 from p5.models.events import P5Event, P5EventType
+from p5.allocation.capability import CapabilityChecker, CapabilityResult
 
 # ---------------------------------------------------------------------------
 # Constants / helpers
@@ -76,7 +79,12 @@ def section(title: str) -> None:
 # ---------------------------------------------------------------------------
 
 def build_robots() -> list[Robot]:
-    """Create three deterministic simulated robots."""
+    """Create three deterministic simulated robots for Phase 3 demo.
+
+    Robot A: AVAILABLE, capacity 500  — should be ELIGIBLE
+    Robot B: AVAILABLE, capacity  50  — should be NOT ELIGIBLE (payload)
+    Robot C: FAILED,    capacity 500  — should be NOT ELIGIBLE (status)
+    """
     return [
         Robot(
             robot_id="A",
@@ -92,7 +100,7 @@ def build_robots() -> list[Robot]:
             robot_id="B",
             position=(8.0, 3.0),
             battery=65.0,
-            payload_capacity=300.0,
+            payload_capacity=50.0,     # intentionally low for demo
             current_task=None,
             workload=0,
             status=RobotStatus.AVAILABLE,
@@ -102,10 +110,10 @@ def build_robots() -> list[Robot]:
             robot_id="C",
             position=(15.0, 10.0),
             battery=45.0,
-            payload_capacity=400.0,
+            payload_capacity=500.0,
             current_task=None,
             workload=0,
-            status=RobotStatus.AVAILABLE,
+            status=RobotStatus.FAILED,  # intentionally FAILED for demo
             capabilities=("CARRY", "HAZMAT"),
         ),
     ]
@@ -215,10 +223,22 @@ def print_event(event: P5Event) -> None:
     print(f"  Payload    : {event.payload}")
 
 
+def print_capability_result(result: CapabilityResult) -> None:
+    """Print a single CapabilityResult in a readable format."""
+    if result.eligible:
+        verdict = "ELIGIBLE"
+        detail  = ""
+    else:
+        verdict = "NOT ELIGIBLE"
+        detail  = "  reasons: " + ", ".join(result.reasons)
+    print(f"  Robot {result.robot_id}  ->  {verdict}{detail}")
+
+
 def print_deferred() -> None:
     items = [
-        ("Phase 2",  "Task data model validation"),
-        ("Phase 3",  "Capability checking"),
+        ("Phase 1",  "Core data models                [DONE]"),
+        ("Phase 2",  "Model validation                [DONE]"),
+        ("Phase 3",  "Capability checking             [DONE]"),
         ("Phase 4",  "Bid calculation algorithm"),
         ("Phase 5",  "Deterministic winner selection"),
         ("Phase 6",  "Task state machine enforcement"),
@@ -244,65 +264,111 @@ def print_deferred() -> None:
 def main() -> None:
     print()
     print(DIVIDER)
-    print("  P5 STANDALONE DEMO  --  Phase 1 Foundation")
-    print("  Distributed Task Allocation & Failure Recovery")
+    print("  P5 STANDALONE DEMO  --  END-TO-END MVP")
     print(DIVIDER)
     print()
-    print("  Core dependencies: Python standard library only.")
-    print("  ROS 2 : NOT REQUIRED    Gazebo : NOT REQUIRED")
-    print("  Nav2  : NOT REQUIRED    UI     : NOT REQUIRED")
 
-    # ------------------------------------------------------------------
-    robots = build_robots()
-    task = build_task()
-    bid = build_bid(robots[0], task)          # Robot A bids on T01
-    heartbeats = build_heartbeats(robots)
-    event = build_event(task)
-    # ------------------------------------------------------------------
+    from datetime import datetime, timedelta, timezone
+    from p5.models.robot import Robot, RobotStatus
+    from p5.models.task import Task, TaskStatus
+    from p5.models.heartbeat import Heartbeat, HeartbeatStatus
+    from p5.manager.task_manager import TaskManager
+    from p5.failure.detector import FailureDetector
+    from p5.recovery.task_recovery import TaskRecoveryManager
+    from p5.allocation.capability import CapabilityChecker
+    from p5.allocation.bidder import Bidder
 
-    section("ROBOTS")
-    for r in robots:
-        print_robot(r)
-
-    section("TASK")
-    print_task(task)
-
-    section("SAMPLE BID  (Robot A -> T01)")
-    print_bid(bid, robots[0], task)
-
-    section("HEARTBEATS")
-    for hb in heartbeats:
-        print_heartbeat(hb)
-
-    section("INTERNAL EVENT")
-    print_event(event)
-
-    section("ADAPTER INTERFACES  (Phase 1: defined, not yet wired)")
-    interfaces = [
-        "TaskSource",
-        "RobotStateProvider",
-        "BidCalculator",
-        "WinnerSelector",
-        "HeartbeatSource",
-        "FailureDetector",
-        "TaskRecoveryManager",
-        "EventSink",
-        "NavigationAdapter",
+    # STEP 1: INITIAL STATE (3 robots, 2 tasks)
+    robots = [
+        Robot("A", (2.0, 2.0), 90.0, 500.0, None, 0, RobotStatus.AVAILABLE, ("CARRY",)),
+        Robot("B", (8.0, 3.0), 65.0, 500.0, None, 0, RobotStatus.AVAILABLE, ("CARRY",)),
+        Robot("C", (15.0, 10.0), 45.0, 500.0, None, 0, RobotStatus.AVAILABLE, ("CARRY",)),
     ]
-    for iface in interfaces:
-        print(f"  [DEFINED]  {iface}")
-
-    section("DEFERRED WORK")
-    print_deferred()
+    tasks = [
+        Task("T01", (10.0, 4.0), (18.0, 9.0), 7, 60.0, 100.0, TaskStatus.AVAILABLE, None, ("CARRY",)),
+        Task("T02", (3.0, 3.0), (10.0, 1.0), 5, 60.0, 100.0, TaskStatus.AVAILABLE, None, ("CARRY",)),
+    ]
+    
+    manager = TaskManager()
+    detector = FailureDetector()
+    recovery = TaskRecoveryManager()
+    checker = CapabilityChecker()
+    bidder = Bidder()
+    now = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+    
+    print("INITIAL STATE:")
+    for r in robots:
+        print(f"Robot {r.robot_id} -> {r.status.value}")
+    for t in tasks:
+        print(f"Task {t.task_id} -> {t.status.value}")
+    print()
+    
+    # STEP 2-5: FIRST ALLOCATION (both tasks)
+    print("ALLOCATING INITIAL TASKS...")
+    for t in tasks:
+        # Steps 2-3: Print bids
+        for r in robots:
+            if checker.check(r, t).eligible:
+                bid = bidder.create_bid(r, t)
+                print(f"Task {t.task_id} - Robot {r.robot_id} BID: score={bid.score:.3f}")
+                
+        # Step 4-5: Assign
+        manager.allocate_task(t, robots)
+        print(f"WINNER for {t.task_id}: Robot {t.assigned_robot}")
+        print()
+    
+    # State check
+    print("STATE AFTER INITIAL ALLOCATION:")
+    for r in robots:
+        print(f"Robot {r.robot_id} -> {r.status.value} (Task: {r.current_task})")
+    print()
+    
+    # STEP 6-7: SIMULATING A FAILURE
+    # Find who won T01 (it should be B based on distance)
+    t01 = next(t for t in tasks if t.task_id == "T01")
+    failed_robot_id = t01.assigned_robot
+    assert failed_robot_id is not None, "Task must have an assigned robot to fail"
+    failed_robot = next(r for r in robots if r.robot_id == failed_robot_id)
+    
+    print(f"SIMULATING ROBOT {failed_robot_id} FAILURE...")
+    hb_stale = Heartbeat(failed_robot_id, now - timedelta(seconds=10), HeartbeatStatus.ALIVE)
+    detector.detect(failed_robot, hb_stale, now)
+    
+    print("FAILURE DETECTED:")
+    print(f"Robot {failed_robot_id} -> {failed_robot.status.value}")
+    print()
+    
+    # STEP 8: TASK RECOVERY
+    print(f"TASK RECOVERY FOR {t01.task_id}...")
+    recovery.recover(t01, failed_robot)
+    print(f"Task {t01.task_id} -> {t01.status.value}")
+    print(f"Robot {failed_robot_id} task -> {failed_robot.current_task}")
+    print()
+    
+    # STEP 9-10: RE-ALLOCATION
+    print(f"RE-ALLOCATING TASK {t01.task_id}...")
+    for r in robots:
+        if checker.check(r, t01).eligible:
+            bid = bidder.create_bid(r, t01)
+            print(f"Task {t01.task_id} - Robot {r.robot_id} BID: score={bid.score:.3f}")
+            
+    manager.allocate_task(t01, robots)
+    print(f"NEW WINNER for {t01.task_id}: Robot {t01.assigned_robot}")
+    print()
+    
+    # STEP 11: FINAL STATE
+    print("FINAL STATE:")
+    for t in tasks:
+        print(f"{t.task_id} -> {t.status.value}, assigned to Robot {t.assigned_robot}")
+    for r in robots:
+        print(f"Robot {r.robot_id} -> {r.status.value} (Task: {r.current_task})")
 
     print()
     print(DIVIDER)
-    print("  P5 PHASE 1 -- STANDALONE FOUNDATION  [OK]  COMPLETE")
-    print("  All models instantiated successfully.")
-    print("  No external systems required.")
+    print("  END-TO-END MVP  [OK]  COMPLETE")
     print(DIVIDER)
     print()
-
 
 if __name__ == "__main__":
     main()
+

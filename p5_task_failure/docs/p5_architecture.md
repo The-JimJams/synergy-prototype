@@ -77,11 +77,11 @@ Plain Python dataclasses.  No external dependency.
 
 ### Allocation (`p5/allocation/`) — Phase 3–5
 
-| File | Phase |
-|---|---|
-| `capability.py` | Phase 3 — eligibility checking |
-| `bidder.py` | Phase 4 — bid score calculation |
-| `winner.py` | Phase 5 — deterministic winner selection |
+| File | Phase | Status |
+|---|---|---|
+| `capability.py` | Phase 3 — eligibility checking | ✅ COMPLETE |
+| `bidder.py` | Phase 4 — bid score calculation | ⏳ STUB |
+| `winner.py` | Phase 5 — deterministic winner selection | ⏳ STUB |
 
 ### Failure (`p5/failure/`) — Phase 9–10
 
@@ -121,6 +121,43 @@ each simulated agent uses only its own state to make decisions.
 
 In **ROS 2 deployment**, each FleetAgent runs as a separate node on its
 robot.
+
+---
+
+## Capability Checking Flow (Phase 3)
+
+```
+Robot + Task
+     |
+     v
+CapabilityChecker.check()
+     |
+     +-- None guard           --> TASK_INVALID
+     |
+     +-- Task validity        --> TASK_INVALID (payload < 0)
+     |
+     +-- Task status          --> TASK_CANCELLED | TASK_COMPLETED
+     |
+     +-- Robot status         --> ROBOT_FAILED | ROBOT_OFFLINE
+     |                            ROBOT_CHARGING | ROBOT_UNAVAILABLE
+     |
+     +-- Payload capacity     --> PAYLOAD_INSUFFICIENT
+     |
+     +-- Capability tags      --> MISSING_CAPABILITY
+     |
+     v
+CapabilityResult
+     |
+     +---- eligible=False --> reject (with reason codes)
+     |
+     +---- eligible=True
+                |
+                v
+          Future Bidder (Phase 4)  [STUB]
+                |
+                v
+          Future WinnerSelector (Phase 5)  [STUB]
+```
 
 ---
 
@@ -197,23 +234,24 @@ Task reassigned
 
 ## Deferred Work
 
-| Phase | Description |
-|---|---|
-| Phase 2 | Task data model validation |
-| Phase 3 | Capability checking |
-| Phase 4 | Bid calculation algorithm |
-| Phase 5 | Deterministic winner selection |
-| Phase 6 | Task state machine enforcement |
-| Phase 7 | ROS 2 adapter integration |
-| Phase 8 | Nav2 adapter integration |
-| Phase 9 | Heartbeat monitoring |
-| Phase 10 | Failure detection (timeout-based) |
-| Phase 11 | Task release |
-| Phase 12 | Task re-announcement |
-| Phase 13 | Task reassignment |
-| Phase 14 | Full failure recovery |
-| Phase 15 | Blocked-aisle resilience |
-| Phase 16 | Optional: communication degradation |
+| Phase | Description | Status |
+|---|---|---|
+| Phase 1 | Core data models | ✅ COMPLETE |
+| Phase 2 | Task data model validation | ✅ COMPLETE |
+| Phase 3 | Capability checking | ✅ COMPLETE |
+| Phase 4 | Bid calculation algorithm | ⏳ NEXT |
+| Phase 5 | Deterministic winner selection | ⏳ PLANNED |
+| Phase 6 | Task state machine enforcement | ⏳ PLANNED |
+| Phase 7 | ROS 2 adapter integration | ⏳ PLANNED |
+| Phase 8 | Nav2 adapter integration | ⏳ PLANNED |
+| Phase 9 | Heartbeat monitoring | ⏳ PLANNED |
+| Phase 10 | Failure detection (timeout-based) | ⏳ PLANNED |
+| Phase 11 | Task release | ⏳ PLANNED |
+| Phase 12 | Task re-announcement | ⏳ PLANNED |
+| Phase 13 | Task reassignment | ⏳ PLANNED |
+| Phase 14 | Full failure recovery | ⏳ PLANNED |
+| Phase 15 | Blocked-aisle resilience | ⏳ PLANNED |
+| Phase 16 | Optional: communication degradation | ⏳ PLANNED |
 
 ---
 

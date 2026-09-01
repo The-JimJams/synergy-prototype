@@ -28,21 +28,20 @@ from p5.models.bid import Bid
 
 
 class Bidder:
-    """Calculates a bid for a (robot, task) pair.
-
-    Phase 1: Not yet implemented — raises NotImplementedError.
-    Phase 4: Will implement BidCalculator protocol.
-    """
-
-    def calculate_bid(self, robot: Robot, task: Task) -> Bid:
-        """Calculate and return a Bid for the given robot-task pair.
-
-        Raises
-        ------
-        NotImplementedError
-            Always in Phase 1. Will be implemented in Phase 4.
-        """
-        raise NotImplementedError(
-            "Bidder.calculate_bid() is deferred to Phase 4. "
-            "See docs/p5_architecture.md for the deferred work list."
+    def create_bid(self, robot: Robot, task: Task) -> Bid:
+        distance = robot.distance_to(task.pickup_location)
+        estimated_time = distance / 1.0
+        battery_cost = distance * 0.1
+        score = distance + estimated_time + battery_cost
+        
+        from datetime import datetime, timezone
+        return Bid(
+            task_id=task.task_id,
+            robot_id=robot.robot_id,
+            score=score,
+            estimated_time=estimated_time,
+            distance=distance,
+            battery_cost=battery_cost,
+            valid=True,
+            timestamp=datetime.now(timezone.utc)
         )
