@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="drop_station">
+    <static>true</static>
+    <link name="pad_link">
+      <!-- Main Interior Staging Floor -->
+      <visual name="pad_interior">
+        <pose>0 0 0.003 0 0 0</pose>
+        <geometry><box><size>2.6 1.8 0.005</size></box></geometry>
+        <material>
+          <ambient>0.68 0.69 0.71 1.0</ambient>
+          <diffuse>0.74 0.75 0.77 1.0</diffuse>
+        </material>
+      </visual>
+
+      <!-- Yellow Base Border Frame (0.10m wide) -->
+      <visual name="base_frame_n"><pose>0 0.95 0.005 0 0 0</pose><geometry><box><size>2.8 0.10 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.82 0.0 1</diffuse></material></visual>
+      <visual name="base_frame_s"><pose>0 -0.95 0.005 0 0 0</pose><geometry><box><size>2.8 0.10 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.82 0.0 1</diffuse></material></visual>
+      <visual name="base_frame_e"><pose>1.35 0 0.005 0 0 0</pose><geometry><box><size>0.10 2.0 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.82 0.0 1</diffuse></material></visual>
+      <visual name="base_frame_w"><pose>-1.35 0 0.005 0 0 0</pose><geometry><box><size>0.10 2.0 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.82 0.0 1</diffuse></material></visual>
+
+      <!-- Black Hazard Stripes at 45° — N border (contained cleanly within 0.10m yellow border) -->
+      <visual name="hz_n_1"><pose>-1.1 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_n_2"><pose>-0.7 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_n_3"><pose>-0.3 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_n_4"><pose>0.1 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_n_5"><pose>0.5 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_n_6"><pose>0.9 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_n_7"><pose>1.1 0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+
+      <!-- Black Hazard Stripes at 45° — S border -->
+      <visual name="hz_s_1"><pose>-1.1 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_s_2"><pose>-0.7 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_s_3"><pose>-0.3 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_s_4"><pose>0.1 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_s_5"><pose>0.5 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_s_6"><pose>0.9 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_s_7"><pose>1.1 -0.95 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+
+      <!-- Black Hazard Stripes at 45° — E border -->
+      <visual name="hz_e_1"><pose>1.35 -0.6 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_e_2"><pose>1.35 -0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_e_3"><pose>1.35 0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_e_4"><pose>1.35 0.6 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+
+      <!-- Black Hazard Stripes at 45° — W border -->
+      <visual name="hz_w_1"><pose>-1.35 -0.6 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_w_2"><pose>-1.35 -0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_w_3"><pose>-1.35 0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+      <visual name="hz_w_4"><pose>-1.35 0.6 0.007 0 0 0.7854</pose><geometry><box><size>0.062 0.062 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>

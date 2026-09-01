@@ -3,8 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.Python
+env/
+venv/
+.venv/
 
-# Distribution
+# Distribution & Build
 *.egg-info/
 *.egg
 dist/
@@ -15,11 +19,20 @@ build/
 .coverage
 htmlcov/
 
-# IDE
+# ROS / Build artifacts
+install/
+log/
+*.log
+
+# Editor & IDE
 .vscode/
 .idea/
 *.swp
+*~
 
-# OS
+# OS artifacts
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
 Thumbs.db

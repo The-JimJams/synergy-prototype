@@ -1,38 +1,103 @@
-# SYNERGY — Decentralized Fleet Coordination Algorithm
+# SYNERGY — Multi-Agent AMR Orchestration & Decentralized Fleet Coordination
 
-## Branch Purpose
+> **Multi-Agent Autonomous Mobile Robot (AMR) Orchestration, Logistics Simulation & Decentralized Fleet Coordination Framework**
 
-This repository contains the **decentralized algorithmic subsystem** for multi-AMR (Autonomous Mobile Robot) coordination in a smart warehouse environment.
-
-**What this subsystem IS:**
-- Pure Python decentralized fleet coordination algorithms
-- Data models for robot state, intent, reservations, tasks, conflicts, obstacles, health, network degradation, and benchmarks
-- Fully unit-tested (323 automated tests) with zero external simulation or middleware dependencies
-
-**What this subsystem is NOT:**
-- Not a navigation planner (Nav2 handles geometric trajectory execution and local obstacle avoidance)
-- Not a physics simulation (Gazebo handles multi-robot dynamics)
-- Not communication middleware (ROS 2 handles message transport)
-- Not a central dispatcher (there is no central server or master coordinator)
+A high-fidelity multi-robot logistics simulation platform built on **Gazebo Sim** (SDF 1.9) and **ROS 2**, paired with a **pure Python decentralized fleet coordination algorithm suite**. Designed for benchmarking decentralized multi-agent coordination, collision avoidance, fleet routing, and SLAM navigation in an industrial warehouse environment.
 
 ---
 
-## Key Principle
+## 📁 Repository Architecture
 
-> **There is no central fleet decision-maker.**
+```
+synergy-prototype/
+├── gazebo/                         # Gazebo Simulation Environment Sub-Package
+│   ├── README.md                   # Detailed Gazebo module manual & topic catalog
+│   ├── scripts/                    # Universal cross-platform simulation launchers
+│   │   ├── launch_sim.py           # Universal Python launcher (macOS, Linux, Windows)
+│   │   ├── launch_sim.sh           # POSIX Bash launcher (macOS / Linux)
+│   │   ├── launch_sim.bat          # Windows Command Prompt batch script
+│   │   └── launch_sim.ps1          # Windows PowerShell script
+│   └── simulation/
+│       ├── models/                 # Modular SDF 1.9 models (AMRs, Shelves, Stations)
+│       │   ├── amr/                # Base AMR template
+│       │   ├── amr_blue/           # AMR Blue instance (/amr_blue)
+│       │   ├── amr_green/          # AMR Green instance (/amr_green)
+│       │   ├── amr_orange/         # AMR Orange instance (/amr_orange)
+│       │   ├── shelf/              # 3-tier industrial shelving rack with cargo
+│       │   ├── pickup_station/     # Cargo intake staging zone
+│       │   ├── drop_station/       # Order discharge and packing zone
+│       │   ├── charging_station/   # Wireless induction docking station
+│       │   ├── pallet_stack/       # Stacked wooden logistics pallets
+│       │   └── dumpster/           # Industrial waste container
+│       └── worlds/
+│           ├── warehouse.sdf       # Master 20m × 20m multi-robot warehouse world
+│           └── amr_test.sdf        # Isolated single-robot testing environment
+├── fleet_coordination/             # Decentralized Coordination Algorithm Sub-Package
+│   ├── config/                     # Tunable parameters, weights, timeouts
+│   ├── models/                     # 17 pure Python typed domain dataclasses
+│   ├── algorithm/                  # Core algorithms (WorldModel, Conflict, Priority, Reservations, Auctions)
+│   ├── ros_interface/              # ROS 2 adapter layer (rclpy node, serialization)
+│   ├── tests/                      # 13 test suites (323 automated unit & integration tests)
+│   ├── PROJECT.md                  # Comprehensive algorithmic technical documentation
+│   └── ALGORITHM_HANDOFF.md        # ROS 2 integration contracts & developer handoff guide
+└── README.md                       # Master project overview
+```
+
+---
+
+## ⚡ Quick Start
+
+### 1. Launch Multi-Robot Gazebo Simulation
+
+#### 🍎 macOS / 🐧 Linux
+```bash
+./gazebo/scripts/launch_sim.sh
+```
+*Or using Python:*
+```bash
+python3 gazebo/scripts/launch_sim.py
+```
+
+#### 🪟 Windows
+```cmd
+gazebo\scripts\launch_sim.bat
+```
+*Or via PowerShell:*
+```powershell
+.\gazebo\scripts\launch_sim.ps1
+```
+
+### 2. Run Algorithmic Unit Test Suite
+```bash
+# Run complete test suite (323 tests in < 1.0s)
+pytest -q
+```
+
+---
+
+## 🤖 Active AMR Fleet (Gazebo Simulation)
+
+The simulation includes **3 color-coded AMRs** operating under isolated namespaces with differential drive kinematics, 2D planar LiDAR, 6-axis IMU, and 4-point dynamic caster stability:
+
+| Robot | Color Theme | Initial Spawn `(X, Y)` | Velocity Topic (Pub) | Odometry Topic (Sub) | 2D LiDAR Topic (Sub) |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **AMR Blue** | 🔵 Sapphire Blue | `(-3.5, 5.25)` | `/amr_blue/cmd_vel` | `/amr_blue/odom` | `/amr_blue/scan` |
+| **AMR Green** | 🟢 Emerald Green | `(0.5, 8.5)` | `/amr_green/cmd_vel` | `/amr_green/odom` | `/amr_green/scan` |
+| **AMR Orange**| 🟠 Safety Orange | `(3.5, -6.5)` | `/amr_orange/cmd_vel` | `/amr_orange/odom` | `/amr_orange/scan` |
+
+### Sample Velocity CLI Command
+```bash
+# Drive AMR Blue forward at 0.5 m/s
+gz topic -t "/amr_blue/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.5}, angular: {z: 0.0}"
+```
+
+---
+
+## 🧠 Decentralized Fleet Coordination Architecture
+
+> **Key Principle: There is no central fleet decision-maker.**
 >
 > Every AMR runs an identical instance of the coordination logic, maintains its own local `WorldModel`, and makes independent decisions. Coordination emerges from peer-to-peer telemetry exchange and deterministic arbitration rules.
-
----
-
-## Technical Documentation & Handoff Guides
-
-- **Deep Algorithmic Documentation:** [`fleet_coordination/PROJECT.md`](fleet_coordination/PROJECT.md) — Comprehensive reference of mathematical formulations, models, algorithms, invariants, and architectural decisions.
-- **Developer Handoff Guide:** [`fleet_coordination/ALGORITHM_HANDOFF.md`](fleet_coordination/ALGORITHM_HANDOFF.md) — Exact ROS 2 integration contracts, public APIs, data flow, inputs/outputs, and safety rules for integrating with Gazebo/Nav2.
-
----
-
-## Architecture
 
 ```
 Fleet Coordination Agent (one per robot)
@@ -51,27 +116,7 @@ Fleet Coordination Agent (one per robot)
     └── BenchmarkEvaluator    — Deterministic comparison against STOP-AND-WAIT baseline
 ```
 
----
-
-## Directory Structure
-
-```
-fleet_coordination/
-    config/                    — Tunable parameters, weights, timeouts (no magic numbers)
-    models/                    — Pure Python dataclasses (shared domain vocabulary)
-    algorithm/                 — Core algorithms (ZERO ROS / Gazebo / Nav2 imports)
-    ros_interface/             — ROS 2 adapter layer (rclpy node, serialization)
-    tests/                     — 13 test suites (323 pytest unit & integration tests)
-    PROJECT.md                 — In-depth algorithmic technical documentation
-    ALGORITHM_HANDOFF.md       — Integration contracts and developer handoff
-```
-
-**Strict Architectural Boundary:**
-`algorithm/` and `models/` never import `rclpy`, `nav2`, or `gazebo`. `ros_interface/` never contains coordination logic. This hard separation allows all algorithms to be tested in under 1 second without launching ROS 2 or Gazebo.
-
----
-
-## Domain Models (`fleet_coordination/models/`)
+### Domain Models (`fleet_coordination/models/`)
 
 | Model | Purpose |
 |---|---|
@@ -96,78 +141,15 @@ fleet_coordination/
 
 ---
 
-## Subsystem Implementation Status
+## 🧪 Testing & Verification
 
-| Subsystem | Status | Description |
-|---|---|---|
-| **Data Models & Config** | ✅ Complete | 17 typed dataclasses with zero external dependencies |
-| **WorldModel** | ✅ Complete | Local state store with monotonic timestamp filtering |
-| **ConflictDetector** | ✅ Complete | Multi-source spatial & temporal overlap detection |
-| **PriorityEngine** | ✅ Complete | Multi-factor normalized scoring with $\epsilon$-tie-breaking |
-| **ReservationManager** | ✅ Complete | Strict mutual exclusion, non-preemption, idempotent release |
-| **TaskAllocator** | ✅ Complete | Decentralized auctioning with battery and deadline constraints |
-| **FailureDetector** | ✅ Complete | Heartbeat freshness monitoring and automated task reclamation |
-| **ObstaclePolicy** | ✅ Complete | Corridor blockage detection & spatial intersection tests |
-| **RerouteEvaluator** | ✅ Complete | Deterministic alternative route evaluation |
-| **NetworkManager** | ✅ Complete | Communication health FSM (CONNECTED → DEGRADED → DISCONNECTED → RECOVERY) |
-| **ReconciliationManager** | ✅ Complete | Deterministic post-partition state convergence |
-| **MetricsLogger & Benchmark** | ✅ Complete | Event historian & evaluation proving $\ge 20\%$ improvement over baseline |
-
----
-
-## Key Subsystems Overview
-
-### 1. WorldModel (`world_model.py`)
-- **Local Private Memory**: Maintains one AMR's working memory (`_own_state`, `_own_intent`, `_peer_states`, `_peer_intents`, `_reservations`, `_tasks`, `_obstacles`).
-- **Timestamp Monotonicity**: Incoming updates with timestamps $\le$ stored timestamps are rejected.
-- **Query-Time Freshness**: Queries dynamically filter expired records without requiring periodic garbage collection.
-
-### 2. ConflictDetector (`conflict_detector.py`)
-- **Discrete Resource Modeling**: Evaluates overlapping reservations and broadcast intents across shared spatial resources (e.g. intersections `I1`, `I2`).
-- **Open-Interval Semantics**: $A_{\text{start}} < B_{\text{end}} \land B_{\text{start}} < A_{\text{end}}$.
-- **Deterministic Severity Sorting**: Outputs prioritized reports ordered by severity, overlap time, and robot ID.
-
-### 3. PriorityEngine (`priority_engine.py`)
-- **Multi-Factor Scoring**: Evaluates task priority, deadline urgency, intent commitment age, and battery status.
-- **Symmetric Consensus**: Guaranteeing $\text{resolve}(A, B) \equiv \text{resolve}(B, A)$ across independent robots.
-- **$\epsilon$-Tie Breaking**: Floating-point near-equality ($\epsilon = 10^{-9}$) falls back to lexicographic string comparison (`robot_id`).
-
-### 4. ReservationManager (`reservation_manager.py`)
-- **Single-View Mutual Exclusion**: Prevents granting overlapping time intervals to multiple robots on exclusive resources.
-- **Non-Preemption**: Active, granted reservations are never revoked by competing requests.
-- **Atomic Operations & Idempotency**: Safe release and renewal operations.
-
-### 5. TaskAllocator (`task_allocator.py`)
-- **Decentralized Bidding**: Robots independently evaluate announced tasks and score bids based on distance, battery, and capability.
-- **Consensus Winner Rule**: Lowest robot ID breaks score ties, ensuring identical winner selection fleet-wide.
-
-### 6. FailureDetector (`failure_detector.py`)
-- **Heartbeat Freshness**: Classifies peers into `HEALTHY`, `SUSPECT`, or `FAILED` based on telemetry age.
-- **Task Reclamation**: Reclaims uncompleted tasks from failed robots and resets status for re-auctioning.
-
-### 7. ObstaclePolicy & RerouteEvaluator (`obstacle_policy.py`, `reroute_evaluator.py`)
-- **Corridor Blockage**: Identifies when dynamic or static obstacles block planned paths.
-- **Decision-Only Rerouting**: Evaluates alternative routes without mutating tasks or navigation state.
-
-### 8. NetworkManager & ReconciliationManager (`network_manager.py`, `reconciliation_manager.py`)
-- **Degradation FSM**: Adapts coordination behavior when packet loss or latency spikes occur.
-- **Deterministic Reconciliation**: Merges split-brain states after reconnection using monotonic timestamp rules and reservation tie-breakers.
-
-### 9. MetricsLogger & BenchmarkEvaluator (`metrics_logger.py`, `benchmark_evaluator.py`)
-- **Observational Historian**: Tracks task completion times, waiting durations, throughput, and collision counts.
-- **Baseline Verification**: Demonstrates $\ge 20\%$ Average Task Completion Time (ATCT) improvement over a sequential STOP-AND-WAIT baseline with a guaranteed 0-collision safety record.
-
----
-
-## Testing & Verification
-
-All 13 test suites run in **$< 1.0$ second** with zero external dependencies:
+All 13 algorithmic test suites run in **$< 1.0$ second** with zero external simulation or middleware dependencies:
 
 ```bash
 # Run complete test suite (323 tests)
 python -m pytest -q
 
-# Run verbose tests on a specific module
+# Run verbose tests on specific modules
 python -m pytest fleet_coordination/tests/test_reservation_manager.py -v
 python -m pytest fleet_coordination/tests/test_benchmark.py -v
 ```
@@ -191,12 +173,12 @@ fleet_coordination/tests/test_network_manager.py ...................... (22 test
 fleet_coordination/tests/test_metrics.py .......                        (7 tests)
 fleet_coordination/tests/test_benchmark.py .....                        (5 tests)
 
-============================= 323 passed in 0.62s =============================
+============================= 323 passed in 0.80s =============================
 ```
 
 ---
 
-## Integration Boundaries
+## 🔗 Integration Boundaries
 
 ### ROS 2 Interface Boundary
 - Located strictly in `fleet_coordination/ros_interface/`.
@@ -207,3 +189,11 @@ fleet_coordination/tests/test_benchmark.py .....                        (5 tests
 - **Nav2** manages continuous trajectory generation, local collision avoidance, and motor control.
 - **Fleet Coordination** arbitrates discrete resource access, task assignment, and yield decisions.
 - **Gazebo** simulates physics, sensors (LiDAR/Odometry), and robot hardware.
+
+---
+
+## 📚 Technical Documentation & Module Guides
+
+- 👉 **[Gazebo Simulation Module Documentation (`gazebo/README.md`)](./gazebo/README.md)**: Full installation guides, SDF world topologies, Gazebo-to-ROS 2 bridges, and sensor catalogs.
+- 👉 **[Algorithmic Technical Documentation (`fleet_coordination/PROJECT.md`)](./fleet_coordination/PROJECT.md)**: Mathematical formulations, invariants, and detailed state machines.
+- 👉 **[Developer Handoff Guide (`fleet_coordination/ALGORITHM_HANDOFF.md`)](./fleet_coordination/ALGORITHM_HANDOFF.md)**: ROS 2 integration contracts, topic schemas, and developer workflows.
