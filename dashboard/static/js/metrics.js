@@ -1,6 +1,6 @@
 /**
- * SYNERGY Dashboard - Metrics & Evaluation Manager (Phase 12, 14, 15)
- * Real-time calculation, benchmark comparison, chart rendering, and CSV experiment logging.
+ * SYNERGY AMR Fleet Control Platform — Benchmark & Evaluation Manager
+ * Computes empirical metrics, renders comparison bars, and handles experiment logging.
  */
 
 class MetricsEvaluator {
@@ -35,7 +35,7 @@ class MetricsEvaluator {
 
             const data = await res.json();
             if (data.status === 'success') {
-                alert(`Successfully logged ${mode.toUpperCase()} experiment run (${data.run_id}) to CSV & JSON!`);
+                alert(`Logged ${mode.toUpperCase()} experiment run (${data.run_id}) to CSV audit log.`);
                 this.fetchAggregateMetrics();
             }
         } catch (err) {
@@ -69,36 +69,50 @@ class MetricsEvaluator {
         const propTasks = metricsData.tasks_completed !== undefined ? metricsData.tasks_completed : 3;
         const propCollisions = metricsData.collision_count !== undefined ? metricsData.collision_count : 0;
 
-        // Baseline elements
-        document.getElementById('eval-base-time').textContent = `${this.baselineMetrics.total_task_time.toFixed(1)} s`;
-        document.getElementById('eval-base-wait').textContent = `${this.baselineMetrics.average_wait_time.toFixed(1)} s`;
-        document.getElementById('eval-base-tasks').textContent = this.baselineMetrics.tasks_completed;
-        document.getElementById('eval-base-collisions').textContent = this.baselineMetrics.collision_count;
+        // Baseline table metrics
+        const baseTimeElem = document.getElementById('eval-base-time');
+        const baseWaitElem = document.getElementById('eval-base-wait');
+        const baseTasksElem = document.getElementById('eval-base-tasks');
+        const baseCollElem = document.getElementById('eval-base-collisions');
 
-        // Proposed elements
-        document.getElementById('eval-prop-time').textContent = `${propTime.toFixed(1)} s`;
-        document.getElementById('eval-prop-wait').textContent = `${propWait.toFixed(1)} s`;
-        document.getElementById('eval-prop-tasks').textContent = propTasks;
-        document.getElementById('eval-prop-collisions').textContent = propCollisions;
+        if (baseTimeElem) baseTimeElem.textContent = `${this.baselineMetrics.total_task_time.toFixed(1)} s`;
+        if (baseWaitElem) baseWaitElem.textContent = `${this.baselineMetrics.average_wait_time.toFixed(1)} s`;
+        if (baseTasksElem) baseTasksElem.textContent = this.baselineMetrics.tasks_completed;
+        if (baseCollElem) baseCollElem.textContent = this.baselineMetrics.collision_count;
 
-        // Calculated improvement
+        // Proposed table metrics
+        const propTimeElem = document.getElementById('eval-prop-time');
+        const propWaitElem = document.getElementById('eval-prop-wait');
+        const propTasksElem = document.getElementById('eval-prop-tasks');
+        const propCollElem = document.getElementById('eval-prop-collisions');
+
+        if (propTimeElem) propTimeElem.textContent = `${propTime.toFixed(1)} s`;
+        if (propWaitElem) propWaitElem.textContent = `${propWait.toFixed(1)} s`;
+        if (propTasksElem) propTasksElem.textContent = propTasks;
+        if (propCollElem) propCollElem.textContent = propCollisions;
+
+        // Improvement calculation
         const improvement = this.calculateImprovement(this.baselineMetrics.total_task_time, propTime);
         const impElement = document.getElementById('eval-improvement');
-        
-        impElement.textContent = `${improvement >= 0 ? '+' : ''}${improvement.toFixed(1)}%`;
-        impElement.className = `val-large ${improvement >= 0 ? 'positive' : 'negative'}`;
 
-        // Honest target verification
-        const targetBadge = document.getElementById('eval-target-badge');
-        if (improvement >= this.targetImprovementPercent) {
-            targetBadge.textContent = 'TARGET MET';
-            targetBadge.className = 'target-badge badge-success';
-        } else {
-            targetBadge.textContent = `BELOW TARGET (${improvement.toFixed(1)}%)`;
-            targetBadge.className = 'target-badge badge-fail';
+        if (impElement) {
+            impElement.textContent = `${improvement >= 0 ? '+' : ''}${improvement.toFixed(1)}%`;
+            impElement.className = `val-large ${improvement >= 0 ? 'positive' : 'negative'}`;
         }
 
-        // Render CSS Comparison Charts (Phase 15)
+        // Target Goal Badge
+        const targetBadge = document.getElementById('eval-target-badge');
+        if (targetBadge) {
+            if (improvement >= this.targetImprovementPercent) {
+                targetBadge.textContent = 'TARGET MET';
+                targetBadge.className = 'target-badge badge-success';
+            } else {
+                targetBadge.textContent = `BELOW TARGET (${improvement.toFixed(1)}%)`;
+                targetBadge.className = 'target-badge badge-fail';
+            }
+        }
+
+        // Horizontal comparison charts
         this.renderCharts(this.baselineMetrics.total_task_time, propTime, this.baselineMetrics.average_wait_time, propWait);
     }
 
@@ -111,10 +125,22 @@ class MetricsEvaluator {
         const barBaseWait = document.getElementById('chart-bar-base-wait');
         const barPropWait = document.getElementById('chart-bar-prop-wait');
 
-        if (barBaseTime) barBaseTime.style.width = `${(baseTime / maxTime) * 100}%`;
-        if (barPropTime) barPropTime.style.width = `${(propTime / maxTime) * 100}%`;
+        if (barBaseTime) {
+            barBaseTime.style.width = `${(baseTime / maxTime) * 100}%`;
+            barBaseTime.textContent = `Baseline: ${baseTime.toFixed(1)}s`;
+        }
+        if (barPropTime) {
+            barPropTime.style.width = `${(propTime / maxTime) * 100}%`;
+            barPropTime.textContent = `Proposed: ${propTime.toFixed(1)}s`;
+        }
 
-        if (barBaseWait) barBaseWait.style.width = `${(baseWait / maxWait) * 100}%`;
-        if (barPropWait) barPropWait.style.width = `${(propWait / maxWait) * 100}%`;
+        if (barBaseWait) {
+            barBaseWait.style.width = `${(baseWait / maxWait) * 100}%`;
+            barBaseWait.textContent = `Baseline: ${baseWait.toFixed(1)}s`;
+        }
+        if (barPropWait) {
+            barPropWait.style.width = `${(propWait / maxWait) * 100}%`;
+            barPropWait.textContent = `Proposed: ${propWait.toFixed(1)}s`;
+        }
     }
 }

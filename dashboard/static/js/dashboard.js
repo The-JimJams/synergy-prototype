@@ -1,16 +1,24 @@
 /**
- * SYNERGY Dashboard - Main Controller (Phase 5 - 11)
- * Manages periodic polling, DOM updates, event log filtering, and scenario selection.
+ * SYNERGY AMR Fleet Control Platform — Main Dashboard Controller
+ * Connects UI controls, manages polling loop, updates tables, event feed, and inspector panel.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     const pollIntervalMs = window.POLL_INTERVAL || 500;
-    
-    // Components
+
+    // ── Components ───────────────────────────────────────────────────────────
     const mapRenderer = new WarehouseMapRenderer('warehouse-canvas');
     const metricsEvaluator = new MetricsEvaluator();
 
-    // DOM Elements
+    // ── Global State ─────────────────────────────────────────────────────────
+    let currentRobots = {};
+    let currentIntents = [];
+    let currentReservations = [];
+    let currentTasks = [];
+    let currentEvents = [];
+    let selectedRobotId = null;
+
+    // ── DOM References ───────────────────────────────────────────────────────
     const backendDot = document.getElementById('backend-dot');
     const backendStatusText = document.getElementById('backend-status-text');
     const systemMode = document.getElementById('system-mode');
@@ -20,18 +28,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const eventTypeFilter = document.getElementById('event-type-filter');
     const eventRobotFilter = document.getElementById('event-robot-filter');
 
-    // Controls
+    // ── Map Toolbar Controls ─────────────────────────────────────────────────
+    document.getElementById('btn-zoom-in')?.addEventListener('click', () => mapRenderer.zoomIn());
+    document.getElementById('btn-zoom-out')?.addEventListener('click', () => mapRenderer.zoomOut());
+    document.getElementById('btn-fit-map')?.addEventListener('click', () => mapRenderer.fitWarehouse());
+    document.getElementById('btn-reset-view')?.addEventListener('click', () => mapRenderer.resetView());
+    document.getElementById('btn-center-robot')?.addEventListener('click', () => {
+        if (selectedRobotId) mapRenderer.centerOnRobot(selectedRobotId);
+    });
+
+    // ── Layer Toggles ────────────────────────────────────────────────────────
     document.getElementById('toggle-paths')?.addEventListener('change', (e) => {
         mapRenderer.showPaths = e.target.checked;
     });
-    document.getElementById('toggle-labels')?.addEventListener('change', (e) => {
-        mapRenderer.showLabels = e.target.checked;
+    document.getElementById('toggle-lanes')?.addEventListener('change', (e) => {
+        mapRenderer.showLanes = e.target.checked;
     });
     document.getElementById('toggle-grid')?.addEventListener('change', (e) => {
         mapRenderer.showGrid = e.target.checked;
     });
+    document.getElementById('toggle-labels')?.addEventListener('change', (e) => {
+        mapRenderer.showLabels = e.target.checked;
+    });
+    document.getElementById('toggle-obstacles')?.addEventListener('change', (e) => {
+        mapRenderer.showObstacles = e.target.checked;
+    });
 
-    // Scenario Switching
+    // ── Map Selection Callback ───────────────────────────────────────────────
+    mapRenderer.onSelectRobot = (robotId) => {
+        selectedRobotId = robotId;
+        updateInspector();
+        highlightRobotCards();
+    };
+
+    // ── AMR Card Click Handlers (Right Column) ───────────────────────────────
+    document.querySelectorAll('.amr-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const rid = card.getAttribute('data-robot');
+            if (rid) {
+                selectedRobotId = rid;
+                mapRenderer.selectRobot(rid);
+                mapRenderer.centerOnRobot(rid);
+                updateInspector();
+                highlightRobotCards();
+            }
+        });
+    });
+
+    // ── Inspector Action Buttons ─────────────────────────────────────────────
+    document.getElementById('btn-focus-selected')?.addEventListener('click', () => {
+        if (selectedRobotId) {
+            mapRenderer.centerOnRobot(selectedRobotId);
+        }
+    });
+
+    document.getElementById('btn-deselect')?.addEventListener('click', () => {
+        selectedRobotId = null;
+        mapRenderer.selectRobot(null);
+        updateInspector();
+        highlightRobotCards();
+    });
+
+    // ── Scenario Switching ───────────────────────────────────────────────────
     scenarioSelector?.addEventListener('change', async (e) => {
         const selected = e.target.value;
         try {
@@ -42,18 +100,19 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await res.json();
             if (data.status === 'success') {
-                console.log(`Switched to scenario ${selected}`);
+                console.log(`Switched to scenario: ${selected}`);
+                fetchTelemetry();
             }
         } catch (err) {
             console.error('Failed to switch scenario:', err);
         }
     });
 
-    // Event Filter Listeners
+    // ── Event Filters ────────────────────────────────────────────────────────
     eventTypeFilter?.addEventListener('change', () => fetchTelemetry());
     eventRobotFilter?.addEventListener('change', () => fetchTelemetry());
 
-    // Main Polling Loop
+    // ── Main Telemetry Polling Loop ──────────────────────────────────────────
     async function fetchTelemetry() {
         try {
             // Build events filter query
@@ -63,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const eventsUrl = '/api/events' + (eventParams.toString() ? '?' + eventParams.toString() : '');
 
-            // Parallel API fetches for responsiveness
+            // Parallel fetches for responsive updates
             const [stateRes, intentsRes, resRes, tasksRes, eventsRes, netRes, metricsRes, healthRes] = await Promise.all([
                 fetch('/api/state'),
                 fetch('/api/intents'),
@@ -86,43 +145,54 @@ document.addEventListener('DOMContentLoaded', () => {
             const metricsData = await metricsRes.json();
             const healthData = await healthRes.json();
 
+            // Cache data
+            currentRobots = stateData.robots || {};
+            currentIntents = intentsData.intents || [];
+            currentReservations = resData.reservations || [];
+            currentTasks = tasksData.tasks || [];
+            currentEvents = eventsData.events || [];
+
             // Update Connection Status
-            backendDot.className = 'indicator-dot online';
-            backendStatusText.textContent = 'Connected';
+            backendDot.className = 'connection-dot online';
+            backendStatusText.textContent = 'ONLINE';
             systemMode.textContent = (healthData.mode || 'MOCK').toUpperCase();
 
-            // Update Last Time
+            // Update Telemetry Timestamp
             const now = new Date();
             lastUpdateTime.textContent = now.toLocaleTimeString();
 
-            // Update Robots Cards & Map
-            updateRobotCards(stateData.robots || {}, intentsData.intents || []);
-            mapRenderer.render(stateData.robots || {}, resData.reservations || [], intentsData.intents || [], eventsData.events || []);
+            // Handover telemetry to 60fps Map Canvas
+            mapRenderer.updateTelemetry(currentRobots, currentReservations, currentIntents, currentEvents, currentTasks);
 
-            // Update Lower Panels
-            updateReservationsTable(resData.reservations || []);
-            updateTasksTable(tasksData.tasks || []);
-            updateNetworkPanel(netData);
-            updateEventFeed(eventsData.events || []);
+            // Update UI Panels
+            updateRobotCards();
+            updateInspector();
+            updateTasksTable();
+            updateReservationsTable();
+            updateNetworkDiagnostics(netData);
+            updateEventFeed();
+            updateFleetSummaryKPIs();
             metricsEvaluator.updateUI(metricsData);
 
         } catch (err) {
-            backendDot.className = 'indicator-dot offline';
-            backendStatusText.textContent = 'Disconnected';
-            console.warn('Polling error:', err);
+            backendDot.className = 'connection-dot offline';
+            backendStatusText.textContent = 'RECONNECTING';
+            console.warn('Telemetry polling error:', err);
         }
     }
 
-    function updateRobotCards(robots = {}, intents = []) {
+    // ── UI Update Helpers ────────────────────────────────────────────────────
+
+    function updateRobotCards() {
         ['A', 'B', 'C'].forEach(rid => {
-            const r = robots[rid];
+            const r = currentRobots[rid];
             if (!r) return;
 
-            // Status tag class mapping
+            // Status Tag
             const statusTag = document.getElementById(`robot-${rid}-status`);
             if (statusTag) {
-                statusTag.textContent = r.status || 'UNKNOWN';
-                statusTag.className = `status-tag tag-${(r.status || 'idle').toLowerCase()}`;
+                statusTag.textContent = r.status || 'IDLE';
+                statusTag.className = `status-badge tag-${(r.status || 'idle').toLowerCase()}`;
             }
 
             // Position & Speed
@@ -139,66 +209,140 @@ document.addEventListener('DOMContentLoaded', () => {
                 const bat = r.battery !== undefined ? r.battery : 100;
                 batVal.textContent = `${Math.round(bat)}%`;
                 batBar.style.width = `${bat}%`;
-                batBar.style.backgroundColor = bat < 20 ? '#ef4444' : (bat < 50 ? '#f59e0b' : '#10b981');
-            }
-
-            // Task
-            const taskElem = document.getElementById(`robot-${rid}-task`);
-            if (taskElem) taskElem.textContent = r.task_id || 'None';
-
-            // Intent
-            const intent = intents.find(i => i.robot_id === rid);
-            const intentElem = document.getElementById(`robot-${rid}-intent`);
-            if (intentElem) {
-                intentElem.textContent = intent ? `${intent.resource_id} (${intent.eta ? intent.eta + 's' : 'active'})` : 'None';
+                batBar.className = `battery-bar-fill ${bat < 15 ? 'crit' : (bat < 30 ? 'low' : '')}`;
             }
         });
     }
 
-    function updateReservationsTable(reservations = []) {
-        const tbody = document.getElementById('reservations-tbody');
-        if (!tbody) return;
+    function highlightRobotCards() {
+        ['A', 'B', 'C'].forEach(rid => {
+            const card = document.getElementById(`robot-card-${rid}`);
+            if (card) {
+                if (selectedRobotId === rid) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            }
+        });
+    }
 
-        if (reservations.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="empty-row">No active reservations</td></tr>';
+    function updateInspector() {
+        const titleElem = document.getElementById('inspect-robot-id');
+        const poseElem = document.getElementById('inspect-pose');
+        const speedElem = document.getElementById('inspect-speed');
+        const taskElem = document.getElementById('inspect-task');
+        const intentElem = document.getElementById('inspect-intent');
+
+        if (!selectedRobotId || !currentRobots[selectedRobotId]) {
+            if (titleElem) titleElem.textContent = 'None Selected (Click an AMR)';
+            if (poseElem) poseElem.textContent = '—';
+            if (speedElem) speedElem.textContent = '—';
+            if (taskElem) taskElem.textContent = '—';
+            if (intentElem) intentElem.textContent = '—';
             return;
         }
 
-        tbody.innerHTML = reservations.map(r => `
-            <tr>
-                <td><strong>${r.resource_id}</strong></td>
-                <td>${r.robot_id ? `<span class="robot-avatar robot-${r.robot_id}">${r.robot_id}</span> Robot ${r.robot_id}` : '—'}</td>
-                <td><span class="status-tag ${r.status === 'ACTIVE' ? 'tag-failed' : 'tag-idle'}">${r.status}</span></td>
-                <td>${r.eta ? r.eta + 's' : '—'}</td>
-            </tr>
-        `).join('');
+        const r = currentRobots[selectedRobotId];
+        const yawDeg = Math.round(((r.yaw || 0.0) * 180 / Math.PI));
+
+        if (titleElem) titleElem.textContent = `AMR ${r.robot_id} [${r.status || 'IDLE'}]`;
+        if (poseElem) poseElem.textContent = `X: ${r.x.toFixed(2)}m, Y: ${r.y.toFixed(2)}m, θ: ${yawDeg}°`;
+        if (speedElem) speedElem.textContent = `${(r.velocity || 0.0).toFixed(2)} m/s (Bat: ${Math.round(r.battery)}%)`;
+
+        // Assigned Task
+        const task = currentTasks.find(t => t.assigned_robot === selectedRobotId && t.status !== 'COMPLETED');
+        if (taskElem) {
+            taskElem.textContent = task ? `${task.task_id} (${task.pickup} → ${task.dropoff}) [${task.status}]` : (r.task_id ? `${r.task_id}` : 'None (Available)');
+        }
+
+        // Declared Intent
+        const intent = currentIntents.find(i => i.robot_id === selectedRobotId);
+        if (intentElem) {
+            intentElem.textContent = intent ? `${intent.resource_id} (ETA: ${intent.eta ? intent.eta + 's' : 'immediate'})` : 'None (No contention)';
+        }
     }
 
-    function updateTasksTable(tasks = []) {
+    function updateFleetSummaryKPIs() {
+        const robotsArr = Object.values(currentRobots);
+        const activeCount = robotsArr.filter(r => r.status === 'MOVING').length;
+        const failedCount = robotsArr.filter(r => r.status === 'FAILED').length;
+        const completedTasks = currentTasks.filter(t => t.status === 'COMPLETED').length;
+
+        const totalElem = document.getElementById('summary-total-amrs');
+        const activeElem = document.getElementById('summary-active-amrs');
+        const tasksElem = document.getElementById('summary-completed-tasks');
+        const fleetBadge = document.getElementById('fleet-health-badge');
+        const kpiActive = document.getElementById('kpi-active-robots');
+
+        if (totalElem) totalElem.textContent = robotsArr.length || 3;
+        if (activeElem) activeElem.textContent = activeCount;
+        if (tasksElem) tasksElem.textContent = completedTasks;
+        if (kpiActive) kpiActive.textContent = `${robotsArr.length || 3} AMRs`;
+
+        if (fleetBadge) {
+            if (failedCount > 0) {
+                fleetBadge.textContent = `${failedCount} AMR FAILED`;
+                fleetBadge.className = 'status-badge tag-failed';
+            } else {
+                fleetBadge.textContent = `${robotsArr.length}/3 HEALTHY`;
+                fleetBadge.className = 'status-badge tag-completed';
+            }
+        }
+    }
+
+    function updateTasksTable() {
         const tbody = document.getElementById('tasks-tbody');
         if (!tbody) return;
 
-        if (tasks.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="empty-row">No active tasks</td></tr>';
+        if (currentTasks.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-row">No active warehouse tasks</td></tr>';
             return;
         }
 
-        tbody.innerHTML = tasks.map(t => `
+        tbody.innerHTML = currentTasks.map(t => {
+            let statusClass = 'tag-idle';
+            if (t.status === 'COMPLETED') statusClass = 'tag-completed';
+            if (t.status === 'IN_PROGRESS' || t.status === 'ASSIGNED') statusClass = 'tag-moving';
+            if (t.status === 'FAILED') statusClass = 'tag-failed';
+            if (t.status === 'WAITING' || t.status === 'REASSIGNED') statusClass = 'tag-waiting';
+
+            return `
+                <tr>
+                    <td><strong>${t.task_id}</strong></td>
+                    <td class="mono">${t.pickup} &rarr; ${t.dropoff}</td>
+                    <td>${t.assigned_robot ? `AMR ${t.assigned_robot}` : '—'}</td>
+                    <td><span class="status-badge ${statusClass}">${t.status}</span></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function updateReservationsTable() {
+        const tbody = document.getElementById('reservations-tbody');
+        if (!tbody) return;
+
+        if (currentReservations.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-row">No active intersection claims</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = currentReservations.map(r => `
             <tr>
-                <td><strong>${t.task_id}</strong></td>
-                <td>${t.pickup} → ${t.dropoff}</td>
-                <td>${t.assigned_robot ? `Robot ${t.assigned_robot}` : 'Unassigned'}</td>
-                <td><span class="status-tag ${t.status === 'COMPLETED' ? 'tag-normal' : (t.status === 'FAILED' ? 'tag-failed' : (t.status === 'WAITING' ? 'tag-waiting' : 'tag-moving'))}">${t.status}</span></td>
+                <td><strong>${r.resource_id}</strong></td>
+                <td>${r.robot_id ? `AMR ${r.robot_id}` : '—'}</td>
+                <td><span class="status-badge ${r.status === 'ACTIVE' ? 'tag-moving' : 'tag-idle'}">${r.status}</span></td>
+                <td class="mono">${r.eta ? r.eta + 's' : '—'}</td>
             </tr>
         `).join('');
     }
 
-    function updateNetworkPanel(net = {}) {
+    function updateNetworkDiagnostics(net = {}) {
         const statusTag = document.getElementById('network-status-tag');
         if (statusTag) {
             const status = net.status || 'NORMAL';
             statusTag.textContent = status;
-            statusTag.className = `status-tag ${status === 'NORMAL' ? 'tag-normal' : 'tag-failed'}`;
+            statusTag.className = `status-badge ${status === 'NORMAL' ? 'tag-completed' : 'tag-waiting'}`;
         }
 
         const latElem = document.getElementById('net-latency');
@@ -211,15 +355,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (peersElem) peersElem.textContent = `${net.active_peers !== null && net.active_peers !== undefined ? net.active_peers : 3} / 3`;
     }
 
-    function updateEventFeed(events = []) {
+    function updateEventFeed() {
         if (!eventFeedList) return;
 
-        if (events.length === 0) {
-            eventFeedList.innerHTML = '<div class="empty-feed">No matching events recorded</div>';
+        if (currentEvents.length === 0) {
+            eventFeedList.innerHTML = '<div class="empty-row">Awaiting telemetry events...</div>';
             return;
         }
 
-        eventFeedList.innerHTML = events.slice(0, 50).map(e => {
+        eventFeedList.innerHTML = currentEvents.slice(0, 50).map(e => {
             const date = new Date(e.timestamp);
             const timeStr = isNaN(date.getTime()) ? '--:--:--' : date.toLocaleTimeString();
 
@@ -232,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
     }
 
-    // Start Polling
+    // ── Initial Start ────────────────────────────────────────────────────────
     fetchTelemetry();
     setInterval(fetchTelemetry, pollIntervalMs);
 });

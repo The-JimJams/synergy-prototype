@@ -80,7 +80,8 @@ def create_app(
 
     @app.route("/")
     def index():
-        if os.path.exists(os.path.join(app.template_folder, "index.html")):
+        template_path = os.path.join(app.root_path, app.template_folder, "index.html")
+        if os.path.exists(template_path):
             return render_template(
                 "index.html",
                 mode=mode,
@@ -142,6 +143,24 @@ def create_app(
             net["is_simulated"] = True
             net["note"] = "Simulated mock network telemetry"
         return jsonify(net)
+
+    @app.route("/api/map/layout", methods=["GET"])
+    def api_map_layout():
+        return jsonify({
+            "bounds": {
+                "min_x": config.MAP_MIN_X,
+                "max_x": config.MAP_MAX_X,
+                "min_y": config.MAP_MIN_Y,
+                "max_y": config.MAP_MAX_Y,
+                "width": config.MAP_WIDTH,
+                "height": config.MAP_HEIGHT,
+            },
+            "stations": config.STATIONS,
+            "intersections": config.INTERSECTIONS,
+            "racks": config.RACKS,
+            "obstacles": config.OBSTACLES,
+            "robot_homes": config.ROBOT_HOMES,
+        })
 
     @app.route("/api/metrics", methods=["GET"])
     def api_metrics():
