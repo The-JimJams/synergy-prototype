@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Experiment data (keep structure, ignore generated data)
+data/experiments/*.csv
+data/experiments/*.json
+data/experiments/*.jsonl
+data/events/*.json
+data/events/*.jsonl
+
+# Don't ignore the directories themselves
+!data/experiments/.gitkeep
+!data/events/.gitkeep
+
+# Environment
+.env

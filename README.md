@@ -1,9 +1,8 @@
-# SYNERGY — Multi-Agent AMR Orchestration & Decentralized Fleet Coordination
+# SYNERGY — Decentralized Multi-AMR Warehouse Fleet Coordination & Operations Platform
 
-
-> **Multi-Agent Autonomous Mobile Robot (AMR) Orchestration, Logistics Simulation & Decentralized Fleet Coordination Framework**
-
-A high-fidelity multi-robot logistics simulation platform built on **Gazebo Sim** (SDF 1.9) and **ROS 2**, paired with a **pure Python decentralized fleet coordination algorithm suite**. Designed for benchmarking decentralized multi-agent coordination, collision avoidance, fleet routing, and SLAM navigation in an industrial warehouse environment.
+> **Decentralized Autonomous Mobile Robot (AMR) Orchestration, Logistics Simulation & Live Operations Dashboard**
+>
+> SYNERGY is a competition-ready industrial multi-robot logistics coordination platform featuring pure‑Python decentralized coordination algorithms, high-fidelity Gazebo Sim (SDF 1.9), ROS 2 integration, and a dedicated operations dashboard.
 
 ---
 
@@ -11,14 +10,29 @@ A high-fidelity multi-robot logistics simulation platform built on **Gazebo Sim*
 
 ```
 synergy-prototype/
+├── dashboard/                      # Live Industrial AMR Fleet Operations Dashboard
+│   ├── app.py                      # Flask REST API backend & static server
+│   ├── config.py                   # 20m × 20m warehouse coordinates & configuration
+│   ├── data_store.py               # In-memory thread-safe telemetry store
+│   ├── simulator/                  # Standalone mock telemetry engine (6 scenarios)
+│   ├── static/                     # Light industrial theme CSS & 60fps Canvas 2D engine
+│   ├── templates/                  # Operations command center HTML template
+│   └── tests/                      # 79 pytest unit & integration tests
+├── fleet_coordination/             # Fleet Coordination Algorithmic Subsystem
+│   ├── config/                     # Tunable parameters (no magic numbers)
+│   ├── models/                     # Pure dataclasses (shared domain vocabulary)
+│   ├── algorithm/                  # Core algorithms (ZERO ROS / Gazebo imports)
+│   ├── ros_interface/              # ROS 2 adapter layer (rclpy node, serialization)
+│   └── tests/                      # 13 test suites (323 pytest unit & integration tests)
 ├── gazebo/                         # Gazebo Simulation Environment Sub-Package
-│   ├── README.md                   # Detailed Gazebo module manual & topic catalog
 │   ├── scripts/                    # Universal cross-platform simulation launchers
 │   └── simulation/
-│       ├── models/                 # Modular SDF 1.9 models (AMRs, Shelves, Stations)
+│       ├── models/                 # Modular SDF models (AMRs, Shelves, Stations)
 │       └── worlds/
 │           ├── warehouse.sdf       # Master 20m × 20m multi-robot warehouse world
 │           └── amr_test.sdf        # Isolated single-robot testing environment
+├── p5_task_failure/                # Task failure & recovery test scenarios
+├── Dockerfile                      # Containerized environment build
 ├── fleet_coordination/             # Decentralized Coordination Algorithm Sub-Package
 │   ├── config/                     # Tunable parameters, weights, timeouts
 │   ├── models/                     # Pure dataclasses (shared vocabulary)
@@ -28,14 +42,42 @@ synergy-prototype/
 │   ├── PROJECT.md                  # Comprehensive algorithmic technical documentation
 │   └── ALGORITHM_HANDOFF.md        # ROS 2 integration contracts & developer handoff guide
 
-└── README.md                       # Master project overview
+└── README.md                       # Master project documentation
 ```
+
+---
+
+## 🖥️ Live AMR Operations Dashboard (`dashboard/`)
+
+A light-theme industrial control dashboard for real-time fleet telemetry, 2D floor plan visualization, intersection claim monitoring, and benchmark evaluation.
+
+### Running the Dashboard
+
+```bash
+# Standalone Mock Mode (runs anywhere without ROS 2 or Gazebo)
+python dashboard/run_dashboard.py --mode mock --scenario full_demo --port 5055
+
+# Or via ROS 2 mode (subscribes to live ROS 2 / Nav2 telemetry topics)
+python dashboard/run_dashboard.py --mode ros2 --port 5055
+```
+
+Open your browser at: `http://localhost:5055`
+
+### Key Dashboard Features
+
+* **Architectural 20×20m Warehouse Map:** 1:1 scale matching Gazebo `warehouse.sdf` with 8 vertical shelving racks ($S1$–$S8$), Pickup ($P$), Dropoff ($D$), Charging Bay with rapid recharge ($CHG$ ⚡), and chokepoint intersections ($I1$, $I2$).
+* **60 FPS Smooth AMR Movement:** Interpolation engine with linear position lerp and shortest-arc orientation delta handling across $\pm\pi$.
+* **Inspector & Fleet Cards:** Interactive AMR selection, operating pose, speed, battery gauge, and assigned task.
+* **Operations Deck:** Warehouse task queue, intersection reservations, mesh network diagnostics, filtered event feed, and empirical benchmark evaluation.
+* **Testing:** 79 automated pytest tests (`python -m pytest dashboard/tests -v`).
 
 ---
 
 ## ⚡ Quick Start (Gazebo Simulation)
 
 ### 1. Launch Multi-Robot Gazebo Simulation
+
+Launch the complete multi-robot simulation environment with a single command:
 
 #### 🍎 macOS / 🐧 Linux
 ```bash
@@ -69,23 +111,23 @@ The simulation includes **3 color-coded AMRs** operating under isolated namespac
 
 | Robot | Color Theme | Initial Spawn `(X, Y)` | Velocity Topic (Pub) | Odometry Topic (Sub) | 2D LiDAR Topic (Sub) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **AMR Blue** | 🔵 Sapphire Blue | `(-3.5, 5.25)` | `/amr_blue/cmd_vel` | `/amr_blue/odom` | `/amr_blue/scan` |
-| **AMR Green** | 🟢 Emerald Green | `(0.5, 8.5)` | `/amr_green/cmd_vel` | `/amr_green/odom` | `/amr_green/scan` |
-| **AMR Orange**| 🟠 Safety Orange | `(3.5, -6.5)` | `/amr_orange/cmd_vel` | `/amr_orange/odom` | `/amr_orange/scan` |
-
-### Sample Velocity CLI Command
-```bash
-# Drive AMR Blue forward at 0.5 m/s
-gz topic -t "/amr_blue/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.5}, angular: {z: 0.0}"
-```
+| **AMR Blue (A)** | 🔵 Sapphire Blue | `(-7.5, 0.8)` | `/amr_blue/cmd_vel` | `/amr_blue/odom` | `/amr_blue/scan` |
+| **AMR Green (B)** | 🟢 Emerald Green | `(-4.3, -3.2)` | `/amr_green/cmd_vel` | `/amr_green/odom` | `/amr_green/scan` |
+| **AMR Orange (C)**| 🟠 Safety Orange | `(5.0, 3.5)` | `/amr_orange/cmd_vel` | `/amr_orange/odom` | `/amr_orange/scan` |
 
 ---
 
-## 🧠 Decentralized Fleet Coordination Architecture
+## 🧠 Fleet Coordination Algorithm (`fleet_coordination/`)
 
-> **Key Principle: There is no central fleet decision-maker.**
+Pure Python decentralized fleet coordination algorithms with zero external simulation dependencies.
+
+### Key Principle
+
+> **There is no central fleet decision-maker.**
 >
-> Every AMR runs an identical instance of the coordination logic, maintains its own local `WorldModel`, and makes independent decisions. Coordination emerges from peer-to-peer telemetry exchange and deterministic arbitration rules.
+> Every robot runs an identical instance of the coordination logic, maintains its own local `WorldModel`, and makes independent decisions. Coordination emerges from peer-to-peer telemetry exchange and deterministic arbitration rules.
+
+### Subsystem Components
 
 Fleet Coordination Agent (one per robot)
     │
@@ -101,6 +143,16 @@ Fleet Coordination Agent (one per robot)
     ├── ReconciliationManager — Post-partition state convergence & deterministic conflict resolution
     ├── MetricsLogger         — Observational event historian & counter tracker
     └── BenchmarkEvaluator    — Deterministic comparison against STOP-AND-WAIT baseline
+
+### Running Unit Tests
+
+```bash
+# Run fleet coordination tests (323 tests in <1.0s)
+python -m pytest fleet_coordination/tests -q
+
+# Run dashboard tests (79 tests)
+python -m pytest dashboard/tests -q
+```
 
 ### Domain Models (`fleet_coordination/models/`)
 
@@ -185,3 +237,6 @@ fleet_coordination/tests/test_benchmark.py .....                        (5 tests
 - 👉 **[Algorithmic Technical Documentation (`fleet_coordination/PROJECT.md`)](./fleet_coordination/PROJECT.md)**: Mathematical formulations, invariants, and detailed state machines.
 - 👉 **[Developer Handoff Guide (`fleet_coordination/ALGORITHM_HANDOFF.md`)](./fleet_coordination/ALGORITHM_HANDOFF.md)**: ROS 2 integration contracts, topic schemas, and developer workflows.
 
+* **Operations Dashboard Guide:** [`dashboard/README.md`](dashboard/README.md)
+* **Fleet Coordination Subsystem:** [`fleet_coordination/PROJECT.md`](fleet_coordination/PROJECT.md)
+* **Gazebo Simulation Manual:** [`gazebo/README.md`](gazebo/README.md)
