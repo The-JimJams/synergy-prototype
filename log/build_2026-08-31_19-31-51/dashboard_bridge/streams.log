@@ -1,0 +1,33 @@
+[3.207s] Invoking command in '/home/aditi/amr_ws/src/dashboard_bridge': PYTHONPATH=/home/aditi/amr_ws/build/dashboard_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/dashboard_bridge build --build-base /home/aditi/amr_ws/build/dashboard_bridge/build install --record /home/aditi/amr_ws/build/dashboard_bridge/install.log --single-version-externally-managed install_data
+[3.758s] running egg_info
+[3.799s] creating ../../build/dashboard_bridge/dashboard_bridge.egg-info
+[3.800s] writing ../../build/dashboard_bridge/dashboard_bridge.egg-info/PKG-INFO
+[3.802s] writing dependency_links to ../../build/dashboard_bridge/dashboard_bridge.egg-info/dependency_links.txt
+[3.802s] writing entry points to ../../build/dashboard_bridge/dashboard_bridge.egg-info/entry_points.txt
+[3.803s] writing requirements to ../../build/dashboard_bridge/dashboard_bridge.egg-info/requires.txt
+[3.803s] writing top-level names to ../../build/dashboard_bridge/dashboard_bridge.egg-info/top_level.txt
+[3.803s] writing manifest file '../../build/dashboard_bridge/dashboard_bridge.egg-info/SOURCES.txt'
+[3.878s] reading manifest file '../../build/dashboard_bridge/dashboard_bridge.egg-info/SOURCES.txt'
+[3.879s] writing manifest file '../../build/dashboard_bridge/dashboard_bridge.egg-info/SOURCES.txt'
+[3.879s] running build
+[3.880s] running build_py
+[3.880s] creating /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge
+[3.881s] copying dashboard_bridge/__init__.py -> /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge
+[3.881s] copying dashboard_bridge/dashboard_bridge_node.py -> /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge
+[3.883s] running install
+[3.894s] running install_lib
+[3.934s] creating /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge
+[3.935s] copying /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge/__init__.py -> /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge
+[3.935s] copying /home/aditi/amr_ws/build/dashboard_bridge/build/lib/dashboard_bridge/dashboard_bridge_node.py -> /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge
+[3.936s] byte-compiling /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge/__init__.py to __init__.cpython-314.pyc
+[3.937s] byte-compiling /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge/dashboard_bridge_node.py to dashboard_bridge_node.cpython-314.pyc
+[3.938s] running install_data
+[3.938s] creating /home/aditi/amr_ws/install/dashboard_bridge/share/ament_index/resource_index/packages
+[3.940s] copying resource/dashboard_bridge -> /home/aditi/amr_ws/install/dashboard_bridge/share/ament_index/resource_index/packages
+[3.940s] copying package.xml -> /home/aditi/amr_ws/install/dashboard_bridge/share/dashboard_bridge
+[3.941s] running install_egg_info
+[3.989s] Copying ../../build/dashboard_bridge/dashboard_bridge.egg-info to /home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages/dashboard_bridge-0.0.0-py3.14.egg-info
+[3.991s] running install_scripts
+[4.189s] Installing dashboard_bridge_node script to /home/aditi/amr_ws/install/dashboard_bridge/bin
+[4.189s] writing list of installed files to '/home/aditi/amr_ws/build/dashboard_bridge/install.log'
+[4.264s] Invoked command in '/home/aditi/amr_ws/src/dashboard_bridge' returned '0': PYTHONPATH=/home/aditi/amr_ws/build/dashboard_bridge/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/dashboard_bridge build --build-base /home/aditi/amr_ws/build/dashboard_bridge/build install --record /home/aditi/amr_ws/build/dashboard_bridge/install.log --single-version-externally-managed install_data

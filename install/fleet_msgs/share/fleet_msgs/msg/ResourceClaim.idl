@@ -1,0 +1,24 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from fleet_msgs/msg/ResourceClaim.msg
+// generated code does not contain a copyright notice
+
+
+module fleet_msgs {
+  module msg {
+    struct ResourceClaim {
+      string robot_id;
+
+      string resource;
+
+      double start_time;
+
+      double end_time;
+
+      int32 priority;
+
+      string claim_id;
+
+      string status;
+    };
+  };
+};

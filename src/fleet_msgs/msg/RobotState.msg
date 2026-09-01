@@ -1,0 +1,10 @@
+string robot_id
+float64 timestamp
+float64 x
+float64 y
+float64 theta
+float64 linear_velocity
+float64 angular_velocity
+float64 battery_percent
+string current_task_id
+string status

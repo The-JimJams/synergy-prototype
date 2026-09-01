@@ -1,0 +1,22 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from fleet_msgs/msg/TaskAnnouncement.msg
+// generated code does not contain a copyright notice
+
+
+module fleet_msgs {
+  module msg {
+    struct TaskAnnouncement {
+      string task_id;
+
+      string pickup;
+
+      string dropoff;
+
+      double deadline;
+
+      int32 priority;
+
+      sequence<string> capability_requirements;
+    };
+  };
+};

@@ -1,0 +1,4 @@
+# Development requirements for P5 (p5_task_failure)
+# Runtime: no dependencies (pure Python standard library)
+# Dev / test:
+pytest>=7.0

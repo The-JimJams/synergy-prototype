@@ -1,0 +1,13 @@
+package.xml
+setup.cfg
+setup.py
+../../build/fleet_coordination/fleet_coordination.egg-info/PKG-INFO
+../../build/fleet_coordination/fleet_coordination.egg-info/SOURCES.txt
+../../build/fleet_coordination/fleet_coordination.egg-info/dependency_links.txt
+../../build/fleet_coordination/fleet_coordination.egg-info/entry_points.txt
+../../build/fleet_coordination/fleet_coordination.egg-info/requires.txt
+../../build/fleet_coordination/fleet_coordination.egg-info/top_level.txt
+../../build/fleet_coordination/fleet_coordination.egg-info/zip-safe
+fleet_coordination/__init__.py
+fleet_coordination/fleet_agent_node.py
+resource/fleet_coordination

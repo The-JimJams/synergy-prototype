@@ -1,0 +1,11 @@
+{
+  "package_name": "fleet_msgs",
+  "non_idl_tuples": [
+    "/home/aditi/amr_ws/src/fleet_msgs:msg/RobotState.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs:msg/RobotIntent.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs:msg/ResourceClaim.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs:msg/TaskAnnouncement.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs:msg/TaskBid.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs:msg/Heartbeat.msg"
+  ]
+}

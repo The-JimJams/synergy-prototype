@@ -1,0 +1,270 @@
+[  2%] Built target fleet_msgs__rs
+[  2%] Built target fleet_msgs__rosidl_generator_type_description
+[  3%] Built target fleet_msgs__cpp
+[ 27%] Built target fleet_msgs__rosidl_generator_c
+[ 36%] Built target fleet_msgs__rosidl_typesupport_introspection_c
+[ 45%] Built target fleet_msgs__rosidl_typesupport_c
+[ 55%] Built target fleet_msgs__rosidl_typesupport_fastrtps_c
+[ 76%] Built target fleet_msgs__rosidl_typesupport_cpp
+[ 83%] Built target fleet_msgs__rosidl_typesupport_fastrtps_cpp
+[ 83%] Built target fleet_msgs__rosidl_typesupport_introspection_cpp
+[ 83%] Built target fleet_msgs
+[ 84%] Built target fleet_msgs__py
+[ 92%] Built target fleet_msgs__rosidl_generator_py
+[ 92%] Built target ament_cmake_python_sync_fleet_msgs
+[ 95%] Built target fleet_msgs_s__rosidl_typesupport_introspection_c
+[ 97%] Built target fleet_msgs_s__rosidl_typesupport_fastrtps_c
+[100%] Built target fleet_msgs_s__rosidl_typesupport_c
+running egg_info
+writing fleet_msgs.egg-info/PKG-INFO
+writing dependency_links to fleet_msgs.egg-info/dependency_links.txt
+writing top-level names to fleet_msgs.egg-info/top_level.txt
+reading manifest file 'fleet_msgs.egg-info/SOURCES.txt'
+writing manifest file 'fleet_msgs.egg-info/SOURCES.txt'
+[100%] Built target ament_cmake_python_build_fleet_msgs_egg
+-- Install configuration: ""
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/rosidl_interfaces/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotState.json
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotIntent.json
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/ResourceClaim.json
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskAnnouncement.json
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskBid.json
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/Heartbeat.json
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_generator_c__visibility_control.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_announcement.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_bid.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/resource_claim.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_intent.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_state.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/heartbeat.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__functions.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__functions.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__struct.h
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__functions.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__description.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__functions.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__struct.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__struct.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.h
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__description.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__description.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__description.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__functions.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__description.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__struct.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__description.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__functions.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__functions.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__functions.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__functions.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__functions.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__functions.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__struct.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__functions.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__struct.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/library_path.sh
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/library_path.dsv
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_generator_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_fastrtps_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_fastrtps_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_fastrtps_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_fastrtps_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_fastrtps_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_fastrtps_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_fastrtps_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_typesupport_introspection_c__visibility_control.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_introspection_c.h
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_introspection_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_introspection_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_introspection_c.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_introspection_c.h
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.c
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_introspection_c.h
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_introspection_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_intent.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_bid.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_generator_cpp__visibility_control.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/robot_state.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/resource_claim.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/task_announcement.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/heartbeat.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__struct.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__traits.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__builder.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__traits.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__struct.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__struct.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__builder.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__builder.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__struct.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__struct.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__builder.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__traits.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__builder.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__struct.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__traits.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__traits.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__builder.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__traits.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/dds_fastrtps
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_fastrtps_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_fastrtps_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_fastrtps_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_fastrtps_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_fastrtps_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_fastrtps_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_fastrtps_cpp.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__type_support.cpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__type_support.cpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__type_support.cpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_bid__rosidl_typesupport_introspection_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_state__rosidl_typesupport_introspection_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__type_support.cpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__rosidl_typesupport_introspection_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/heartbeat__type_support.cpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__rosidl_typesupport_introspection_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/resource_claim__rosidl_typesupport_introspection_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/task_announcement__rosidl_typesupport_introspection_cpp.hpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/include/fleet_msgs/fleet_msgs/msg/detail/robot_intent__type_support.cpp
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_introspection_cpp.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_typesupport_cpp.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/pythonpath.sh
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/pythonpath.dsv
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_fastrtps_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_introspection_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/libfleet_msgs__rosidl_generator_py.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/lib.rs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/msg.rs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/src/msg/rmw.rs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/Cargo.toml
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/rust/build.rs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotState.idl
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotIntent.idl
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/ResourceClaim.idl
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskAnnouncement.idl
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskBid.idl
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/Heartbeat.idl
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotState.msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/RobotIntent.msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/ResourceClaim.msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskAnnouncement.msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/TaskBid.msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/msg/Heartbeat.msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/package_run_dependencies/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/parent_prefix_path/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/ament_prefix_path.sh
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/path.sh
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/environment/path.dsv
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.bash
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.fish
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.sh
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.zsh
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/local_setup.dsv
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.dsv
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/ament_index/resource_index/packages/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_cExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_cExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_cppExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cppExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cppExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cppExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgs__rosidl_typesupport_cppExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_pyExport.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/export_fleet_msgs__rosidl_generator_pyExport-noconfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/top_level.txt
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/dependency_links.txt
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/PKG-INFO
+-- Installing: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs-0.0.0-py3.14.egg-info/SOURCES.txt
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_introspection_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/__init__.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/py.typed
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/fleet_msgs_s__rosidl_typesupport_fastrtps_c.so
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_fastrtps_c.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_introspection_c.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_state_s.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_bid.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_state.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_intent.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/__init__.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_heartbeat_s.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_resource_claim_s.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_announcement.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_announcement_s.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_robot_intent_s.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_task_bid_s.c
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_resource_claim.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg/_heartbeat.py
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/_fleet_msgs_s.ep.rosidl_typesupport_c.c
+Listing '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs'...
+Listing '/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages/fleet_msgs/msg'...
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_include_directories-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_libraries-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_targets-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/ament_cmake_export_dependencies-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/rosidl_cmake_aggregate_target-extras.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgsConfig.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/cmake/fleet_msgsConfig-version.cmake
+-- Up-to-date: /home/aditi/amr_ws/install/fleet_msgs/share/fleet_msgs/package.xml

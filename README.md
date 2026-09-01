@@ -1,5 +1,6 @@
 # SYNERGY — Multi-Agent AMR Orchestration & Decentralized Fleet Coordination
 
+
 > **Multi-Agent Autonomous Mobile Robot (AMR) Orchestration, Logistics Simulation & Decentralized Fleet Coordination Framework**
 
 A high-fidelity multi-robot logistics simulation platform built on **Gazebo Sim** (SDF 1.9) and **ROS 2**, paired with a **pure Python decentralized fleet coordination algorithm suite**. Designed for benchmarking decentralized multi-agent coordination, collision avoidance, fleet routing, and SLAM navigation in an industrial warehouse environment.
@@ -13,39 +14,26 @@ synergy-prototype/
 ├── gazebo/                         # Gazebo Simulation Environment Sub-Package
 │   ├── README.md                   # Detailed Gazebo module manual & topic catalog
 │   ├── scripts/                    # Universal cross-platform simulation launchers
-│   │   ├── launch_sim.py           # Universal Python launcher (macOS, Linux, Windows)
-│   │   ├── launch_sim.sh           # POSIX Bash launcher (macOS / Linux)
-│   │   ├── launch_sim.bat          # Windows Command Prompt batch script
-│   │   └── launch_sim.ps1          # Windows PowerShell script
 │   └── simulation/
 │       ├── models/                 # Modular SDF 1.9 models (AMRs, Shelves, Stations)
-│       │   ├── amr/                # Base AMR template
-│       │   ├── amr_blue/           # AMR Blue instance (/amr_blue)
-│       │   ├── amr_green/          # AMR Green instance (/amr_green)
-│       │   ├── amr_orange/         # AMR Orange instance (/amr_orange)
-│       │   ├── shelf/              # 3-tier industrial shelving rack with cargo
-│       │   ├── pickup_station/     # Cargo intake staging zone
-│       │   ├── drop_station/       # Order discharge and packing zone
-│       │   ├── charging_station/   # Wireless induction docking station
-│       │   ├── pallet_stack/       # Stacked wooden logistics pallets
-│       │   └── dumpster/           # Industrial waste container
 │       └── worlds/
 │           ├── warehouse.sdf       # Master 20m × 20m multi-robot warehouse world
 │           └── amr_test.sdf        # Isolated single-robot testing environment
 ├── fleet_coordination/             # Decentralized Coordination Algorithm Sub-Package
 │   ├── config/                     # Tunable parameters, weights, timeouts
-│   ├── models/                     # 17 pure Python typed domain dataclasses
-│   ├── algorithm/                  # Core algorithms (WorldModel, Conflict, Priority, Reservations, Auctions)
+│   ├── models/                     # Pure dataclasses (shared vocabulary)
+│   ├── algorithm/                  # Core algorithms (WorldModel, Conflict, Priority, Reservations, Auctions) — zero ROS imports
 │   ├── ros_interface/              # ROS 2 adapter layer (rclpy node, serialization)
 │   ├── tests/                      # 13 test suites (323 automated unit & integration tests)
 │   ├── PROJECT.md                  # Comprehensive algorithmic technical documentation
 │   └── ALGORITHM_HANDOFF.md        # ROS 2 integration contracts & developer handoff guide
+
 └── README.md                       # Master project overview
 ```
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start (Gazebo Simulation)
 
 ### 1. Launch Multi-Robot Gazebo Simulation
 
@@ -99,7 +87,6 @@ gz topic -t "/amr_blue/cmd_vel" -m gz.msgs.Twist -p "linear: {x: 0.5}, angular: 
 >
 > Every AMR runs an identical instance of the coordination logic, maintains its own local `WorldModel`, and makes independent decisions. Coordination emerges from peer-to-peer telemetry exchange and deterministic arbitration rules.
 
-```
 Fleet Coordination Agent (one per robot)
     │
     ├── WorldModel            — Local private state store (working memory)
@@ -114,9 +101,9 @@ Fleet Coordination Agent (one per robot)
     ├── ReconciliationManager — Post-partition state convergence & deterministic conflict resolution
     ├── MetricsLogger         — Observational event historian & counter tracker
     └── BenchmarkEvaluator    — Deterministic comparison against STOP-AND-WAIT baseline
-```
 
 ### Domain Models (`fleet_coordination/models/`)
+
 
 | Model | Purpose |
 |---|---|
@@ -183,7 +170,7 @@ fleet_coordination/tests/test_benchmark.py .....                        (5 tests
 ### ROS 2 Interface Boundary
 - Located strictly in `fleet_coordination/ros_interface/`.
 - `fleet_node.py` provides `FleetCoordinationCore` and `FleetCoordinationNode` (rclpy wrapper).
-- `serialization.py` handles deterministic JSON $\leftrightarrow$ Dataclass encoding/decoding.
+- `serialization.py` handles deterministic JSON ↔ Dataclass encoding/decoding.
 
 ### Nav2 & Gazebo Boundaries
 - **Nav2** manages continuous trajectory generation, local collision avoidance, and motor control.
@@ -197,3 +184,4 @@ fleet_coordination/tests/test_benchmark.py .....                        (5 tests
 - 👉 **[Gazebo Simulation Module Documentation (`gazebo/README.md`)](./gazebo/README.md)**: Full installation guides, SDF world topologies, Gazebo-to-ROS 2 bridges, and sensor catalogs.
 - 👉 **[Algorithmic Technical Documentation (`fleet_coordination/PROJECT.md`)](./fleet_coordination/PROJECT.md)**: Mathematical formulations, invariants, and detailed state machines.
 - 👉 **[Developer Handoff Guide (`fleet_coordination/ALGORITHM_HANDOFF.md`)](./fleet_coordination/ALGORITHM_HANDOFF.md)**: ROS 2 integration contracts, topic schemas, and developer workflows.
+
