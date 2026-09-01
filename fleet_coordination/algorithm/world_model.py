@@ -21,6 +21,7 @@ CRITICAL ARCHITECTURAL PRINCIPLES:
 from __future__ import annotations
 
 from fleet_coordination.config.coordination_config import CoordinationConfig
+from fleet_coordination.models.obstacle import Obstacle
 from fleet_coordination.models.reservation import Reservation
 from fleet_coordination.models.robot_intent import RobotIntent
 from fleet_coordination.models.robot_state import RobotState
@@ -61,6 +62,9 @@ class WorldModel:
         # Shared resource reservations & fleet tasks
         self._reservations: dict[str, Reservation] = {}  # Key: claim_id
         self._tasks: dict[str, Task] = {}  # Key: task_id
+
+        # Spatial obstacles and blocked aisle reports
+        self._obstacles: dict[str, Obstacle] = {}  # Key: obstacle_id
 
     @property
     def robot_id(self) -> str:
@@ -372,11 +376,46 @@ class WorldModel:
         return [t for t in self._tasks.values() if t.is_assignable()]
 
     # =========================================================================
-    # 6. Garbage Collection & Extension Points
+    # 6. Obstacles & Blocked Aisles
+    # =========================================================================
+
+    def add_obstacle(self, obstacle: Obstacle) -> None:
+        """Add or update a spatial obstacle / blocked aisle record.
+
+        Args:
+            obstacle: Obstacle instance representing the blockage.
+        """
+        self._obstacles[obstacle.obstacle_id] = obstacle
+
+    def get_obstacle(self, obstacle_id: str) -> Obstacle | None:
+        """Retrieve obstacle by obstacle_id, or None if unknown."""
+        return self._obstacles.get(obstacle_id)
+
+    def get_all_obstacles(self) -> dict[str, Obstacle]:
+        """Return a shallow copy of all known obstacles."""
+        return dict(self._obstacles)
+
+    def get_active_obstacles(self, now: float) -> list[Obstacle]:
+        """Return all obstacles actively blocking resources at reference time 'now'."""
+        return [obs for obs in self._obstacles.values() if obs.is_blocking(now)]
+
+    def remove_obstacle(self, obstacle_id: str) -> bool:
+        """Remove an obstacle from storage.
+
+        Returns:
+            True if removed, False if obstacle was not found.
+        """
+        if obstacle_id in self._obstacles:
+            del self._obstacles[obstacle_id]
+            return True
+        return False
+
+    # =========================================================================
+    # 7. Garbage Collection
     # =========================================================================
 
     def cleanup_expired(self, now: float) -> dict[str, int]:
-        """Purge expired peer intents and reservations from storage.
+        """Purge expired peer intents, reservations, and obstacles from storage.
 
         NOTE: This is strictly an optional memory-management utility. Correctness
         of all active query methods is independent of cleanup_expired() execution.
@@ -385,7 +424,7 @@ class WorldModel:
             now: Reference time (Unix epoch seconds).
 
         Returns:
-            Dictionary with counts: {"intents_removed": N, "reservations_removed": M}
+            Dictionary with counts: {"intents_removed": N, "reservations_removed": M, ...}
         """
         expired_intent_keys = [
             k for k, v in self._peer_intents.items() if v.is_expired(now)
@@ -399,14 +438,17 @@ class WorldModel:
         for k in expired_res_keys:
             del self._reservations[k]
 
-        return {
+        expired_obs_keys = [
+            k for k, v in self._obstacles.items() if v.is_expired(now)
+        ]
+        for k in expired_obs_keys:
+            del self._obstacles[k]
+
+        res = {
             "intents_removed": len(expired_intent_keys),
             "reservations_removed": len(expired_res_keys),
         }
+        if len(self._obstacles) > 0 or expired_obs_keys:
+            res["obstacles_removed"] = len(expired_obs_keys)
+        return res
 
-    def update_obstacle(self, *args, **kwargs) -> None:
-        """Extension point: placeholder for dynamic obstacle telemetry.
-
-        Intentionally no-op until dynamic obstacle simulation format is defined.
-        """
-        pass

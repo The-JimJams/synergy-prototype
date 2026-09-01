@@ -136,6 +136,20 @@ class ConflictDetectionConfig:
 
 
 @dataclass
+class ObstacleConfig:
+    """Parameters for obstacle expiration and rerouting selection."""
+
+    # Default duration for an obstacle blockage if not explicitly specified (seconds)
+    default_obstacle_duration_seconds: float = 60.0
+
+    # Minimum clearance window required to consider an alternative corridor viable
+    min_reroute_clearance_seconds: float = 5.0
+
+    # Deterministic alternative selection preference list (ordered preference if provided)
+    preferred_alternatives: list[str] = field(default_factory=list)
+
+
+@dataclass
 class CoordinationConfig:
     """Top-level configuration aggregating all parameter groups.
 
@@ -154,6 +168,7 @@ class CoordinationConfig:
     conflict_detection: ConflictDetectionConfig = field(
         default_factory=ConflictDetectionConfig
     )
+    obstacle: ObstacleConfig = field(default_factory=ObstacleConfig)
 
     # Fleet-wide constants
     # Maximum number of robots expected in the fleet

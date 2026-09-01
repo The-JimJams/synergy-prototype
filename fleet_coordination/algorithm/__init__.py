@@ -10,6 +10,12 @@ from fleet_coordination.algorithm.priority_engine import PriorityEngine
 from fleet_coordination.algorithm.reservation_manager import ReservationManager
 from fleet_coordination.algorithm.task_allocator import TaskAllocator
 from fleet_coordination.algorithm.failure_detector import FailureDetector
+from fleet_coordination.algorithm.obstacle_policy import ObstaclePolicy
+from fleet_coordination.algorithm.reroute_evaluator import RerouteEvaluator
+from fleet_coordination.algorithm.network_manager import NetworkManager
+from fleet_coordination.algorithm.reconciliation_manager import ReconciliationManager
+from fleet_coordination.algorithm.metrics_logger import MetricsLogger
+from fleet_coordination.algorithm.benchmark_evaluator import BenchmarkEvaluator
 
 __all__ = [
     "WorldModel",
@@ -18,4 +24,10 @@ __all__ = [
     "ReservationManager",
     "TaskAllocator",
     "FailureDetector",
+    "ObstaclePolicy",
+    "RerouteEvaluator",
+    "NetworkManager",
+    "ReconciliationManager",
+    "MetricsLogger",
+    "BenchmarkEvaluator",
 ]

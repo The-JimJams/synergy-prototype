@@ -18,6 +18,19 @@ from fleet_coordination.models.health import (
     PeerHealthAssessment,
     FleetHealthReport,
 )
+from fleet_coordination.models.obstacle import Obstacle
+from fleet_coordination.models.reroute_decision import RerouteDecision
+from fleet_coordination.models.network import (
+    NetworkMode,
+    LinkMetrics,
+    NetworkStatusReport,
+)
+from fleet_coordination.models.reconciliation import ReconciliationReport
+from fleet_coordination.models.metrics import (
+    TaskMetrics,
+    RobotMetrics,
+    PerformanceMetrics,
+)
 
 __all__ = [
     "Pose2D",
@@ -37,5 +50,14 @@ __all__ = [
     "PeerHealthStatus",
     "PeerHealthAssessment",
     "FleetHealthReport",
+    "Obstacle",
+    "RerouteDecision",
+    "NetworkMode",
+    "LinkMetrics",
+    "NetworkStatusReport",
+    "ReconciliationReport",
+    "TaskMetrics",
+    "RobotMetrics",
+    "PerformanceMetrics",
 ]
 

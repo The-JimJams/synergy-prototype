@@ -3,7 +3,7 @@
 > **Project Title:** Edge-AI Based Distributed Fleet Coordination for Autonomous Mobile Robots (AMRs) in Smart Warehouses  
 > **Subsystem Location:** `fleet_coordination/`  
 > **Primary Language:** Python (Pure Python Algorithmic Core + ROS 2 Interface Boundary)  
-> **Test Coverage:** 249 Unit & Integration Tests (100% Passing)
+> **Test Coverage:** 323 Unit & Integration Tests (100% Passing)
 
 ---
 
@@ -269,6 +269,20 @@ Outputs of `FailureDetector`.
 - **`PeerHealthAssessment` Fields:** `robot_id: str`, `status: PeerHealthStatus`, `last_seen_timestamp: float`, `age_seconds: float`, `reason: str`, `evaluated_at: float`.
 - **`FleetHealthReport` Fields:** `assessments: dict[str, PeerHealthAssessment]`, `suspected_robot_ids: list[str]`, `failed_robot_ids: list[str]`, `evaluated_at: float`.
 
+### 5.11 Obstacle & RerouteDecision (`models/obstacle.py`, `models/reroute_decision.py`)
+Models for spatial blockages and reroute recommendations.
+- **`Obstacle` Fields:** `obstacle_id: str`, `resource_id: str`, `detected_at: float`, `valid_until: float`, `location: Pose2D | None`, `is_active: bool`, `reporter_id: str`.
+  - Methods: `is_expired(now) -> bool`, `is_blocking(now) -> bool`.
+- **`RerouteDecision` Fields:** `robot_id: str`, `blocked_resource_id: str`, `reroute_required: bool`, `alternative_resource_id: str | None`, `suggested_waypoints: list[Pose2D]`, `reason: str`, `decided_at: float`.
+  - Method: `is_reroute_available() -> bool`.
+
+### 5.12 Network & Reconciliation Models (`models/network.py`, `models/reconciliation.py`)
+Models for network telemetry, operational modes, and post-partition state recovery.
+- **`NetworkMode` Enum:** `CONNECTED`, `DEGRADED`, `DISCONNECTED`, `RECOVERY`.
+- **`LinkMetrics` Fields:** `peer_id: str`, `latency_seconds: float`, `packet_loss_rate: float`, `last_message_age_seconds: float`, `measured_at: float`.
+- **`NetworkStatusReport` Fields:** `mode: NetworkMode`, `avg_latency_seconds: float`, `max_packet_loss_rate: float`, `link_reports: dict[str, LinkMetrics]`, `consecutive_healthy_checks: int`, `reason: str`, `evaluated_at: float`.
+- **`ReconciliationReport` Fields:** `states_updated: int`, `intents_updated: int`, `conflicting_reservations_resolved: int`, `conflicting_tasks_resolved: int`, `stale_records_rejected: int`, `is_clean: bool`, `reconciled_at: float`.
+
 ---
 
 ## 6. Configuration System
@@ -278,10 +292,10 @@ All tunable parameters are centralized in `fleet_coordination/config/coordinatio
 ```
                         CoordinationConfig
                                 │
-   ┌──────────────┬─────────────┼──────────────┬──────────────┐
-   ▼              ▼             ▼              ▼              ▼
-Priority       TaskBid       Timeout        Network        Conflict
-Weights        Weights       Config         Thresholds     DetectionConfig
+   ┌──────────────┬─────────────┼──────────────┬──────────────┬─────────────┐
+   ▼              ▼             ▼              ▼              ▼             ▼
+Priority       TaskBid       Timeout        Network        Conflict      Obstacle
+Weights        Weights       Config         Thresholds     Detection     Config
 ```
 
 | Config Group | Parameter | Default | Purpose |
@@ -455,7 +469,53 @@ stateDiagram-v2
 
 ---
 
-## 13. End-to-End Decision Flow
+## 13. `ObstaclePolicy` & `RerouteEvaluator` Subsystems
+
+`ObstaclePolicy` (`fleet_coordination/algorithm/obstacle_policy.py`) and `RerouteEvaluator` (`fleet_coordination/algorithm/reroute_evaluator.py`) provide decision-only evaluation of spatial blockages (e.g., blocked aisles) and deterministic alternative corridor recommendations.
+
+### Key Architectural Invariant
+- **Decision-Only:** Neither `ObstaclePolicy` nor `RerouteEvaluator` mutates `WorldModel._tasks`, `_reservations`, or `_own_intent`.
+- They produce a `RerouteDecision` that is returned to the outer coordination layer for interpretation.
+
+### Public Methods
+- **`ObstaclePolicy.is_resource_blocked(resource_id, world_model, now) -> bool`:** Checks if an active obstacle currently blocks the named resource.
+- **`ObstaclePolicy.identify_affected_robots(world_model, now) -> dict[str, str]`:** Identifies all AMRs whose active intents target blocked resources.
+- **`RerouteEvaluator.evaluate_reroute(robot_id, world_model, available_alternatives, now) -> RerouteDecision`:** Deterministically selects a clear alternative corridor from `available_alternatives`, filtering out any candidate that is also blocked.
+
+---
+
+## 14. `NetworkManager` & `ReconciliationManager` Subsystems
+
+`NetworkManager` (`fleet_coordination/algorithm/network_manager.py`) tracks local communication health and manages transitions across operational modes (`CONNECTED`, `DEGRADED`, `DISCONNECTED`, `RECOVERY`). `ReconciliationManager` (`fleet_coordination/algorithm/reconciliation_manager.py`) executes deterministic state reconciliation across peer telemetry, intents, shared claims, and tasks upon reconnection.
+
+### Network Mode Transition State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> CONNECTED : Initialize
+    
+    CONNECTED --> DEGRADED : Latency > 0.5s OR Loss > 10%
+    CONNECTED --> DISCONNECTED : Latency > 2.0s OR Loss > 50%
+    
+    DEGRADED --> CONNECTED : Latency <= 0.5s AND Loss <= 10%
+    DEGRADED --> DISCONNECTED : Latency > 2.0s OR Loss > 50%
+    
+    DISCONNECTED --> RECOVERY : Link Healthy (Latency <= 0.5s & Loss <= 10%)
+    
+    RECOVERY --> RECOVERY : Healthy Check Count < 3
+    RECOVERY --> CONNECTED : Healthy Check Count >= 3 & Reconciled
+    RECOVERY --> DISCONNECTED : Link Degrades during Recovery
+```
+
+### Deterministic State Reconciliation Precedence
+1. **`RobotState`:** Monotonic timestamp ordering (older/equal timestamps rejected).
+2. **`RobotIntent`:** Monotonic timestamp ordering + active validity window.
+3. **`Reservation`:** Overlapping claims resolved by Priority $\rightarrow$ Earlier Created Timestamp $\rightarrow$ Lower Robot ID.
+4. **`Task`:** Lifecycle hierarchy: `COMPLETED` > `IN_PROGRESS` > `ASSIGNED` > `BIDDING` > `ANNOUNCED`.
+
+---
+
+## 15. End-to-End Decision Flow
 
 ```mermaid
 sequenceDiagram
@@ -501,7 +561,7 @@ sequenceDiagram
 
 ---
 
-## 14. Decentralization Explained
+## 16. Decentralization Explained
 
 ```
 CENTRALIZED (Anti-Pattern)                 DECENTRALIZED (SYNERGY Architecture)
@@ -514,13 +574,13 @@ CENTRALIZED (Anti-Pattern)                 DECENTRALIZED (SYNERGY Architecture)
 ```
 
 **Why a shared ROS 2 topic does NOT create centralization:**
-- In ROS 2, topics (`/fleet/robot_state`, `/fleet/robot_intent`) use DDS multicast gossip.
+- In ROS 2, topics (`/fleet/robot_state`, `/fleet/robot_intent`, `/fleet/obstacles`) use DDS multicast gossip.
 - No central node aggregates or decides anything.
 - Every node receives raw peer telemetry, updates its private memory, and independently runs the algorithmic pipeline.
 
 ---
 
-## 15. ROS 2 Integration Boundary & Contract
+## 17. ROS 2 Integration Boundary & Contract
 
 ### Implemented vs. Planned Status
 
@@ -529,7 +589,10 @@ CENTRALIZED (Anti-Pattern)                 DECENTRALIZED (SYNERGY Architecture)
 | **Serialization Bridge** | **IMPLEMENTED** | `ros_interface/serialization.py` | Full JSON $\leftrightarrow$ Dataclass conversion with schema validation. |
 | **Fleet Node Core** | **IMPLEMENTED** | `ros_interface/fleet_node.py` | `FleetCoordinationCore` and `FleetCoordinationNode` (rclpy). |
 | **Failure Detection** | **IMPLEMENTED** | `algorithm/failure_detector.py` | Heartbeat evaluator & task reclamation service. |
-| **Unit Tests** | **IMPLEMENTED** | `tests/` (9 test suites) | 268 tests validating algorithms, serialization, and node mesh. |
+| **Obstacle & Rerouting Policy** | **IMPLEMENTED** | `algorithm/obstacle_policy.py`, `algorithm/reroute_evaluator.py` | Spatial blockage detection & deterministic route evaluation. |
+| **Network & Reconciliation Engine** | **IMPLEMENTED** | `algorithm/network_manager.py`, `algorithm/reconciliation_manager.py` | Degradation mode manager & post-recovery state reconciliation. |
+| **Metrics & Benchmarking** | **IMPLEMENTED** | `algorithm/metrics_logger.py`, `algorithm/benchmark_evaluator.py` | Performance measurement against sequential STOP-AND-WAIT baseline. |
+| **Unit Tests** | **IMPLEMENTED** | `tests/` (13 test suites) | 323 tests validating algorithms, serialization, and node mesh. |
 | **Gazebo Bridge Launch** | **PLANNED** | Integration script | Parameter bridge bridging `gz.msgs.OdometryWithCovariance` to `nav_msgs/msg/Odometry`. |
 | **Motion Gateway** | **PLANNED** | `ros_interface/motion_controller.py` | Approach-line stop/resume velocity controller. |
 
@@ -538,35 +601,39 @@ CENTRALIZED (Anti-Pattern)                 DECENTRALIZED (SYNERGY Architecture)
 ```
 INPUTS TO ALGORITHM:
   • Odometry / Pose: (pos_x, pos_y, yaw, linear_vel, angular_vel, timestamp)
-  • Peer Messages: JSON strings over /fleet/robot_state and /fleet/robot_intent
+  • Peer Messages: JSON strings over /fleet/robot_state, /fleet/robot_intent, /fleet/obstacles
 
 OUTPUTS FROM ALGORITHM:
   • Local Broadcast: JSON string via serialization.to_json(obj)
-  • Coordination Decision: PROCEED (v = 0.5 m/s) vs. WAIT (v = 0.0 m/s at stop line)
+  • Coordination Decision: PROCEED (v = 0.5 m/s) vs. WAIT (v = 0.0 m/s at stop line) vs. REROUTE
 ```
 
 ---
 
-## 16. Testing Architecture
+## 18. Testing Architecture
 
-The entire codebase is validated by **268 automated tests** running in **0.60 seconds**.
+The entire codebase is validated by **323 automated tests** running in **< 1 second**.
 
 ```
 ============================= test session starts =============================
 platform win32 -- Python 3.13.9, pytest-8.4.2
-collected 268 items
+collected 323 items
 
-fleet_coordination/tests/test_models.py .............................    [ 10%] (29 tests)
-fleet_coordination/tests/test_world_model.py ........................... [ 23%] (35 tests)
-fleet_coordination/tests/test_conflict_detector.py ..................... [ 38%] (38 tests)
-fleet_coordination/tests/test_priority_engine.py ....................... [ 51%] (37 tests)
-fleet_coordination/tests/test_reservation_manager.py ................... [ 68%] (45 tests)
-fleet_coordination/tests/test_task_allocator.py ........................ [ 82%] (36 tests)
-fleet_coordination/tests/test_serialization.py ......................... [ 89%] (20 tests)
-fleet_coordination/tests/test_fleet_node.py .........                    [ 93%] (9 tests)
-fleet_coordination/tests/test_failure_detector.py ...................   [100%] (19 tests)
+fleet_coordination/tests/test_models.py .............................    [  8%] (29 tests)
+fleet_coordination/tests/test_world_model.py ........................... [ 19%] (35 tests)
+fleet_coordination/tests/test_conflict_detector.py ..................... [ 31%] (38 tests)
+fleet_coordination/tests/test_priority_engine.py ....................... [ 43%] (37 tests)
+fleet_coordination/tests/test_reservation_manager.py ................... [ 56%] (45 tests)
+fleet_coordination/tests/test_task_allocator.py ........................ [ 68%] (36 tests)
+fleet_coordination/tests/test_serialization.py ......................... [ 74%] (20 tests)
+fleet_coordination/tests/test_fleet_node.py .........                    [ 77%] (9 tests)
+fleet_coordination/tests/test_failure_detector.py ...................   [ 82%] (19 tests)
+fleet_coordination/tests/test_obstacle_policy.py .....................  [ 89%] (21 tests)
+fleet_coordination/tests/test_network_manager.py ...................... [ 96%] (22 tests)
+fleet_coordination/tests/test_metrics.py .......                        [ 98%] (7 tests)
+fleet_coordination/tests/test_benchmark.py .....                        [100%] (5 tests)
 
-============================= 268 passed in 0.60s =============================
+============================= 323 passed in 0.70s =============================
 ```
 
 ### Running Tests
@@ -576,30 +643,54 @@ fleet_coordination/tests/test_failure_detector.py ...................   [100%] (
 python -m pytest -q
 
 # Run specific module tests
-python -m pytest fleet_coordination/tests/test_failure_detector.py -v
-python -m pytest fleet_coordination/tests/test_serialization.py -v
+python -m pytest fleet_coordination/tests/test_network_manager.py -v
+python -m pytest fleet_coordination/tests/test_obstacle_policy.py -v
 ```
 
 ---
 
-## 17. Developer Rules for Extending the Codebase
+## 19. Developer Rules for Extending the Codebase
 
 1. **Strict Zero-ROS Rule in `algorithm/`:** Never import `rclpy`, `std_msgs`, or `geometry_msgs` inside `algorithm/` or `models/`.
 2. **Never Bypass `WorldModel`:** All state reads and writes must pass through `WorldModel` accessors.
-3. **Preserve Determinism:** Never call `time.time()` or `random()` inside algorithmic decision methods (`detect_conflicts`, `resolve`, `request_reservation`, `evaluate_task`, `evaluate_peer`). Always accept an explicit `now: float` argument.
+3. **Preserve Determinism:** Never call `time.time()` or `random()` inside algorithmic decision methods (`detect_conflicts`, `resolve`, `request_reservation`, `evaluate_task`, `evaluate_peer`, `evaluate_reroute`, `evaluate_network`). Always accept an explicit `now: float` argument.
 4. **Mandatory Roundtrip Tests:** Any new domain dataclass added to `models/` must be registered in `serialization.py` with roundtrip tests in `test_serialization.py`.
-5. **Always Run Regression:** Ensure all 268 tests pass before opening a PR.
+5. **Always Run Regression:** Ensure all 323 tests pass before opening a PR.
 
 ---
 
-## 18. Quick Developer Mental Model
+## 20. Quick Developer Mental Model
 
-When working on this codebase, keep these 7 mental anchors in mind:
+When working on this codebase, keep these 9 mental anchors in mind:
 
-1. **`WorldModel`** = *What this AMR currently knows* (own state + cached peer states).
+1. **`WorldModel`** = *What this AMR currently knows* (own state + cached peer states + active obstacles).
 2. **`RobotIntent`** = *What this AMR plans to do in the near future*.
 3. **`ConflictDetector`** = *Will our planned trajectories/resources collide?*
 4. **`PriorityEngine`** = *Who has priority right now?*
 5. **`ReservationManager`** = *Who authoritatively holds the shared resource claim?*
 6. **`TaskAllocator`** = *Which AMR should execute this warehouse task?*
 7. **`FailureDetector`** = *Is any peer AMR unresponsive or failed?*
+8. **`ObstaclePolicy & RerouteEvaluator`** = *Is our planned corridor blocked, and what is the best alternative route?*
+9. **`NetworkManager & ReconciliationManager`** = *What is our communication health, and how do we resolve split-brain state after reconnecting?*
+
+---
+
+## 21. Metrics & Benchmark Evaluation
+
+Phase 7.6 introduces a pure-Python, deterministic metrics and benchmarking subsystem to evaluate the SYNERGY algorithm against a baseline STOP-AND-WAIT model.
+
+### Models (`models/metrics.py`)
+- **TaskMetrics**: Tracks `announced_at`, `completed_at`, and `completion_time_seconds`.
+- **RobotMetrics**: Tracks cumulative `WAITING` time, `tasks_completed`, and `collision_count`.
+- **PerformanceMetrics**: Aggregates throughput, average completion time, average waiting time, collisions, and recovery events.
+
+### MetricsLogger (`algorithm/metrics_logger.py`)
+- A deterministic, stateless event historian.
+- Accurately tracks WAITING -> NAVIGATING transitions and task lifecycles.
+- Employs explicit `now: float` timestamps, never `time.time()`.
+
+### BenchmarkEvaluator (`algorithm/benchmark_evaluator.py`)
+- Executes scenarios against a synthetic clock (`dt = 0.1s`).
+- Definitively measures `Average Task Completion Time (ATCT)` improvement.
+- **Success Criterion**: `>= 20.0%` ATCT improvement AND exactly `0` collisions.
+- A deadlocked baseline yields a `100.0%` improvement if the decentralized model successfully completes the task.
