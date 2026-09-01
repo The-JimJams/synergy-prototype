@@ -1,0 +1,12 @@
+# SYNERGY Dashboard - Dependencies
+# Core
+flask>=3.0
+
+# Optional: only needed if CSV/metrics analysis benefits from it
+# pandas>=2.0
+
+# Testing
+pytest>=8.0
+
+# ROS 2 integration (only needed in ros2 mode, not required for standalone)
+# rclpy  — installed via ROS 2 workspace, not pip
