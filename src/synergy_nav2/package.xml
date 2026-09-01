@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema-instance"?>
+<package format="3">
+  <name>synergy_nav2</name>
+  <version>0.0.0</version>
+  <description>Nav2 configuration and launch package for AMR A</description>
+  <maintainer email="synergy@todo.todo">synergy</maintainer>
+  <license>Apache-2.0</license>
+
+  <depend>rclpy</depend>
+  <depend>launch</depend>
+  <depend>launch_ros</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>nav2_bringup</depend>
+  <depend>nav2_map_server</depend>
+  <depend>nav2_amcl</depend>
+  <depend>nav2_planner</depend>
+  <depend>nav2_controller</depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

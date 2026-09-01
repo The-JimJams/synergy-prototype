@@ -1,0 +1,2 @@
+[console_scripts]
+dashboard_bridge_node = dashboard_bridge.dashboard_bridge_node:main

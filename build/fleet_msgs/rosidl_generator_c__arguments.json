@@ -1,0 +1,56 @@
+{
+  "package_name": "fleet_msgs",
+  "output_dir": "/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_c/fleet_msgs",
+  "template_dir": "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource",
+  "idl_tuples": [
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/RobotState.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/RobotIntent.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/ResourceClaim.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/TaskAnnouncement.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/TaskBid.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs:msg/Heartbeat.idl"
+  ],
+  "ros_interface_files": [
+    "/home/aditi/amr_ws/src/fleet_msgs/msg/RobotState.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs/msg/RobotIntent.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs/msg/ResourceClaim.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs/msg/TaskAnnouncement.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs/msg/TaskBid.msg",
+    "/home/aditi/amr_ws/src/fleet_msgs/msg/Heartbeat.msg"
+  ],
+  "target_dependencies": [
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../../../lib/rosidl_generator_c/rosidl_generator_c",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../../../lib/python3.14/site-packages/rosidl_generator_c/__init__.py",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/action__type_support.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/action__type_support.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/empty__description.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/full__description.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl__description.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl__functions.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl__functions.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl__struct.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl__type_support.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/idl__type_support.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/msg__functions.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/msg__functions.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/msg__struct.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/msg__type_support.h.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/srv__type_support.c.em",
+    "/opt/ros/lyrical/share/rosidl_generator_c/cmake/../resource/srv__type_support.h.em",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs/msg/RobotState.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs/msg/RobotIntent.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs/msg/ResourceClaim.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs/msg/TaskAnnouncement.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs/msg/TaskBid.idl",
+    "/home/aditi/amr_ws/build/fleet_msgs/rosidl_adapter/fleet_msgs/msg/Heartbeat.idl"
+  ],
+  "type_description_tuples": [
+    "msg/RobotState.idl:/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_type_description/fleet_msgs/msg/RobotState.json",
+    "msg/RobotIntent.idl:/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_type_description/fleet_msgs/msg/RobotIntent.json",
+    "msg/ResourceClaim.idl:/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_type_description/fleet_msgs/msg/ResourceClaim.json",
+    "msg/TaskAnnouncement.idl:/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_type_description/fleet_msgs/msg/TaskAnnouncement.json",
+    "msg/TaskBid.idl:/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_type_description/fleet_msgs/msg/TaskBid.json",
+    "msg/Heartbeat.idl:/home/aditi/amr_ws/build/fleet_msgs/rosidl_generator_type_description/fleet_msgs/msg/Heartbeat.json"
+  ]
+}

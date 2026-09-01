@@ -1,0 +1,27 @@
+[2.528s] Invoking command in '/home/aditi/amr_ws/src/task_allocator': PYTHONPATH=/home/aditi/amr_ws/build/task_allocator/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/task_allocator build --build-base /home/aditi/amr_ws/build/task_allocator/build install --record /home/aditi/amr_ws/build/task_allocator/install.log --install-scripts $base/lib/task_allocator --single-version-externally-managed install_data
+[3.342s] running egg_info
+[3.387s] writing ../../build/task_allocator/task_allocator.egg-info/PKG-INFO
+[3.388s] writing dependency_links to ../../build/task_allocator/task_allocator.egg-info/dependency_links.txt
+[3.389s] writing entry points to ../../build/task_allocator/task_allocator.egg-info/entry_points.txt
+[3.389s] writing requirements to ../../build/task_allocator/task_allocator.egg-info/requires.txt
+[3.390s] writing top-level names to ../../build/task_allocator/task_allocator.egg-info/top_level.txt
+[3.500s] reading manifest file '../../build/task_allocator/task_allocator.egg-info/SOURCES.txt'
+[3.502s] writing manifest file '../../build/task_allocator/task_allocator.egg-info/SOURCES.txt'
+[3.502s] running build
+[3.502s] running build_py
+[3.503s] copying task_allocator/__init__.py -> /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator
+[3.503s] copying task_allocator/task_allocator_node.py -> /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator
+[3.503s] running install
+[3.512s] running install_lib
+[3.549s] copying /home/aditi/amr_ws/build/task_allocator/build/lib/task_allocator/task_allocator_node.py -> /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator
+[3.550s] byte-compiling /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator/task_allocator_node.py to task_allocator_node.cpython-314.pyc
+[3.553s] running install_data
+[3.554s] copying resource/task_allocator -> /home/aditi/amr_ws/install/task_allocator/share/ament_index/resource_index/packages
+[3.554s] copying package.xml -> /home/aditi/amr_ws/install/task_allocator/share/task_allocator
+[3.555s] running install_egg_info
+[3.597s] removing '/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator-0.0.0-py3.14.egg-info' (and everything under it)
+[3.598s] Copying ../../build/task_allocator/task_allocator.egg-info to /home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages/task_allocator-0.0.0-py3.14.egg-info
+[3.600s] running install_scripts
+[3.901s] Installing task_allocator_node script to /home/aditi/amr_ws/install/task_allocator/lib/task_allocator
+[3.903s] writing list of installed files to '/home/aditi/amr_ws/build/task_allocator/install.log'
+[4.033s] Invoked command in '/home/aditi/amr_ws/src/task_allocator' returned '0': PYTHONPATH=/home/aditi/amr_ws/build/task_allocator/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_msgs/lib/python3.14/site-packages:/home/aditi/amr_ws/install/task_allocator/lib/python3.14/site-packages:/home/aditi/amr_ws/install/robot_bringup/lib/python3.14/site-packages:/home/aditi/amr_ws/install/fleet_coordination/lib/python3.14/site-packages:/home/aditi/amr_ws/install/dashboard_bridge/lib/python3.14/site-packages:/opt/ros/lyrical/opt/gz_math_vendor/lib/python:/opt/ros/lyrical/lib/python3.14/site-packages /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/task_allocator build --build-base /home/aditi/amr_ws/build/task_allocator/build install --record /home/aditi/amr_ws/build/task_allocator/install.log --install-scripts $base/lib/task_allocator --single-version-externally-managed install_data

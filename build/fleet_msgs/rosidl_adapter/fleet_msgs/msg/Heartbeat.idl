@@ -1,0 +1,14 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from fleet_msgs/msg/Heartbeat.msg
+// generated code does not contain a copyright notice
+
+
+module fleet_msgs {
+  module msg {
+    struct Heartbeat {
+      string robot_id;
+
+      double timestamp;
+    };
+  };
+};

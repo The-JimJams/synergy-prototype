@@ -1,0 +1,14 @@
+setup.py
+fleet_msgs/__init__.py
+fleet_msgs/py.typed
+fleet_msgs.egg-info/PKG-INFO
+fleet_msgs.egg-info/SOURCES.txt
+fleet_msgs.egg-info/dependency_links.txt
+fleet_msgs.egg-info/top_level.txt
+fleet_msgs/msg/__init__.py
+fleet_msgs/msg/_heartbeat.py
+fleet_msgs/msg/_resource_claim.py
+fleet_msgs/msg/_robot_intent.py
+fleet_msgs/msg/_robot_state.py
+fleet_msgs/msg/_task_announcement.py
+fleet_msgs/msg/_task_bid.py

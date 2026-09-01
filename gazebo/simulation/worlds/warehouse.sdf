@@ -1,0 +1,638 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="warehouse">
+
+    <!-- ================================================= -->
+    <!-- PHYSICS                                            -->
+    <!-- ================================================= -->
+    <gravity>0 0 -9.81</gravity>
+    <physics name="default_physics" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system"      name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-sensors-system"      name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-contact-system"      name="gz::sim::systems::Contact"/>
+    <plugin filename="gz-sim-imu-system"          name="gz::sim::systems::Imu"/>
+
+    <!-- ================================================= -->
+    <!-- SCENE & LIGHTING                                  -->
+    <!-- ================================================= -->
+    <scene>
+      <ambient>0.60 0.61 0.64 1.0</ambient>
+      <background>0.75 0.79 0.83 1.0</background>
+      <shadows>true</shadows>
+      <grid>false</grid>
+    </scene>
+
+    <!-- Primary Overhead Sun -->
+    <light name="main_sun" type="directional">
+      <pose>0 0 15 0 0 0</pose>
+      <cast_shadows>true</cast_shadows>
+      <diffuse>0.88 0.87 0.85 1.0</diffuse>
+      <specular>0.28 0.28 0.28 1.0</specular>
+      <direction>-0.2 0.15 -1.0</direction>
+    </light>
+
+    <!-- Warm Fill Bay Lights -->
+    <light name="bay_n" type="point">
+      <pose>-3.0 5.0 5.5 0 0 0</pose>
+      <diffuse>0.50 0.49 0.47 1.0</diffuse>
+      <attenuation><range>18</range><constant>0.4</constant><linear>0.05</linear></attenuation>
+    </light>
+    <light name="bay_s" type="point">
+      <pose>3.0 -4.0 5.5 0 0 0</pose>
+      <diffuse>0.50 0.49 0.47 1.0</diffuse>
+      <attenuation><range>18</range><constant>0.4</constant><linear>0.05</linear></attenuation>
+    </light>
+
+    <!-- Wall Industrial Floodlights (Centered in wall bays at X = +-2.5m) -->
+    <light name="wall_light_n1" type="point">
+      <pose>-2.5 9.78 2.30 0 0 0</pose>
+      <diffuse>0.38 0.38 0.35 1.0</diffuse>
+      <attenuation><range>12</range><constant>0.6</constant><linear>0.08</linear></attenuation>
+    </light>
+    <light name="wall_light_n2" type="point">
+      <pose>2.5 9.78 2.30 0 0 0</pose>
+      <diffuse>0.38 0.38 0.35 1.0</diffuse>
+      <attenuation><range>12</range><constant>0.6</constant><linear>0.08</linear></attenuation>
+    </light>
+    <light name="wall_light_s1" type="point">
+      <pose>-2.5 -9.78 2.30 0 0 0</pose>
+      <diffuse>0.38 0.38 0.35 1.0</diffuse>
+      <attenuation><range>12</range><constant>0.6</constant><linear>0.08</linear></attenuation>
+    </light>
+    <light name="wall_light_s2" type="point">
+      <pose>2.5 -9.78 2.30 0 0 0</pose>
+      <diffuse>0.38 0.38 0.35 1.0</diffuse>
+      <attenuation><range>12</range><constant>0.6</constant><linear>0.08</linear></attenuation>
+    </light>
+
+    <!-- ================================================= -->
+    <!-- FLOOR — Concrete with Grid Tile Lines              -->
+    <!-- ================================================= -->
+    <model name="warehouse_floor">
+      <static>true</static>
+      <pose>0 0 -0.05 0 0 0</pose>
+      <link name="floor_link">
+        <collision name="col">
+          <geometry><box><size>20.0 20.0 0.1</size></box></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <!-- Base Concrete Slab — slightly darker industrial grey -->
+        <visual name="slab">
+          <geometry><box><size>20.0 20.0 0.1</size></box></geometry>
+          <material>
+            <ambient>0.55 0.57 0.59 1.0</ambient>
+            <diffuse>0.63 0.65 0.67 1.0</diffuse>
+            <specular>0.10 0.10 0.10 1.0</specular>
+          </material>
+        </visual>
+
+        <!-- === CONCRETE TILE GRID LINES (5m x 5m panels) === -->
+        <!-- Horizontal lines at Y = -5, 0, +5, -->
+        <visual name="grid_h1"><pose>0 -5.0 0.052 0 0 0</pose><geometry><box><size>20.0 0.03 0.002</size></box></geometry><material><ambient>0.62 0.63 0.65 1</ambient><diffuse>0.68 0.69 0.71 1</diffuse></material></visual>
+        <visual name="grid_h2"><pose>0 0.0 0.052 0 0 0</pose><geometry><box><size>20.0 0.03 0.002</size></box></geometry><material><ambient>0.62 0.63 0.65 1</ambient><diffuse>0.68 0.69 0.71 1</diffuse></material></visual>
+        <visual name="grid_h3"><pose>0 5.0 0.052 0 0 0</pose><geometry><box><size>20.0 0.03 0.002</size></box></geometry><material><ambient>0.62 0.63 0.65 1</ambient><diffuse>0.68 0.69 0.71 1</diffuse></material></visual>
+        <!-- Vertical lines at X = -10, -5, 0, +5, +10 -->
+        <visual name="grid_v1"><pose>-5.0 0 0.052 0 0 0</pose><geometry><box><size>0.03 20.0 0.002</size></box></geometry><material><ambient>0.62 0.63 0.65 1</ambient><diffuse>0.68 0.69 0.71 1</diffuse></material></visual>
+        <visual name="grid_v2"><pose>0.0 0 0.052 0 0 0</pose><geometry><box><size>0.03 20.0 0.002</size></box></geometry><material><ambient>0.62 0.63 0.65 1</ambient><diffuse>0.68 0.69 0.71 1</diffuse></material></visual>
+        <visual name="grid_v3"><pose>5.0 0 0.052 0 0 0</pose><geometry><box><size>0.03 20.0 0.002</size></box></geometry><material><ambient>0.62 0.63 0.65 1</ambient><diffuse>0.68 0.69 0.71 1</diffuse></material></visual>
+
+        <!-- === GREEN SAFETY NAVIGATION LANES === -->
+        <!-- Aisle 1 upper/lower -->
+        <visual name="lane_a1_t"><pose>0 9.1 0.055 0 0 0</pose><geometry><box><size>18.4 0.09 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <visual name="lane_a1_b"><pose>0 5.9 0.055 0 0 0</pose><geometry><box><size>18.4 0.09 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <!-- Aisle 2 upper/lower -->
+        <visual name="lane_a2_t"><pose>0 4.5 0.055 0 0 0</pose><geometry><box><size>18.4 0.09 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <visual name="lane_a2_b"><pose>0 0.0 0.055 0 0 0</pose><geometry><box><size>18.4 0.09 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <!-- Aisle 3 upper/lower -->
+        <visual name="lane_a3_t"><pose>0 -1.4 0.055 0 0 0</pose><geometry><box><size>18.4 0.09 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        
+        <!-- Cross-corridor vertical lanes -->
+        <visual name="lane_cv_l"><pose>-1.4 0 0.055 0 0 0</pose><geometry><box><size>0.09 18.2 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <visual name="lane_cv_r"><pose>1.4 0 0.055 0 0 0</pose><geometry><box><size>0.09 18.2 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <!-- Outer bypass lanes -->
+        <visual name="lane_bp_w"><pose>-8.2 0 0.055 0 0 0</pose><geometry><box><size>0.09 18.2 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+        <visual name="lane_bp_e"><pose>8.2 0 0.055 0 0 0</pose><geometry><box><size>0.09 18.2 0.002</size></box></geometry><material><ambient>0.04 0.52 0.22 1</ambient><diffuse>0.06 0.68 0.30 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- PERIMETER WALLS WITH YELLOW SKIRTING              -->
+    <!-- ================================================= -->
+    <model name="north_wall">
+      <static>true</static>
+      <pose>0 10 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>20.0 0.15 2.5</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>20.0 0.15 2.5</size></box></geometry><material><ambient>0.40 0.43 0.46 1</ambient><diffuse>0.50 0.53 0.57 1</diffuse></material></visual>
+        <visual name="skirt"><pose>0 -0.08 -1.15 0 0 0</pose><geometry><box><size>20.0 0.025 0.22</size></box></geometry><material><ambient>0.88 0.68 0.04 1</ambient><diffuse>0.96 0.76 0.06 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="south_wall">
+      <static>true</static>
+      <pose>0 -10 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>20.0 0.15 2.5</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>20.0 0.15 2.5</size></box></geometry><material><ambient>0.40 0.43 0.46 1</ambient><diffuse>0.50 0.53 0.57 1</diffuse></material></visual>
+        <visual name="skirt"><pose>0 0.08 -1.15 0 0 0</pose><geometry><box><size>20.0 0.025 0.22</size></box></geometry><material><ambient>0.88 0.68 0.04 1</ambient><diffuse>0.96 0.76 0.06 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="east_wall">
+      <static>true</static>
+      <pose>10.0 0 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>0.15 20.0 2.5</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.15 20.0 2.5</size></box></geometry><material><ambient>0.40 0.43 0.46 1</ambient><diffuse>0.50 0.53 0.57 1</diffuse></material></visual>
+        <visual name="skirt"><pose>-0.08 0 -1.15 0 0 0</pose><geometry><box><size>0.025 20.0 0.22</size></box></geometry><material><ambient>0.88 0.68 0.04 1</ambient><diffuse>0.96 0.76 0.06 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="west_wall">
+      <static>true</static>
+      <pose>-10.0 0 1.25 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><box><size>0.15 20.0 2.5</size></box></geometry></collision>
+        <visual name="vis"><geometry><box><size>0.15 20.0 2.5</size></box></geometry><material><ambient>0.40 0.43 0.46 1</ambient><diffuse>0.50 0.53 0.57 1</diffuse></material></visual>
+        <visual name="skirt"><pose>0.08 0 -1.15 0 0 0</pose><geometry><box><size>0.025 20.0 0.22</size></box></geometry><material><ambient>0.88 0.68 0.04 1</ambient><diffuse>0.96 0.76 0.06 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- STRUCTURAL WALL PILLAR COLUMNS (every ~5m)         -->
+    <!-- Industrial I-beam columns, anthracite steel        -->
+    <!-- ================================================= -->
+    <!-- North wall pillars -->
+    <model name="pillar_n_l"><static>true</static><pose>-5.0 9.85 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.20 0.25 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_n_r"><static>true</static><pose>5.0 9.85 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.20 0.25 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_n_c"><static>true</static><pose>0.0 9.85 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.20 0.25 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <!-- South wall pillars -->
+    <model name="pillar_s_l"><static>true</static><pose>-5.0 -9.85 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.20 0.25 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_s_r"><static>true</static><pose>5.0 -9.85 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.20 0.25 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_s_c"><static>true</static><pose>0.0 -9.85 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.20 0.25 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <!-- East wall pillars -->
+    <model name="pillar_e_n"><static>true</static><pose>9.85 5.00 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.25 0.20 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_e_s"><static>true</static><pose>9.85 -5.00 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.25 0.20 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_e_c"><static>true</static><pose>9.85 0.0 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.25 0.20 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <!-- West wall pillars -->
+    <model name="pillar_w_n"><static>true</static><pose>-9.85 5.00 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.25 0.20 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_w_s"><static>true</static><pose>-9.85 -5.00 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.25 0.20 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+    <model name="pillar_w_c"><static>true</static><pose>-9.85 0.0 1.25 0 0 0</pose><link name="link"><visual name="vis"><geometry><box><size>0.25 0.20 2.5</size></box></geometry><material><ambient>0.18 0.20 0.22 1</ambient><diffuse>0.24 0.26 0.28 1</diffuse></material></visual></link></model>
+
+    <!-- Wall-Mounted Industrial LED Lighting Fixtures (Centered in wall bays at X = +-2.5m) -->
+    <!-- North Wall Fixtures -->
+    <model name="fixture_wall_n1"><static>true</static><pose>-2.5 9.92 2.35 0 0 0</pose>
+      <link name="link">
+        <visual name="bracket"><pose>0 -0.06 0 0 0 0</pose><geometry><box><size>0.12 0.12 0.08</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="lamp"><pose>0 -0.14 -0.02 0.3 0 0</pose><geometry><box><size>0.40 0.14 0.06</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="led_strip"><pose>0 -0.14 -0.05 0.3 0 0</pose><geometry><box><size>0.36 0.10 0.01</size></box></geometry><material><ambient>0.9 0.9 0.85 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>0.95 0.95 0.85 1</emissive></material></visual>
+      </link></model>
+    <model name="fixture_wall_n2"><static>true</static><pose>2.5 9.92 2.35 0 0 0</pose>
+      <link name="link">
+        <visual name="bracket"><pose>0 -0.06 0 0 0 0</pose><geometry><box><size>0.12 0.12 0.08</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="lamp"><pose>0 -0.14 -0.02 0.3 0 0</pose><geometry><box><size>0.40 0.14 0.06</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="led_strip"><pose>0 -0.14 -0.05 0.3 0 0</pose><geometry><box><size>0.36 0.10 0.01</size></box></geometry><material><ambient>0.9 0.9 0.85 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>0.95 0.95 0.85 1</emissive></material></visual>
+      </link></model>
+    <!-- South Wall Fixtures -->
+    <model name="fixture_wall_s1"><static>true</static><pose>-2.5 -9.92 2.35 0 0 3.14159</pose>
+      <link name="link">
+        <visual name="bracket"><pose>0 -0.06 0 0 0 0</pose><geometry><box><size>0.12 0.12 0.08</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="lamp"><pose>0 -0.14 -0.02 0.3 0 0</pose><geometry><box><size>0.40 0.14 0.06</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="led_strip"><pose>0 -0.14 -0.05 0.3 0 0</pose><geometry><box><size>0.36 0.10 0.01</size></box></geometry><material><ambient>0.9 0.9 0.85 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>0.95 0.95 0.85 1</emissive></material></visual>
+      </link></model>
+    <model name="fixture_wall_s2"><static>true</static><pose>2.5 -9.92 2.35 0 0 3.14159</pose>
+      <link name="link">
+        <visual name="bracket"><pose>0 -0.06 0 0 0 0</pose><geometry><box><size>0.12 0.12 0.08</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="lamp"><pose>0 -0.14 -0.02 0.3 0 0</pose><geometry><box><size>0.40 0.14 0.06</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+        <visual name="led_strip"><pose>0 -0.14 -0.05 0.3 0 0</pose><geometry><box><size>0.36 0.10 0.01</size></box></geometry><material><ambient>0.9 0.9 0.85 1</ambient><diffuse>1.0 1.0 0.9 1</diffuse><emissive>0.95 0.95 0.85 1</emissive></material></visual>
+      </link></model>
+
+    <!-- ================================================= -->
+    <!-- INDUSTRIAL RACK SHELVING (NW, NE, SW, SE)         -->
+    <!-- ================================================= -->
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_NW1</name>
+      <pose>-4.8 7.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_NE1</name>
+      <pose>4.8 7.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_NW2</name>
+      <pose>-4.8 3.0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_NE2</name>
+      <pose>4.8 3.0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_SW2</name>
+      <pose>-4.8 1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_SE2</name>
+      <pose>4.8 1.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_SW1</name>
+      <pose>-4.8 -3.0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://shelf</uri>
+      <name>shelf_rack_SE1</name>
+      <pose>4.8 -3.0 0 0 0 0</pose>
+    </include>
+
+    <!-- ================================================= -->
+    <!-- LOGISTICS PROPS                                    -->
+    <!-- ================================================= -->
+    <include>
+      <uri>model://pallet_stack</uri>
+      <name>pallet_tower_1</name>
+      <pose>-5.2 -7.3 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://pallet_stack</uri>
+      <name>pallet_tower_2</name>
+      <pose>5.2 8.75 0 0 0 0</pose>
+    </include>
+    <!-- Extra scattered box near NW aisle entrance -->
+    <include>
+      <uri>model://pallet_stack</uri>
+      <name>pallet_tower_3</name>
+      <pose>-8.0 5.25 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://dumpster</uri>
+      <name>green_dumpster_container</name>
+      <pose>-2.8 -7.3 0 0 0 0</pose>
+    </include>
+
+    <!-- ================================================= -->
+    <!-- INTERSECTION I1 & I2 — PROMINENT CONFLICT ZONE          -->
+    <!-- ================================================= -->
+
+    <!-- Intersection I1 -->
+    <model name="intersection_I1_marker">
+      <static>true</static>
+      <pose>0 5.2 0.005 0 0 0</pose>
+      <link name="link">
+        <!-- Bright contrast base zone -->
+        <visual name="marker_zone">
+          <geometry><box><size>2.7 2.7 0.005</size></box></geometry>
+          <material><ambient>0.82 0.83 0.84 1.0</ambient><diffuse>0.90 0.91 0.92 1.0</diffuse></material>
+        </visual>
+
+        <!-- Yellow outer frame -->
+        <visual name="frame_n"><pose>0 1.38 0.006 0 0 0</pose><geometry><box><size>2.9 0.11 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="frame_s"><pose>0 -1.38 0.006 0 0 0</pose><geometry><box><size>2.9 0.11 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="frame_e"><pose>1.38 0 0.006 0 0 0</pose><geometry><box><size>0.11 2.9 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="frame_w"><pose>-1.38 0 0.006 0 0 0</pose><geometry><box><size>0.11 2.9 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+
+        <!-- Black diagonal hazard stripes at 45° on all 4 sides -->
+        <visual name="hz_n1"><pose>-0.9 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_n2"><pose>-0.3 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_n3"><pose>0.3 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_n4"><pose>0.9 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s1"><pose>-0.9 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s2"><pose>-0.3 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s3"><pose>0.3 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s4"><pose>0.9 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e1"><pose>1.38 -0.8 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e2"><pose>1.38 -0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e3"><pose>1.38 0.4 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e4"><pose>1.38 1.0 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w1"><pose>-1.38 -0.8 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w2"><pose>-1.38 -0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w3"><pose>-1.38 0.4 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w4"><pose>-1.38 1.0 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+
+        <!-- "I1" zone label — flush painted red cross marker -->
+        <visual name="i1_cross_h"><pose>0 0 0.005 0 0 0</pose><geometry><box><size>0.80 0.12 0.0015</size></box></geometry><material><ambient>0.85 0.15 0.10 1</ambient><diffuse>0.95 0.2 0.15 1</diffuse></material></visual>
+        <visual name="i1_cross_v"><pose>0 0 0.005 0 0 0</pose><geometry><box><size>0.12 0.80 0.0015</size></box></geometry><material><ambient>0.85 0.15 0.10 1</ambient><diffuse>0.95 0.2 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Choke Bollards at I1 -->
+    <model name="bollard_l1">
+      <static>true</static><pose>-0.75 5.2 0.45 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry></collision>
+        <visual name="vis"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="cap"><pose>0 0 0.46 0 0 0</pose><geometry><sphere><radius>0.065</radius></sphere></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.20 0.20 0.20 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="bollard_r1">
+      <static>true</static><pose>0.75 5.2 0.45 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry></collision>
+        <visual name="vis"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="cap"><pose>0 0 0.46 0 0 0</pose><geometry><sphere><radius>0.065</radius></sphere></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.20 0.20 0.20 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Intersection I2 -->
+    <model name="intersection_I2_marker">
+      <static>true</static>
+      <pose>0 -0.7 0.005 0 0 0</pose>
+      <link name="link">
+        <!-- Bright contrast base zone -->
+        <visual name="marker_zone">
+          <geometry><box><size>2.7 2.7 0.005</size></box></geometry>
+          <material><ambient>0.82 0.83 0.84 1.0</ambient><diffuse>0.90 0.91 0.92 1.0</diffuse></material>
+        </visual>
+
+        <!-- Yellow outer frame -->
+        <visual name="frame_n"><pose>0 1.38 0.006 0 0 0</pose><geometry><box><size>2.9 0.11 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="frame_s"><pose>0 -1.38 0.006 0 0 0</pose><geometry><box><size>2.9 0.11 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="frame_e"><pose>1.38 0 0.006 0 0 0</pose><geometry><box><size>0.11 2.9 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="frame_w"><pose>-1.38 0 0.006 0 0 0</pose><geometry><box><size>0.11 2.9 0.006</size></box></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+
+        <!-- Black diagonal hazard stripes at 45° on all 4 sides -->
+        <visual name="hz_n1"><pose>-0.9 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_n2"><pose>-0.3 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_n3"><pose>0.3 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_n4"><pose>0.9 1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s1"><pose>-0.9 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s2"><pose>-0.3 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s3"><pose>0.3 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_s4"><pose>0.9 -1.38 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e1"><pose>1.38 -0.8 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e2"><pose>1.38 -0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e3"><pose>1.38 0.4 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_e4"><pose>1.38 1.0 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w1"><pose>-1.38 -0.8 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w2"><pose>-1.38 -0.2 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w3"><pose>-1.38 0.4 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+        <visual name="hz_w4"><pose>-1.38 1.0 0.007 0 0 0.7854</pose><geometry><box><size>0.065 0.065 0.006</size></box></geometry><material><ambient>0.08 0.08 0.08 1</ambient><diffuse>0.12 0.12 0.12 1</diffuse></material></visual>
+
+        <!-- "I2" zone label — flush painted red cross marker -->
+        <visual name="i2_cross_h"><pose>0 0 0.005 0 0 0</pose><geometry><box><size>0.80 0.12 0.0015</size></box></geometry><material><ambient>0.85 0.15 0.10 1</ambient><diffuse>0.95 0.2 0.15 1</diffuse></material></visual>
+        <visual name="i2_cross_v"><pose>0 0 0.005 0 0 0</pose><geometry><box><size>0.12 0.80 0.0015</size></box></geometry><material><ambient>0.85 0.15 0.10 1</ambient><diffuse>0.95 0.2 0.15 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Choke Bollards at I2 -->
+    <model name="bollard_l2">
+      <static>true</static><pose>-0.75 -0.7 0.45 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry></collision>
+        <visual name="vis"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="cap"><pose>0 0 0.46 0 0 0</pose><geometry><sphere><radius>0.065</radius></sphere></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.20 0.20 0.20 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="bollard_r2">
+      <static>true</static><pose>0.75 -0.7 0.45 0 0 0</pose>
+      <link name="link">
+        <collision name="col"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry></collision>
+        <visual name="vis"><geometry><cylinder><radius>0.06</radius><length>0.9</length></cylinder></geometry><material><ambient>0.95 0.78 0.0 1</ambient><diffuse>1.0 0.84 0.0 1</diffuse></material></visual>
+        <visual name="cap"><pose>0 0 0.46 0 0 0</pose><geometry><sphere><radius>0.065</radius></sphere></geometry><material><ambient>0.15 0.15 0.15 1</ambient><diffuse>0.20 0.20 0.20 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- ZONE LETTER SIGNS (floor) + SHELF NUMBER SIGNS (top) -->
+    <!-- Flush painted stencils (1mm thickness, zero shadow)  -->
+    <!-- P=Emerald Green | D=Royal Blue | S1-S4=Black         -->
+    <!-- ================================================= -->
+
+    <model name="sign_P1"><static>true</static><pose>0.0 8.0 0.006 0 0 0</pose>
+      <link name="link">
+        <visual name="p1_sv"><pose>-0.18 0 0 0 0 0</pose><geometry><box><size>0.11 0.64 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+        <visual name="p1_th"><pose>0.02 0.265 0 0 0 0</pose><geometry><box><size>0.31 0.11 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+        <visual name="p1_mh"><pose>0.02 0.00 0 0 0 0</pose><geometry><box><size>0.31 0.11 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+        <visual name="p1_rv"><pose>0.13 0.132 0 0 0 0</pose><geometry><box><size>0.11 0.375 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_P2"><static>true</static><pose>-5.5 -7.0 0.006 0 0 0</pose>
+      <link name="link">
+        <visual name="p2_sv"><pose>-0.18 0 0 0 0 0</pose><geometry><box><size>0.11 0.64 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+        <visual name="p2_th"><pose>0.02 0.265 0 0 0 0</pose><geometry><box><size>0.31 0.11 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+        <visual name="p2_mh"><pose>0.02 0.00 0 0 0 0</pose><geometry><box><size>0.31 0.11 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+        <visual name="p2_rv"><pose>0.13 0.132 0 0 0 0</pose><geometry><box><size>0.11 0.375 0.0015</size></box></geometry><material><ambient>0.02 0.70 0.25 1</ambient><diffuse>0.04 0.88 0.32 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_D1"><static>true</static><pose>0.0 -8.1 0.006 0 0 0</pose>
+      <link name="link">
+        <!-- Straight vertical stem on left -->
+        <visual name="d1_sv"><pose>-0.16 0 0 0 0 0</pose><geometry><box><size>0.11 0.64 0.0015</size></box></geometry><material><ambient>0.08 0.38 0.90 1</ambient><diffuse>0.12 0.48 1.0 1</diffuse></material></visual>
+        <!-- Top horizontal bar -->
+        <visual name="d1_th"><pose>-0.03 0.265 0 0 0 0</pose><geometry><box><size>0.18 0.11 0.0015</size></box></geometry><material><ambient>0.08 0.38 0.90 1</ambient><diffuse>0.12 0.48 1.0 1</diffuse></material></visual>
+        <!-- Bottom horizontal bar -->
+        <visual name="d1_bh"><pose>-0.03 -0.265 0 0 0 0</pose><geometry><box><size>0.18 0.11 0.0015</size></box></geometry><material><ambient>0.08 0.38 0.90 1</ambient><diffuse>0.12 0.48 1.0 1</diffuse></material></visual>
+        <!-- Top-right curved chamfer -->
+        <visual name="d1_tr_diag"><pose>0.11 0.18 0 0 0 -0.7854</pose><geometry><box><size>0.11 0.20 0.0015</size></box></geometry><material><ambient>0.08 0.38 0.90 1</ambient><diffuse>0.12 0.48 1.0 1</diffuse></material></visual>
+        <!-- Bottom-right curved chamfer -->
+        <visual name="d1_br_diag"><pose>0.11 -0.18 0 0 0 0.7854</pose><geometry><box><size>0.11 0.20 0.0015</size></box></geometry><material><ambient>0.08 0.38 0.90 1</ambient><diffuse>0.12 0.48 1.0 1</diffuse></material></visual>
+        <!-- Right curved outer spine -->
+        <visual name="d1_rv"><pose>0.18 0 0 0 0 0</pose><geometry><box><size>0.11 0.26 0.0015</size></box></geometry><material><ambient>0.08 0.38 0.90 1</ambient><diffuse>0.12 0.48 1.0 1</diffuse></material></visual>
+      </link></model>
+
+    <!-- BATTERY SIGN: Centered inside charging bay pad (5.0, -5.0), flush on pad -->
+    <model name="sign_CHARGE"><static>true</static><pose>5.0 -7.5 0.006 0 0 0</pose>
+      <link name="link">
+        <!-- Battery Outer Stencil Frame (Golden Yellow) -->
+        <visual name="bt_top"><pose>0 0.28 0 0 0 0</pose><geometry><box><size>0.54 0.09 0.0015</size></box></geometry><material><ambient>0.92 0.72 0.0 1</ambient><diffuse>1.0 0.82 0.05 1</diffuse></material></visual>
+        <visual name="bt_bot"><pose>0 -0.28 0 0 0 0</pose><geometry><box><size>0.54 0.09 0.0015</size></box></geometry><material><ambient>0.92 0.72 0.0 1</ambient><diffuse>1.0 0.82 0.05 1</diffuse></material></visual>
+        <visual name="bt_lft"><pose>-0.225 0 0 0 0 0</pose><geometry><box><size>0.09 0.47 0.0015</size></box></geometry><material><ambient>0.92 0.72 0.0 1</ambient><diffuse>1.0 0.82 0.05 1</diffuse></material></visual>
+        <visual name="bt_rgt"><pose>0.225 0 0 0 0 0</pose><geometry><box><size>0.09 0.47 0.0015</size></box></geometry><material><ambient>0.92 0.72 0.0 1</ambient><diffuse>1.0 0.82 0.05 1</diffuse></material></visual>
+        <visual name="bt_cap"><pose>0 0.35 0 0 0 0</pose><geometry><box><size>0.22 0.06 0.0015</size></box></geometry><material><ambient>0.92 0.72 0.0 1</ambient><diffuse>1.0 0.82 0.05 1</diffuse></material></visual>
+        <!-- Connected Black Lightning Bolt -->
+        <visual name="bt_bolt_u"><pose>0.045 0.11 0.0005 0 0 0.55</pose><geometry><box><size>0.08 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="bt_bolt_m"><pose>0 0 0.0005 0 0 0</pose><geometry><box><size>0.24 0.08 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="bt_bolt_l"><pose>-0.045 -0.11 0.0005 0 0 0.55</pose><geometry><box><size>0.08 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <!-- S1-S8: BOLD SOLID BLACK flush on TOP of Yellow Shelves (z=2.201) -->
+    <!-- Flush stencil paint, zero floating shadow                       -->
+    <model name="sign_S1"><static>true</static><pose>-4.8 7.5 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s1_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s1_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s1_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s1_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s1_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 1 digit -->
+        <visual name="s1_1_v"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.10 0.58 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s1_1_sf"><pose>0.37 0.23 0 0 0 0</pose><geometry><box><size>0.18 0.08 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S2"><static>true</static><pose>4.8 7.5 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s2_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 2 digit -->
+        <visual name="s2_2_th"><pose>0.45 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_2_trv"><pose>0.61 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_2_mh"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_2_blv"><pose>0.29 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s2_2_bh"><pose>0.45 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S3"><static>true</static><pose>-4.8 3.0 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s3_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 3 digit -->
+        <visual name="s3_3_th"><pose>0.45 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_3_trv"><pose>0.61 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_3_mh"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_3_brv"><pose>0.61 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s3_3_bh"><pose>0.45 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S4"><static>true</static><pose>4.8 3.0 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s4_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s4_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s4_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s4_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s4_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 4 digit -->
+        <visual name="s4_4_tlv"><pose>0.29 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s4_4_mh"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s4_4_rfv"><pose>0.61 0 0 0 0 0</pose><geometry><box><size>0.10 0.58 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S5"><static>true</static><pose>-4.8 1.5 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s5_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 5 digit -->
+        <visual name="s5_5_th"><pose>0.45 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_5_tlv"><pose>0.29 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_5_mh"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_5_brv"><pose>0.61 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s5_5_bh"><pose>0.45 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S6"><static>true</static><pose>4.8 1.5 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s6_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 6 digit -->
+        <visual name="s6_6_th"><pose>0.45 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_6_lfv"><pose>0.29 0 0 0 0 0</pose><geometry><box><size>0.10 0.58 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_6_mh"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_6_brv"><pose>0.61 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s6_6_bh"><pose>0.45 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S7"><static>true</static><pose>-4.8 -3.0 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s7_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s7_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s7_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s7_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s7_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 7 digit -->
+        <visual name="s7_7_th"><pose>0.45 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s7_7_sf"><pose>0.29 0.18 0 0 0 0</pose><geometry><box><size>0.10 0.12 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s7_7_diag"><pose>0.495 0.00 0 0 0 -0.446</pose><geometry><box><size>0.10 0.54 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    <model name="sign_S8"><static>true</static><pose>4.8 -3.0 2.201 0 0 0</pose>
+      <link name="link">
+        <!-- S letter -->
+        <visual name="s8_s_top"><pose>-0.50 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_s_tlv"><pose>-0.66 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_s_mid"><pose>-0.50 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_s_brv"><pose>-0.34 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_s_bot"><pose>-0.50 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <!-- 8 digit -->
+        <visual name="s8_8_th"><pose>0.45 0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_8_tlv"><pose>0.29 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_8_trv"><pose>0.61 0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_8_mh"><pose>0.45 0 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_8_blv"><pose>0.29 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_8_brv"><pose>0.61 -0.12 0 0 0 0</pose><geometry><box><size>0.10 0.28 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+        <visual name="s8_8_bh"><pose>0.45 -0.24 0 0 0 0</pose><geometry><box><size>0.42 0.10 0.0015</size></box></geometry><material><ambient>0.06 0.06 0.06 1</ambient><diffuse>0.10 0.10 0.10 1</diffuse></material></visual>
+      </link></model>
+
+    
+    <!-- ================================================= -->
+    <!-- STATIONS & ZONES                                   -->
+    <!-- ================================================= -->
+    <include>
+      <uri>model://pickup_station</uri>
+      <name>pickup_P1</name>
+      <pose>0 8.0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://pickup_station</uri>
+      <name>pickup_P2</name>
+      <pose>-5.5 -7.0 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://drop_station</uri>
+      <name>drop_pack_D1</name>
+      <pose>0 -8.1 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://charging_station</uri>
+      <name>charging_bay</name>
+      <pose>5.5 -7.5 0 0 0 0</pose>
+    </include>
+
+    <!-- ================================================= -->
+    <!-- BLOCKED AISLE OBSTACLE                            -->
+    <!-- ================================================= -->
+    <include>
+      <uri>model://obstacle</uri>
+      <name>blocked_aisle_obstacle</name>
+      <pose>-0.2 0.75 0 0 0 0</pose>
+    </include>
+
+    <!-- ================================================= -->
+    <!-- THREE DISTINCT-COLOR AMRs                          -->
+    <!--   A = BLUE  | B = GREEN | C = ORANGE              -->
+    <!-- ================================================= -->
+    <include>
+      <uri>model://amr_blue</uri>
+      <name>amr_blue</name>
+      <pose>-3.5 5.25 0.05 0 0 0</pose>
+    </include>
+    <include>
+      <uri>model://amr_green</uri>
+      <name>amr_green</name>
+      <pose>0.5 8.5 0.05 0 0 -1.570796</pose>
+    </include>
+    <include>
+      <uri>model://amr_orange</uri>
+      <name>amr_orange</name>
+      <pose>3.5 -6.5 0.05 0 0 3.141592</pose>
+    </include>
+
+  </world>
+</sdf>
