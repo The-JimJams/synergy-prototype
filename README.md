@@ -303,7 +303,7 @@ Weights        Weights       Config         Thresholds     Detection     Config
 
 ---
 
-### 5.3 `WorldModel` (Local Private State Store)
+### 5.3 WorldModel (Local Private State Store)
 
 `WorldModel` (`algorithm/world_model.py`) is the **working memory** of each AMR:
 - **Private Isolation:** Own state (`_own_state`) and intent (`_own_intent`) are kept strictly isolated from peer tables (`_peer_states`, `_peer_intents`).
@@ -313,43 +313,53 @@ Weights        Weights       Config         Thresholds     Detection     Config
 
 ---
 
-### 5.4 `ConflictDetector` (Spatial & Temporal Contention)
+### 5.4 ConflictDetector (Spatial & Temporal Contention)
 
 `ConflictDetector` (`algorithm/conflict_detector.py`) identifies potential collisions over shared resources (e.g., Intersection `"I1"` or Pickup Station `"P1"`):
-1. Derives expected occupancy window $[T_{\text{start}}, T_{\text{end}}]$ using **Option C Occupancy Modeling**:
+
+1. **Occupancy Window Derivation (Option C Occupancy Modeling):**
+
    $$T_{\text{start}} = \max(\text{now}, \text{eta})$$
+
    $$T_{\text{end}} = \min(T_{\text{start}} + \Delta t_{\text{default}}, \text{valid\_until})$$
-2. Checks open-interval overlap against peer intents and active reservations:
-   $$\text{overlap} = (A_{\text{start}} < B_{\text{end}}) \land (B_{\text{start}} < A_{\text{end}})$$
-3. Filters overlaps $< \text{min\_temporal\_overlap\_seconds}$ ($1.0\text{ s}$) or onset $> \text{planning\_horizon\_seconds}$ ($60.0\text{ s}$).
-4. Categorizes severity:
+
+2. **Open-Interval Contention Check:**
+   Checks temporal overlap against active peer intents and reservations on the same resource:
+
+   $$\text{overlap} = (A_{\text{start}} \lt B_{\text{end}}) \land (B_{\text{start}} \lt A_{\text{end}})$$
+
+3. **Horizon & Duration Filtering:**
+   Filters out overlaps where $\text{duration} \lt \text{min\_temporal\_overlap\_seconds}$ ($1.0\text{ s}$) or $\text{onset} \gt \text{planning\_horizon\_seconds}$ ($60.0\text{ s}$).
+
+4. **Severity Classification:**
    - **`CRITICAL`:** $\text{time\_to\_conflict} \le 0\text{ s}$
-   - **`HIGH`:** $0\text{ s} < \text{time\_to\_conflict} < 10\text{ s}$
+   - **`HIGH`:** $0\text{ s} \lt \text{time\_to\_conflict} \lt 10\text{ s}$
    - **`MEDIUM`:** $10\text{ s} \le \text{time\_to\_conflict} \le 30\text{ s}$
-   - **`LOW`:** $\text{time\_to\_conflict} > 30\text{ s}$
+   - **`LOW`:** $\text{time\_to\_conflict} \gt 30\text{ s}$
 
 ---
 
-### 5.5 `PriorityEngine` (Deterministic Multi-Factor Arbitration)
+### 5.5 PriorityEngine (Deterministic Multi-Factor Arbitration)
 
 `PriorityEngine` (`algorithm/priority_engine.py`) deterministically arbitrates between two AMRs contesting the same resource.
 
 #### Composite Priority Formula
-For AMR $i \in \{A, B\}$, the score $S_i$ is computed as:
+For AMR $i \in \{A, B\}$, the composite score $S_i$ is computed as:
+
 $$S_i = w_{\text{task}} \cdot p_{\text{task}} + w_{\text{deadline}} \cdot p_{\text{deadline}} + w_{\text{wait}} \cdot p_{\text{wait}} + w_{\text{battery}} \cdot p_{\text{battery}}$$
 
-Where each normalized factor $\in [0.0, 1.0]$:
+Where each normalized factor $p \in [0.0, 1.0]$:
 1. **Task Priority Factor:** $p_{\text{task}} = \frac{\text{priority} - 1}{9.0}$ (maps 1..10 to 0.0..1.0).
 2. **Deadline Proximity Factor:** $p_{\text{deadline}} = \frac{1}{\max(\text{deadline} - \text{now}, 1.0)}$.
-3. **Wait Time (Commitment Age):** $p_{\text{wait}} = \min\left(\frac{\text{now} - \text{intent.timestamp}}{\text{max\_wait\_seconds}}, 1.0\right)$.
+3. **Wait Time Factor (Commitment Age):** $p_{\text{wait}} = \min\left(\frac{\text{now} - \text{intent.timestamp}}{\text{max\_wait\_seconds}}, 1.0\right)$.
 4. **Battery Drain Urgency:** $p_{\text{battery}} = \frac{100.0 - \text{battery\_percent}}{100.0}$.
 
 #### Deterministic Tie-Breaking (INV-3)
-If $|S_A - S_B| \le \epsilon$ ($10^{-9}$), the winner is selected via lexicographic string comparison (`"amr_a"` $<$ `"amr_b"`).
+If $|S_A - S_B| \le \epsilon$ ($10^{-9}$), the winner is selected via lexicographic string comparison (`"amr_a"` precedes `"amr_b"`).
 
 ---
 
-### 5.6 `ReservationManager` (Mutual Exclusion Lifecycle)
+### 5.6 ReservationManager (Mutual Exclusion Lifecycle)
 
 `ReservationManager` (`algorithm/reservation_manager.py`) manages the lifecycle of shared resource claims:
 
@@ -378,28 +388,30 @@ stateDiagram-v2
 
 ---
 
-### 5.7 `TaskAllocator` (Distributed Auction & Eligibility)
+### 5.7 TaskAllocator (Distributed Auction & Eligibility)
 
 `TaskAllocator` (`algorithm/task_allocator.py`) handles decentralized task evaluation and assignment without a central dispatcher:
 - **Eligibility Filter:** Telemetry age $\le 5.0\text{ s}$, status in (`IDLE`, `WAITING`), no active task assigned, and battery $\ge 20\%$.
 - **Bid Score Formula:**
+
   $$\text{BidScore} = \frac{w_{\text{batt}} \cdot f_{\text{batt}} + w_{\text{prio}} \cdot f_{\text{prio}} + w_{\text{dead}} \cdot f_{\text{dead}}}{w_{\text{batt}} + w_{\text{prio}} + w_{\text{dead}}}$$
+
 - **Deterministic Winner Selection:** Highest bid score wins. Ties within $\epsilon = 10^{-9}$ are resolved via lexicographic string comparison (`robot_id`).
 - **Read-Only / Mutation Separation:** `evaluate_task()` computes the decision without side-effects; `assign_task()` explicitly mutates `WorldModel._tasks`.
 
 ---
 
-### 5.8 `FailureDetector` (Heartbeat & Task Reclamation)
+### 5.8 FailureDetector (Heartbeat & Task Reclamation)
 
 `FailureDetector` (`algorithm/failure_detector.py`) provides peer health evaluation and automatic task recovery:
 - **`HEALTHY`:** Heartbeat age $\le 3.0\text{ s}$.
-- **`SUSPECTED`:** $3.0\text{ s} < \text{age} \le 10.0\text{ s}$.
-- **`FAILED`:** Age $> 10.0\text{ s}$, or peer status broadcast is `RobotStatus.FAILED` / `EMERGENCY_STOP`.
+- **`SUSPECTED`:** $3.0\text{ s} \lt \text{age} \le 10.0\text{ s}$.
+- **`FAILED`:** Age $\gt 10.0\text{ s}$, or peer status broadcast is `RobotStatus.FAILED` / `EMERGENCY_STOP`.
 - **Automatic Task Reclamation:** Tasks assigned to a failed AMR transition to `TaskStatus.FAILED`, making them immediately assignable for reallocation by active peers.
 
 ---
 
-### 5.9 `ObstaclePolicy` & `RerouteEvaluator`
+### 5.9 ObstaclePolicy & RerouteEvaluator
 
 `ObstaclePolicy` (`algorithm/obstacle_policy.py`) and `RerouteEvaluator` (`algorithm/reroute_evaluator.py`) provide decision-only route evaluations:
 - **Blockage Detection:** Evaluates whether an active, non-expired `Obstacle` blocks a target resource.
@@ -408,17 +420,17 @@ stateDiagram-v2
 
 ---
 
-### 5.10 `NetworkManager` & `ReconciliationManager`
+### 5.10 NetworkManager & ReconciliationManager
 
 - **`NetworkManager` (`algorithm/network_manager.py`):** Tracks latency and packet loss to transition across operational modes (`CONNECTED`, `DEGRADED`, `DISCONNECTED`, `RECOVERY`).
 - **`ReconciliationManager` (`algorithm/reconciliation_manager.py`):** Resolves split-brain state after network partitions:
   1. *RobotState & Intent:* Monotonic timestamp ordering.
   2. *Reservations:* Priority $\rightarrow$ Earlier Created Timestamp $\rightarrow$ Lower Robot ID.
-  3. *Tasks:* State hierarchy (`COMPLETED` $>$ `IN_PROGRESS` $>$ `ASSIGNED` $>$ `BIDDING` $>$ `ANNOUNCED`).
+  3. *Tasks:* State hierarchy (`COMPLETED` $\gt$ `IN_PROGRESS` $\gt$ `ASSIGNED` $\gt$ `BIDDING` $\gt$ `ANNOUNCED`).
 
 ---
 
-### 5.11 `MetricsLogger` & `BenchmarkEvaluator`
+### 5.11 MetricsLogger & BenchmarkEvaluator
 
 - **`MetricsLogger` (`algorithm/metrics_logger.py`):** Stateless event historian tracking task lifecycles, WAITING/NAVIGATING transitions, and collisions with explicit timestamps.
 - **`BenchmarkEvaluator` (`algorithm/benchmark_evaluator.py`):** Runs synthetic clock benchmarks comparing SYNERGY decentralized coordination against a baseline STOP-AND-WAIT model.
