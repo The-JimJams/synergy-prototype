@@ -15,7 +15,7 @@ class FleetAgentNode(Node):
     def __init__(self):
         super().__init__('fleet_agent_node')
 
-        self.declare_parameter('robot_id', 'robot_a')
+        self.declare_parameter('robot_id', 'amr_a')
         robot_id = self.get_parameter('robot_id').value.strip('/')
         self.robot_id = robot_id
         self.namespace = f'/{robot_id}'
@@ -36,7 +36,7 @@ class FleetAgentNode(Node):
         self.create_timer(0.3, self.check_for_conflicts_tick)
         self.create_timer(2.0, self.print_world_model)
 
-        for topic in ['/robot_a/state', '/robot_b/state', '/robot_c/state']:
+        for topic in ['/amr_a/state', '/amr_b/state', '/amr_c/state']:
             self.create_subscription(
                 RobotState,
                 topic,
@@ -44,7 +44,7 @@ class FleetAgentNode(Node):
                 10,
             )
 
-        for topic in ['/robot_a/heartbeat', '/robot_b/heartbeat', '/robot_c/heartbeat']:
+        for topic in ['/amr_a/heartbeat', '/amr_b/heartbeat', '/amr_c/heartbeat']:
             self.create_subscription(
                 Heartbeat,
                 topic,
@@ -52,7 +52,7 @@ class FleetAgentNode(Node):
                 10,
             )
 
-        for topic in ['/robot_a/intent', '/robot_b/intent', '/robot_c/intent']:
+        for topic in ['/amr_a/intent', '/amr_b/intent', '/amr_c/intent']:
             self.create_subscription(
                 RobotIntent,
                 topic,
@@ -74,14 +74,14 @@ class FleetAgentNode(Node):
         msg = RobotState()
         msg.robot_id = self.robot_id
         msg.timestamp = self.get_clock().now().nanoseconds / 1e9
-        msg.position = [
-            1.0 + self._tick * 0.05,
-            2.0 + self._tick * 0.03,
-        ]
-        msg.velocity = 0.4 + self._tick * 0.03
-        msg.battery = 100.0 - self._tick * 0.8
-        msg.current_task = 'move_to_next_waypoint'
-        msg.status = 'active' if self._tick % 2 == 0 else 'idle'
+        msg.x = 1.0 + self._tick * 0.05
+        msg.y = 2.0 + self._tick * 0.03
+        msg.theta = 0.0
+        msg.linear_velocity = 0.4 + self._tick * 0.03
+        msg.angular_velocity = 0.0
+        msg.battery_percent = max(0.0, 100.0 - self._tick * 0.8)
+        msg.current_task_id = 'move_to_next_waypoint'
+        msg.status = 'NAVIGATING' if self._tick % 2 == 0 else 'IDLE'
 
         self.state_publisher.publish(msg)
 
@@ -89,17 +89,17 @@ class FleetAgentNode(Node):
             'last_state': msg,
             'last_heartbeat_time': self.world_model.get(self.robot_id, {}).get('last_heartbeat_time'),
             'last_updated': self.get_clock().now(),
-            'position': list(msg.position),
-            'battery': msg.battery,
+            'position': [msg.x, msg.y],
+            'battery': msg.battery_percent,
             'status': msg.status,
             'target_intersection': self.world_model.get(self.robot_id, {}).get('target_intersection', 'I1'),
             'eta': self.world_model.get(self.robot_id, {}).get('eta', 0.0),
-            'priority': self.world_model.get(self.robot_id, {}).get('priority', 0),
+            'priority': self.world_model.get(self.robot_id, {}).get('priority', 0.0),
         }
 
         self.get_logger().info(
             f'Published state on {self.namespace}/state: '
-            f'robot_id={msg.robot_id}, position={msg.position}, battery={msg.battery}, status={msg.status}'
+            f'robot_id={msg.robot_id}, position=[{msg.x:.2f}, {msg.y:.2f}], battery={msg.battery_percent:.1f}%, status={msg.status}'
         )
 
     def publish_heartbeat(self):
@@ -130,23 +130,25 @@ class FleetAgentNode(Node):
         target_intersection = intersections[index]
 
         priority_map = {
-            'robot_a': 1,
-            'robot_b': 2,
-            'robot_c': 3,
+            'amr_a': 1,
+            'amr_b': 2,
+            'amr_c': 3,
         }
-        priority = priority_map.get(self.robot_id, 0)
+        priority = int(priority_map.get(self.robot_id, 0))
 
-        now = self.get_clock().now()
-        eta_seconds = 5.0 + priority
-        eta = now + rclpy.time.Duration(seconds=eta_seconds)
+        now_sec = self.get_clock().now().nanoseconds / 1e9
+        eta = now_sec + 5.0 + float(priority)
+        valid_until = eta + 10.0
 
         msg = RobotIntent()
         msg.robot_id = self.robot_id
-        msg.planned_path = ["start", "checkpoint", target_intersection]
-        msg.target_intersection = target_intersection
-        msg.eta = eta.nanoseconds / 1e9
-        msg.priority = priority
+        msg.timestamp = now_sec
         msg.task_id = f"task_{self.robot_id}_{self.intent_counter}"
+        msg.target_resource_id = target_intersection
+        msg.eta = eta
+        msg.priority = float(priority)
+        msg.valid_until = valid_until
+        msg.planned_path = ["start", "checkpoint", target_intersection]
 
         delay = random.uniform(0.1, 0.4)
         self.get_logger().info(f'Intent jitter for {self.robot_id}: delaying {delay:.3f}s before publish')
@@ -162,7 +164,7 @@ class FleetAgentNode(Node):
 
         self.get_logger().info(
             f'Published intent on {self.namespace}/intent: '
-            f'robot_id={msg.robot_id}, target={msg.target_intersection}, eta={msg.eta}, priority={msg.priority}'
+            f'robot_id={msg.robot_id}, target={msg.target_resource_id}, eta={msg.eta}, priority={msg.priority}'
         )
 
     def check_for_conflicts_tick(self):
@@ -237,7 +239,7 @@ class FleetAgentNode(Node):
             claim.resource = target_intersection
             claim.start_time = now.nanoseconds / 1e9
             claim.end_time = (now + rclpy.time.Duration(seconds=5.0)).nanoseconds / 1e9
-            claim.priority = priority
+            claim.priority = int(priority)
             claim.claim_id = f"{self.robot_id}_{target_intersection}_{self._tick}"
             self.claim_publisher.publish(claim)
             self.active_claims[target_intersection] = claim
@@ -268,7 +270,7 @@ class FleetAgentNode(Node):
             claim.resource = target_intersection
             claim.start_time = now.nanoseconds / 1e9
             claim.end_time = (now + rclpy.time.Duration(seconds=5.0)).nanoseconds / 1e9
-            claim.priority = priority
+            claim.priority = int(priority)
             claim.claim_id = f"{self.robot_id}_{target_intersection}_{self._tick}"
             self.claim_publisher.publish(claim)
             self.active_claims[target_intersection] = claim
@@ -284,7 +286,7 @@ class FleetAgentNode(Node):
         """Update world model from peer state messages and log them."""
         self.get_logger().info(
             f'Received on {topic}: robot_id={msg.robot_id}, '
-            f'position={msg.position}, battery={msg.battery}, status={msg.status}'
+            f'position=[{msg.x:.2f}, {msg.y:.2f}], battery={msg.battery_percent:.1f}%, status={msg.status}'
         )
 
         self.world_model[msg.robot_id] = {
@@ -292,8 +294,8 @@ class FleetAgentNode(Node):
             'last_state': msg,
             'last_heartbeat_time': self.world_model.get(msg.robot_id, {}).get('last_heartbeat_time'),
             'last_updated': self.get_clock().now(),
-            'position': list(msg.position),
-            'battery': msg.battery,
+            'position': [msg.x, msg.y],
+            'battery': msg.battery_percent,
             'status': msg.status,
         }
 
@@ -328,14 +330,14 @@ class FleetAgentNode(Node):
         robot_id = msg.robot_id
         self.world_model[robot_id] = {
             **self.world_model.get(robot_id, {}),
-            'target_intersection': msg.target_intersection,
+            'target_intersection': msg.target_resource_id,
             'eta': msg.eta,
             'priority': msg.priority,
             'last_updated': self.get_clock().now(),
         }
         self.get_logger().info(
             f'Received intent on {topic}: robot_id={robot_id}, '
-            f'target={msg.target_intersection}, eta={msg.eta}, priority={msg.priority}'
+            f'target={msg.target_resource_id}, eta={msg.eta}, priority={msg.priority}'
         )
         self.check_for_conflicts_tick()
 

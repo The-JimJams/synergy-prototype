@@ -7,7 +7,7 @@ from launch_ros.actions import PushRosNamespace
 
 
 def generate_launch_description():
-    robot_names = ['robot_a', 'robot_b', 'robot_c']
+    robot_names = ['amr_a', 'amr_b', 'amr_c']
 
     groups = []
     for robot_name in robot_names:
@@ -28,7 +28,7 @@ def generate_launch_description():
                         name='task_allocator_node',
                         parameters=[{
                             'robot_id': robot_name,
-                            'is_announcer': robot_name == 'robot_a',
+                            'is_announcer': robot_name == 'amr_a',
                         }],
                         output='screen',
                     ),
