@@ -54,12 +54,12 @@
         <!-- MAIN DASHBOARD CONTENT GRID -->
         <main class="dashboard-grid">
 
-            <!-- LEFT/MAIN COLUMN: WAREHOUSE MAP CANVAS -->
+            <!-- LEFT/MAIN COLUMN: WAREHOUSE MAP CANVAS (PHASE 6) -->
             <section class="card map-card">
                 <div class="card-header">
-                    <h2>Warehouse Map View</h2>
+                    <h2>Warehouse Map View (Phase 6)</h2>
                     <div class="map-controls">
-                        <label><input type="checkbox" id="toggle-paths" checked> Paths</label>
+                        <label><input type="checkbox" id="toggle-paths" checked> Trajectory Paths</label>
                         <label><input type="checkbox" id="toggle-labels" checked> Labels</label>
                         <label><input type="checkbox" id="toggle-grid" checked> Grid</label>
                     </div>
@@ -69,10 +69,10 @@
                 </div>
             </section>
 
-            <!-- RIGHT COLUMN: ROBOT STATUS CARDS -->
+            <!-- RIGHT COLUMN: ROBOT STATUS CARDS (PHASE 7) -->
             <section class="card robots-column">
                 <div class="card-header">
-                    <h2>Fleet Status</h2>
+                    <h2>Fleet Status (Phase 7)</h2>
                     <span class="badge" id="robot-count-badge">3 Robots</span>
                 </div>
                 <div class="card-body robots-container" id="robots-cards-list">
@@ -186,10 +186,10 @@
                 </div>
             </section>
 
-            <!-- BOTTOM PANELS: RESERVATIONS, TASKS, NETWORK -->
+            <!-- BOTTOM PANELS: RESERVATIONS & INTENTS (PHASE 8), TASKS (PHASE 10), NETWORK (PHASE 11) -->
             <section class="card panel-reservations">
                 <div class="card-header">
-                    <h3>Intersection Reservations</h3>
+                    <h3>Intersection Reservations (Phase 8)</h3>
                 </div>
                 <div class="card-body">
                     <table class="data-table" id="reservations-table">
@@ -210,7 +210,7 @@
 
             <section class="card panel-tasks">
                 <div class="card-header">
-                    <h3>Active Tasks</h3>
+                    <h3>Active Tasks (Phase 10)</h3>
                 </div>
                 <div class="card-body">
                     <table class="data-table" id="tasks-table">
@@ -231,7 +231,7 @@
 
             <section class="card panel-network">
                 <div class="card-header">
-                    <h3>Network Telemetry</h3>
+                    <h3>Network Telemetry (Phase 11)</h3>
                     <span class="status-tag tag-normal" id="network-status-tag">NORMAL</span>
                 </div>
                 <div class="card-body network-grid">
@@ -250,18 +250,32 @@
                 </div>
             </section>
 
-            <!-- EVENT LOG PANEL -->
+            <!-- EVENT LOG PANEL (PHASE 9) -->
             <section class="card panel-events">
                 <div class="card-header">
-                    <h3>Coordination Event Feed</h3>
+                    <h3>Coordination Event Feed (Phase 9)</h3>
                     <div class="filter-group">
+                        <select id="event-robot-filter" class="filter-select">
+                            <option value="">All Robots</option>
+                            <option value="A">Robot A</option>
+                            <option value="B">Robot B</option>
+                            <option value="C">Robot C</option>
+                        </select>
                         <select id="event-type-filter" class="filter-select">
-                            <option value="">All Events</option>
-                            <option value="CONFLICT">Conflicts</option>
-                            <option value="WINNER">Priority Winners</option>
-                            <option value="WAIT">Wait Signals</option>
-                            <option value="REROUTE">Reroutes</option>
-                            <option value="FAILURE">Failures</option>
+                            <option value="">All Event Types</option>
+                            <option value="CONFLICT">CONFLICT</option>
+                            <option value="WINNER">WINNER</option>
+                            <option value="RESERVATION">RESERVATION</option>
+                            <option value="WAIT">WAIT</option>
+                            <option value="RELEASE">RELEASE</option>
+                            <option value="REROUTE">REROUTE</option>
+                            <option value="OBSTACLE">OBSTACLE</option>
+                            <option value="FAILURE">FAILURE</option>
+                            <option value="REASSIGNMENT">REASSIGNMENT</option>
+                            <option value="TASK_COMPLETED">TASK_COMPLETED</option>
+                            <option value="HEARTBEAT_TIMEOUT">HEARTBEAT_TIMEOUT</option>
+                            <option value="NETWORK_DEGRADED">NETWORK_DEGRADED</option>
+                            <option value="NETWORK_RECOVERED">NETWORK_RECOVERED</option>
                         </select>
                     </div>
                 </div>
@@ -270,10 +284,10 @@
                 </div>
             </section>
 
-            <!-- EVALUATION & METRICS PANEL -->
+            <!-- EVALUATION & METRICS PANEL (PHASE 12, 14) -->
             <section class="card panel-evaluation">
                 <div class="card-header">
-                    <h3>Evaluation & Benchmark Comparison</h3>
+                    <h3>Evaluation & Benchmark Comparison (Phase 12, 14)</h3>
                     <span class="read-only-notice">Read-Only Observation</span>
                 </div>
                 <div class="card-body eval-container">

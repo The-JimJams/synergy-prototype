@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scenarioSelector = document.getElementById('scenario-selector');
     const eventFeedList = document.getElementById('event-feed-list');
     const eventTypeFilter = document.getElementById('event-type-filter');
+    const eventRobotFilter = document.getElementById('event-robot-filter');
 
     // Controls
     document.getElementById('toggle-paths')?.addEventListener('change', (e) => {
@@ -48,19 +49,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Event Filter Listener
+    // Event Filter Listeners
     eventTypeFilter?.addEventListener('change', () => fetchTelemetry());
+    eventRobotFilter?.addEventListener('change', () => fetchTelemetry());
 
     // Main Polling Loop
     async function fetchTelemetry() {
         try {
+            // Build events filter query
+            const eventParams = new URLSearchParams();
+            if (eventTypeFilter && eventTypeFilter.value) eventParams.append('event_type', eventTypeFilter.value);
+            if (eventRobotFilter && eventRobotFilter.value) eventParams.append('robot_id', eventRobotFilter.value);
+
+            const eventsUrl = '/api/events' + (eventParams.toString() ? '?' + eventParams.toString() : '');
+
             // Parallel API fetches for responsiveness
             const [stateRes, intentsRes, resRes, tasksRes, eventsRes, netRes, metricsRes, healthRes] = await Promise.all([
                 fetch('/api/state'),
                 fetch('/api/intents'),
                 fetch('/api/reservations'),
                 fetch('/api/tasks'),
-                fetch('/api/events' + (eventTypeFilter.value ? `?event_type=${eventTypeFilter.value}` : '')),
+                fetch(eventsUrl),
                 fetch('/api/network'),
                 fetch('/api/metrics'),
                 fetch('/api/health')
@@ -88,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Update Robots Cards & Map
             updateRobotCards(stateData.robots || {}, intentsData.intents || []);
-            mapRenderer.render(stateData.robots || {}, resData.reservations || [], intentsData.intents || []);
+            mapRenderer.render(stateData.robots || {}, resData.reservations || [], intentsData.intents || [], eventsData.events || []);
 
             // Update Lower Panels
             updateReservationsTable(resData.reservations || []);
@@ -179,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td><strong>${t.task_id}</strong></td>
                 <td>${t.pickup} → ${t.dropoff}</td>
                 <td>${t.assigned_robot ? `Robot ${t.assigned_robot}` : 'Unassigned'}</td>
-                <td><span class="status-tag ${t.status === 'COMPLETED' ? 'tag-normal' : (t.status === 'FAILED' ? 'tag-failed' : 'tag-moving')}">${t.status}</span></td>
+                <td><span class="status-tag ${t.status === 'COMPLETED' ? 'tag-normal' : (t.status === 'FAILED' ? 'tag-failed' : (t.status === 'WAITING' ? 'tag-waiting' : 'tag-moving'))}">${t.status}</span></td>
             </tr>
         `).join('');
     }

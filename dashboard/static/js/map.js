@@ -1,6 +1,7 @@
 /**
  * SYNERGY Dashboard - Warehouse Canvas Renderer (Phase 6 & 7)
  * HTML Canvas map renderer with world-to-screen coordinate transformation.
+ * Independent of ROS message definitions.
  */
 
 class WarehouseMapRenderer {
@@ -37,6 +38,9 @@ class WarehouseMapRenderer {
         this.showPaths = true;
         this.showLabels = true;
 
+        // Active obstacle markers detected from events
+        this.obstacles = [];
+
         // Position history for rendering trajectory lines
         this.history = { 'A': [], 'B': [], 'C': [] };
         this.maxHistoryLength = 20;
@@ -68,8 +72,21 @@ class WarehouseMapRenderer {
         return { x: screenX, y: screenY, scale: (scaleX + scaleY) / 2 };
     }
 
-    render(robots = {}, reservations = [], intents = []) {
+    setObstacles(events = []) {
+        // Extract recent obstacle locations from events feed
+        const obstacleEvents = events.filter(e => e.event_type === 'OBSTACLE');
+        if (obstacleEvents.length > 0) {
+            // Simulated default obstacle location if event specifies upper aisle
+            this.obstacles = [{ x: 5.0, y: 6.5, label: 'Blocked Aisle' }];
+        } else {
+            this.obstacles = [];
+        }
+    }
+
+    render(robots = {}, reservations = [], intents = [], events = []) {
         if (!this.ctx) return;
+
+        this.setObstacles(events);
 
         // Clear canvas
         this.ctx.fillStyle = '#070a12';
@@ -80,6 +97,9 @@ class WarehouseMapRenderer {
 
         // Draw warehouse racks and aisles layout
         this.drawWarehouseLayout();
+
+        // Draw active obstacles (if any)
+        this.drawObstacles();
 
         // Draw intersections & active reservations
         this.drawIntersections(reservations);
@@ -166,6 +186,36 @@ class WarehouseMapRenderer {
         });
     }
 
+    drawObstacles() {
+        this.obstacles.forEach(obs => {
+            const pos = this.worldToScreen(obs.x, obs.y);
+            const size = 20;
+
+            this.ctx.fillStyle = '#ef4444';
+            this.ctx.strokeStyle = '#f87171';
+            this.ctx.lineWidth = 2;
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(pos.x, pos.y - size/2);
+            this.ctx.lineTo(pos.x + size/2, pos.y + size/2);
+            this.ctx.lineTo(pos.x - size/2, pos.y + size/2);
+            this.ctx.closePath();
+            this.ctx.fill();
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.font = 'bold 12px sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('!', pos.x, pos.y + 4);
+
+            if (this.showLabels) {
+                this.ctx.fillStyle = '#f87171';
+                this.ctx.font = 'bold 10px sans-serif';
+                this.ctx.fillText(obs.label, pos.x, pos.y - 14);
+            }
+        });
+    }
+
     drawStations() {
         Object.entries(this.stations).forEach(([id, st]) => {
             const pos = this.worldToScreen(st.x, st.y);
@@ -203,7 +253,6 @@ class WarehouseMapRenderer {
             this.ctx.strokeStyle = isReserved ? '#ef4444' : '#f59e0b';
             this.ctx.lineWidth = 2;
 
-            // Draw intersection zone box
             const size = 30;
             this.ctx.fillRect(pos.x - size/2, pos.y - size/2, size, size);
             this.ctx.strokeRect(pos.x - size/2, pos.y - size/2, size, size);
@@ -262,7 +311,7 @@ class WarehouseMapRenderer {
             this.ctx.lineTo(iPos.x, iPos.y);
             this.ctx.stroke();
 
-            this.ctx.setLineDash([]); // Reset
+            this.ctx.setLineDash([]);
         });
     }
 
@@ -271,7 +320,6 @@ class WarehouseMapRenderer {
         const color = this.colors[r.robot_id] || '#ffffff';
         const radius = 16;
 
-        // Draw glow if moving/active
         if (r.status === 'MOVING') {
             this.ctx.fillStyle = color;
             this.ctx.globalAlpha = 0.15;
@@ -281,7 +329,6 @@ class WarehouseMapRenderer {
             this.ctx.globalAlpha = 1.0;
         }
 
-        // Main robot circle body
         this.ctx.fillStyle = '#1e293b';
         this.ctx.strokeStyle = r.status === 'FAILED' ? '#ef4444' : color;
         this.ctx.lineWidth = 3;
@@ -291,7 +338,6 @@ class WarehouseMapRenderer {
         this.ctx.fill();
         this.ctx.stroke();
 
-        // Draw orientation heading arrow
         const yaw = r.yaw || 0.0;
         const arrowLen = radius * 0.8;
         const arrowX = pos.x + Math.cos(yaw) * arrowLen;
@@ -304,14 +350,12 @@ class WarehouseMapRenderer {
         this.ctx.lineTo(arrowX, arrowY);
         this.ctx.stroke();
 
-        // Robot ID text label
         this.ctx.fillStyle = '#ffffff';
         this.ctx.font = 'bold 12px sans-serif';
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
         this.ctx.fillText(r.robot_id, pos.x, pos.y);
 
-        // Status text underneath
         if (this.showLabels) {
             this.ctx.fillStyle = r.status === 'FAILED' ? '#f87171' : '#94a3b8';
             this.ctx.font = '10px sans-serif';
