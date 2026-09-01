@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNERGY AMR Fleet Monitoring & Evaluation</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- HEADER -->
+        <header class="top-header">
+            <div class="brand">
+                <div class="logo-icon">⚡</div>
+                <div>
+                    <h1>SYNERGY Fleet Monitor</h1>
+                    <span class="subtitle">Decentralized AMR Warehouse Telemetry & Evaluation</span>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <div class="status-pill" id="backend-status-pill">
+                    <span class="indicator-dot offline" id="backend-dot"></span>
+                    <span id="backend-status-text">Connecting...</span>
+                </div>
+
+                <div class="info-pill">
+                    <span class="label">MODE:</span>
+                    <span class="value highlight" id="system-mode">MOCK</span>
+                </div>
+
+                <div class="info-pill">
+                    <span class="label">SCENARIO:</span>
+                    <select id="scenario-selector" class="scenario-select">
+                        <option value="full_demo">Full Demo</option>
+                        <option value="normal">Normal Operation</option>
+                        <option value="conflict">Intersection Conflict</option>
+                        <option value="reroute">Obstacle Reroute</option>
+                        <option value="failure">Robot Failure</option>
+                        <option value="network">Network Degradation</option>
+                    </select>
+                </div>
+
+                <div class="info-pill">
+                    <span class="label">UPDATED:</span>
+                    <span class="value" id="last-update-time">--:--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN DASHBOARD CONTENT GRID -->
+        <main class="dashboard-grid">
+
+            <!-- LEFT/MAIN COLUMN: WAREHOUSE MAP CANVAS -->
+            <section class="card map-card">
+                <div class="card-header">
+                    <h2>Warehouse Map View</h2>
+                    <div class="map-controls">
+                        <label><input type="checkbox" id="toggle-paths" checked> Paths</label>
+                        <label><input type="checkbox" id="toggle-labels" checked> Labels</label>
+                        <label><input type="checkbox" id="toggle-grid" checked> Grid</label>
+                    </div>
+                </div>
+                <div class="card-body map-container">
+                    <canvas id="warehouse-canvas"></canvas>
+                </div>
+            </section>
+
+            <!-- RIGHT COLUMN: ROBOT STATUS CARDS -->
+            <section class="card robots-column">
+                <div class="card-header">
+                    <h2>Fleet Status</h2>
+                    <span class="badge" id="robot-count-badge">3 Robots</span>
+                </div>
+                <div class="card-body robots-container" id="robots-cards-list">
+                    <!-- Robot A Card -->
+                    <div class="robot-card" id="robot-card-A">
+                        <div class="robot-card-header">
+                            <div class="robot-title">
+                                <span class="robot-avatar robot-A">A</span>
+                                <h3>Robot A</h3>
+                            </div>
+                            <span class="status-tag tag-idle" id="robot-A-status">IDLE</span>
+                        </div>
+                        <div class="robot-card-body">
+                            <div class="metric-row">
+                                <span class="lbl">Position</span>
+                                <span class="val" id="robot-A-pos">(0.0, 0.0)</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Battery</span>
+                                <div class="battery-bar-container">
+                                    <div class="battery-bar" id="robot-A-bat-bar" style="width: 100%;"></div>
+                                </div>
+                                <span class="val" id="robot-A-bat-val">100%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Speed</span>
+                                <span class="val" id="robot-A-speed">0.0 m/s</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Current Task</span>
+                                <span class="val task-val" id="robot-A-task">None</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Intent</span>
+                                <span class="val intent-val" id="robot-A-intent">None</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Robot B Card -->
+                    <div class="robot-card" id="robot-card-B">
+                        <div class="robot-card-header">
+                            <div class="robot-title">
+                                <span class="robot-avatar robot-B">B</span>
+                                <h3>Robot B</h3>
+                            </div>
+                            <span class="status-tag tag-idle" id="robot-B-status">IDLE</span>
+                        </div>
+                        <div class="robot-card-body">
+                            <div class="metric-row">
+                                <span class="lbl">Position</span>
+                                <span class="val" id="robot-B-pos">(0.0, 0.0)</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Battery</span>
+                                <div class="battery-bar-container">
+                                    <div class="battery-bar" id="robot-B-bat-bar" style="width: 100%;"></div>
+                                </div>
+                                <span class="val" id="robot-B-bat-val">100%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Speed</span>
+                                <span class="val" id="robot-B-speed">0.0 m/s</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Current Task</span>
+                                <span class="val task-val" id="robot-B-task">None</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Intent</span>
+                                <span class="val intent-val" id="robot-B-intent">None</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Robot C Card -->
+                    <div class="robot-card" id="robot-card-C">
+                        <div class="robot-card-header">
+                            <div class="robot-title">
+                                <span class="robot-avatar robot-C">C</span>
+                                <h3>Robot C</h3>
+                            </div>
+                            <span class="status-tag tag-idle" id="robot-C-status">IDLE</span>
+                        </div>
+                        <div class="robot-card-body">
+                            <div class="metric-row">
+                                <span class="lbl">Position</span>
+                                <span class="val" id="robot-C-pos">(0.0, 0.0)</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Battery</span>
+                                <div class="battery-bar-container">
+                                    <div class="battery-bar" id="robot-C-bat-bar" style="width: 100%;"></div>
+                                </div>
+                                <span class="val" id="robot-C-bat-val">100%</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Speed</span>
+                                <span class="val" id="robot-C-speed">0.0 m/s</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Current Task</span>
+                                <span class="val task-val" id="robot-C-task">None</span>
+                            </div>
+                            <div class="metric-row">
+                                <span class="lbl">Intent</span>
+                                <span class="val intent-val" id="robot-C-intent">None</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOTTOM PANELS: RESERVATIONS, TASKS, NETWORK -->
+            <section class="card panel-reservations">
+                <div class="card-header">
+                    <h3>Intersection Reservations</h3>
+                </div>
+                <div class="card-body">
+                    <table class="data-table" id="reservations-table">
+                        <thead>
+                            <tr>
+                                <th>Resource</th>
+                                <th>Held By</th>
+                                <th>Status</th>
+                                <th>ETA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservations-tbody">
+                            <tr><td colspan="4" class="empty-row">No active reservations</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card panel-tasks">
+                <div class="card-header">
+                    <h3>Active Tasks</h3>
+                </div>
+                <div class="card-body">
+                    <table class="data-table" id="tasks-table">
+                        <thead>
+                            <tr>
+                                <th>Task ID</th>
+                                <th>Route</th>
+                                <th>Assigned</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasks-tbody">
+                            <tr><td colspan="4" class="empty-row">No active tasks</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card panel-network">
+                <div class="card-header">
+                    <h3>Network Telemetry</h3>
+                    <span class="status-tag tag-normal" id="network-status-tag">NORMAL</span>
+                </div>
+                <div class="card-body network-grid">
+                    <div class="net-item">
+                        <span class="lbl">Latency</span>
+                        <span class="val" id="net-latency">12 ms</span>
+                    </div>
+                    <div class="net-item">
+                        <span class="lbl">Packet Loss</span>
+                        <span class="val" id="net-loss">0.0%</span>
+                    </div>
+                    <div class="net-item">
+                        <span class="lbl">Active Peers</span>
+                        <span class="val" id="net-peers">3 / 3</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- EVENT LOG PANEL -->
+            <section class="card panel-events">
+                <div class="card-header">
+                    <h3>Coordination Event Feed</h3>
+                    <div class="filter-group">
+                        <select id="event-type-filter" class="filter-select">
+                            <option value="">All Events</option>
+                            <option value="CONFLICT">Conflicts</option>
+                            <option value="WINNER">Priority Winners</option>
+                            <option value="WAIT">Wait Signals</option>
+                            <option value="REROUTE">Reroutes</option>
+                            <option value="FAILURE">Failures</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body event-feed" id="event-feed-list">
+                    <div class="empty-feed">Awaiting telemetry events...</div>
+                </div>
+            </section>
+
+            <!-- EVALUATION & METRICS PANEL -->
+            <section class="card panel-evaluation">
+                <div class="card-header">
+                    <h3>Evaluation & Benchmark Comparison</h3>
+                    <span class="read-only-notice">Read-Only Observation</span>
+                </div>
+                <div class="card-body eval-container">
+                    <table class="data-table eval-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Baseline (Stop & Wait)</th>
+                                <th>Proposed (Decentralized)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Completion Time</td>
+                                <td><span id="eval-base-time">100.2 s</span></td>
+                                <td><span id="eval-prop-time">78.4 s</span></td>
+                            </tr>
+                            <tr>
+                                <td>Average Wait Time</td>
+                                <td><span id="eval-base-wait">15.1 s</span></td>
+                                <td><span id="eval-prop-wait">7.2 s</span></td>
+                            </tr>
+                            <tr>
+                                <td>Tasks Completed</td>
+                                <td><span id="eval-base-tasks">3</span></td>
+                                <td><span id="eval-prop-tasks">3</span></td>
+                            </tr>
+                            <tr>
+                                <td>Collisions Detected</td>
+                                <td><span id="eval-base-collisions">0</span></td>
+                                <td><span id="eval-prop-collisions">0</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="eval-summary-box">
+                        <div class="eval-result-card">
+                            <span class="lbl">Measured Improvement</span>
+                            <span class="val-large positive" id="eval-improvement">+21.8%</span>
+                        </div>
+                        <div class="eval-result-card">
+                            <span class="lbl">Target Goal</span>
+                            <span class="val-large">≥ 20.0%</span>
+                        </div>
+                        <div class="eval-result-card">
+                            <span class="lbl">Evaluation Status</span>
+                            <span class="target-badge badge-success" id="eval-target-badge">TARGET MET</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT MODULES -->
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/metrics.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
