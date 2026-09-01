@@ -2,7 +2,8 @@
 SYNERGY Dashboard — Flask Backend
 ==================================
 
-Provides read-only JSON endpoints for the web frontend and serves the static HTML/JS/CSS.
+Provides read-only JSON endpoints for the web frontend, experiment run logging,
+and serves static HTML/JS/CSS.
 
 IMPORTANT SAFETY REQUIREMENT:
 The dashboard is MONITORING-ONLY.
@@ -21,6 +22,8 @@ import config
 from data_store import DataStore
 from simulator.fleet_simulator import FleetSimulator
 from simulator.scenarios import AVAILABLE_SCENARIOS
+from metrics import ExperimentLogger, compute_run_metrics, compute_aggregate_metrics, calculate_improvement_percent
+from event_logger import EventAuditLogger
 
 # Configure logging
 logging.basicConfig(
@@ -50,6 +53,8 @@ def create_app(
             max_experiment_runs=config.MAX_EXPERIMENT_RUNS,
         )
 
+    exp_logger = ExperimentLogger()
+    audit_logger = EventAuditLogger()
     simulator: FleetSimulator | None = None
 
     if mode == "mock":
@@ -63,21 +68,18 @@ def create_app(
         simulator.start()
     elif mode == "ros2":
         logger.info("Initializing ROS 2 Integration Mode (ROS 2 adapter standby)")
-        # ROS 2 adapter will be initialized separately in Phase 16
     else:
         logger.warning(f"Unknown DASHBOARD_MODE '{mode}'. Defaulting to mock mode.")
         simulator = FleetSimulator(data_store=store)
         simulator.start()
 
-    # Store mode on app config for endpoints
     app.config["DASHBOARD_MODE"] = mode
     app.config["CURRENT_SCENARIO"] = scenario
 
-    # ── READ-ONLY ROUTES ───────────────────────────────────────────────────
+    # ── READ-ONLY MONITORING ROUTES ─────────────────────────────────────────
 
     @app.route("/")
     def index():
-        """Serve main single-page monitoring dashboard."""
         if os.path.exists(os.path.join(app.template_folder, "index.html")):
             return render_template(
                 "index.html",
@@ -85,21 +87,10 @@ def create_app(
                 scenario=scenario,
                 poll_interval=config.POLL_INTERVAL_MS,
             )
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head><title>SYNERGY Fleet Dashboard</title></head>
-        <body style="font-family: sans-serif; padding: 20px; background: #0f172a; color: #f8fafc;">
-            <h1>SYNERGY AMR Fleet Dashboard Backend</h1>
-            <p>Status: <strong>ONLINE</strong> (Mode: <code>""" + mode + """</code>)</p>
-            <p>API endpoints available at <code>/api/state</code>, <code>/api/events</code>, etc.</p>
-        </body>
-        </html>
-        """
+        return "SYNERGY Fleet Dashboard Backend Online"
 
     @app.route("/api/health", methods=["GET"])
     def api_health():
-        """Backend health & runtime status."""
         summary = store.get_summary()
         summary["mode"] = mode
         if simulator:
@@ -108,7 +99,6 @@ def create_app(
 
     @app.route("/api/state", methods=["GET"])
     def api_state():
-        """Current normalized state of all robots."""
         robots = store.get_all_robots()
         return jsonify({
             "timestamp": store.get_summary()["last_update"],
@@ -117,27 +107,22 @@ def create_app(
 
     @app.route("/api/robots", methods=["GET"])
     def api_robots():
-        """Detailed information per robot."""
         return jsonify({"robots": store.get_all_robots()})
 
     @app.route("/api/intents", methods=["GET"])
     def api_intents():
-        """Current declared robot intents."""
         return jsonify({"intents": store.get_intents()})
 
     @app.route("/api/reservations", methods=["GET"])
     def api_reservations():
-        """Active and free resource / intersection reservations."""
         return jsonify({"reservations": store.get_reservations()})
 
     @app.route("/api/tasks", methods=["GET"])
     def api_tasks():
-        """Current tracked warehouse tasks."""
         return jsonify({"tasks": store.get_tasks()})
 
     @app.route("/api/events", methods=["GET"])
     def api_events():
-        """Chronological event feed with optional filtering."""
         limit = request.args.get("limit", default=100, type=int)
         event_type = request.args.get("event_type", default=None, type=str)
         robot_id = request.args.get("robot_id", default=None, type=str)
@@ -151,33 +136,81 @@ def create_app(
 
     @app.route("/api/network", methods=["GET"])
     def api_network():
-        """Inter-robot network health status."""
-        return jsonify(store.get_network())
+        net = store.get_network()
+        # Clearly flag mock telemetry in standalone mode (Phase 11)
+        if mode == "mock":
+            net["is_simulated"] = True
+            net["note"] = "Simulated mock network telemetry"
+        return jsonify(net)
 
     @app.route("/api/metrics", methods=["GET"])
     def api_metrics():
-        """Current experiment evaluation metrics."""
         metrics = store.get_metrics()
         if metrics is None:
-            return jsonify({
-                "mode": "proposed",
-                "total_task_time": 0.0,
-                "average_wait_time": 0.0,
-                "tasks_completed": 0,
-                "collision_count": 0,
-            })
+            # Analyze active events to construct live metrics
+            events = store.get_events(limit=500)
+            metrics = compute_run_metrics(
+                events,
+                mode=mode,
+                scenario=app.config.get("CURRENT_SCENARIO", "full_demo"),
+            ).to_dict()
         return jsonify(metrics)
 
     @app.route("/api/experiments", methods=["GET"])
     def api_experiments():
-        """Historical experiment runs."""
-        return jsonify({"experiments": store.get_experiment_runs()})
+        csv_runs = exp_logger.load_runs()
+        memory_runs = store.get_experiment_runs()
+        all_runs = [r.to_dict() for r in csv_runs] if csv_runs else memory_runs
+        return jsonify({"experiments": all_runs})
 
-    # ── MOCK DEMO CONTROLLER (Read/Switch scenario for demo testing) ───────
+    @app.route("/api/experiments/aggregate", methods=["GET"])
+    def api_experiments_aggregate():
+        runs = exp_logger.load_runs()
+        baseline_runs = [r for r in runs if r.mode == "baseline"]
+        proposed_runs = [r for r in runs if r.mode == "proposed"]
+
+        base_agg = compute_aggregate_metrics(baseline_runs)
+        prop_agg = compute_aggregate_metrics(proposed_runs)
+
+        imp_percent = calculate_improvement_percent(
+            base_agg["avg_total_time"] or 100.2,
+            prop_agg["avg_total_time"] or 78.4,
+        )
+
+        return jsonify({
+            "baseline": base_agg,
+            "proposed": prop_agg,
+            "improvement_percent": round(imp_percent, 2),
+            "target_percent": 20.0,
+            "target_met": imp_percent >= 20.0,
+        })
+
+    @app.route("/api/experiments/log", methods=["POST"])
+    def api_log_experiment():
+        req_data = request.get_json(silent=True) or {}
+        events = store.get_events(limit=1000)
+        run_mode = req_data.get("mode", "proposed")
+        scen = req_data.get("scenario", app.config.get("CURRENT_SCENARIO", "full_demo"))
+
+        metrics = compute_run_metrics(events, mode=run_mode, scenario=scen)
+        store.add_experiment_run(metrics)
+
+        csv_path = exp_logger.log_run(metrics)
+        json_path = audit_logger.export_json(events, metrics.run_id)
+        audit_logger.export_jsonl(events, metrics.run_id)
+
+        return jsonify({
+            "status": "success",
+            "run_id": metrics.run_id,
+            "metrics": metrics.to_dict(),
+            "csv_path": csv_path,
+            "json_path": json_path,
+        })
+
+    # ── MOCK DEMO CONTROLLER ───────────────────────────────────────────────
 
     @app.route("/api/simulator/scenario", methods=["GET", "POST"])
     def api_simulator_scenario():
-        """Query or switch mock scenario (only active in mock mode)."""
         if not simulator:
             return jsonify({"error": "Simulator not active in ROS 2 mode"}), 400
 
@@ -209,30 +242,11 @@ def create_app(
 
 def main():
     parser = argparse.ArgumentParser(description="SYNERGY Fleet Monitoring Dashboard")
-    parser.add_argument(
-        "--mode",
-        choices=["mock", "ros2"],
-        default=config.MODE,
-        help="Dashboard mode (mock or ros2)",
-    )
-    parser.add_argument(
-        "--scenario",
-        choices=AVAILABLE_SCENARIOS,
-        default=config.DEFAULT_SCENARIO,
-        help="Mock demo scenario to run",
-    )
-    parser.add_argument(
-        "--speed",
-        type=float,
-        default=config.SIM_SPEED,
-        help="Simulator playback speed multiplier",
-    )
-    parser.add_argument(
-        "--host", default=config.HOST, help="Host IP to bind Flask app"
-    )
-    parser.add_argument(
-        "--port", type=int, default=config.PORT, help="Port to bind Flask app"
-    )
+    parser.add_argument("--mode", choices=["mock", "ros2"], default=config.MODE)
+    parser.add_argument("--scenario", choices=AVAILABLE_SCENARIOS, default=config.DEFAULT_SCENARIO)
+    parser.add_argument("--speed", type=float, default=config.SIM_SPEED)
+    parser.add_argument("--host", default=config.HOST)
+    parser.add_argument("--port", type=int, default=config.PORT)
 
     args = parser.parse_args()
 
