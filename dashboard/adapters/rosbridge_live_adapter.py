@@ -97,12 +97,12 @@ class RosbridgeLiveAdapter:
                 logger.info("Rosbridge disconnected, retrying in 3s…")
                 time.sleep(3)
 
-    def _subscribe(self, ws, topic: str, msg_type: str) -> None:
+    def _subscribe(self, ws, topic: str, msg_type: str, throttle: int = 50) -> None:
         msg = {
             "op": "subscribe",
             "topic": topic,
             "type": msg_type,
-            "throttle_rate": 200,   # ms — max ~5 Hz per topic
+            "throttle_rate": throttle,
             "queue_length": 1,
         }
         ws.send(json.dumps(msg))
@@ -111,9 +111,13 @@ class RosbridgeLiveAdapter:
         logger.info("Connected to rosbridge.")
         # Subscribe to all active robot namespaces
         for ns in ROBOT_MAP:
-            self._subscribe(ws, f"/{ns}/odom", "nav_msgs/Odometry")
-            self._subscribe(ws, f"/{ns}/state", "fleet_msgs/RobotState")
-        logger.info("Subscribed to odom + state topics for all AMRs.")
+            self._subscribe(ws, f"/{ns}/odom", "nav_msgs/Odometry", throttle=50)
+            self._subscribe(ws, f"/{ns}/state", "fleet_msgs/RobotState", throttle=100)
+        # Subscribe to global fleet channels
+        self._subscribe(ws, "/tasks/announcements", "fleet_msgs/TaskAnnouncement", throttle=0)
+        self._subscribe(ws, "/tasks/bids", "fleet_msgs/TaskBid", throttle=0)
+        self._subscribe(ws, "/fleet/reservations", "fleet_msgs/ResourceClaim", throttle=0)
+        logger.info("Subscribed to odom, state, task, and reservation topics for live fleet.")
 
     def _on_message(self, ws, raw: str) -> None:
         try:
@@ -134,6 +138,16 @@ class RosbridgeLiveAdapter:
 
     def _dispatch(self, topic: str, msg: dict) -> None:
         """Route incoming ROS messages to the correct DataStore update."""
+        if topic == "/tasks/announcements":
+            self._handle_task_announcement(msg)
+            return
+        elif topic == "/tasks/bids":
+            self._handle_task_bid(msg)
+            return
+        elif topic == "/fleet/reservations":
+            self._handle_reservation(msg)
+            return
+
         # Determine which robot this message belongs to
         robot_ns = None
         for ns in ROBOT_MAP:
@@ -170,9 +184,9 @@ class RosbridgeLiveAdapter:
             vy = float(twist.get("linear", {}).get("y", 0.0))
             velocity = math.hypot(vx, vy)
 
-            # Merge with any existing state (to preserve battery / status)
+            # Merge with existing state dict
             existing_obj = self.data_store.get_robot_state(robot_id)
-            existing = existing_obj.__dict__ if existing_obj else {}
+            existing = existing_obj if isinstance(existing_obj, dict) else (existing_obj.__dict__ if existing_obj else {})
             state = RobotState(
                 robot_id=robot_id,
                 x=x,
@@ -191,7 +205,7 @@ class RosbridgeLiveAdapter:
         """Parse fleet_msgs/RobotState and update status / battery / task."""
         try:
             existing_obj = self.data_store.get_robot_state(robot_id)
-            existing = existing_obj.__dict__ if existing_obj else {}
+            existing = existing_obj if isinstance(existing_obj, dict) else (existing_obj.__dict__ if existing_obj else {})
             status_raw = msg.get("status", "").upper()
             status = status_raw if status_raw else existing.get("status", "IDLE")
 
@@ -211,3 +225,56 @@ class RosbridgeLiveAdapter:
             self.data_store.update_robot(state)
         except (KeyError, TypeError, ValueError, AttributeError) as exc:
             logger.debug(f"FleetState parse error for {robot_id}: {exc}")
+
+    def _handle_task_announcement(self, msg: dict) -> None:
+        try:
+            from dashboard.models import Task, Event
+            task_id = msg.get("task_id", "")
+            pickup = msg.get("pickup", "")
+            dropoff = msg.get("dropoff", "")
+            priority = int(msg.get("priority", 1))
+            task = Task(
+                task_id=task_id,
+                pickup=pickup,
+                dropoff=dropoff,
+                priority=priority,
+                status="ANNOUNCED",
+            )
+            self.data_store.add_task(task)
+            self.data_store.add_event(Event(
+                event_type="TASK_ANNOUNCED",
+                robot_id="FLEET",
+                task_id=task_id,
+                details=f"Task {task_id}: {pickup} -> {dropoff} (priority {priority})",
+            ))
+        except Exception as exc:
+            logger.debug(f"Task announcement parse error: {exc}")
+
+    def _handle_task_bid(self, msg: dict) -> None:
+        try:
+            from dashboard.models import Event
+            robot_id = msg.get("robot_id", "")
+            task_id = msg.get("task_id", "")
+            est_time = float(msg.get("estimated_time", 0.0))
+            self.data_store.add_event(Event(
+                event_type="BID_SUBMITTED",
+                robot_id=robot_id.upper(),
+                task_id=task_id,
+                details=f"Bid on {task_id}: est_time={est_time:.2f}s",
+            ))
+        except Exception as exc:
+            logger.debug(f"Task bid parse error: {exc}")
+
+    def _handle_reservation(self, msg: dict) -> None:
+        try:
+            from dashboard.models import Event
+            resource = msg.get("resource", "")
+            robot_id = msg.get("robot_id", "")
+            status = msg.get("status", "CLAIMED")
+            self.data_store.add_event(Event(
+                event_type="RESERVATION",
+                robot_id=robot_id.upper(),
+                details=f"Resource {resource} {status} by {robot_id}",
+            ))
+        except Exception as exc:
+            logger.debug(f"Reservation parse error: {exc}")

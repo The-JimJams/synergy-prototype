@@ -186,6 +186,126 @@ html, body {
     border-color: var(--border-dark);
 }
 
+/* ── MODE TOGGLE BUTTON GROUP ───────────────────────────────────────────── */
+.mode-toggle-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--bg-subtle);
+}
+
+.mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+}
+
+.mode-btn:hover:not(:disabled) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.mode-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.mode-btn.active {
+    background: var(--bg-surface);
+    color: var(--status-moving);
+    border-right: 1px solid var(--border-strong);
+}
+
+.mode-btn.live-active {
+    background: #EFF6FF;
+    color: #D97706;
+    border-left: 1px solid var(--border-strong);
+    border-right: none;
+}
+
+/* Pulsing green dot for LIVE mode */
+.live-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #6C757D;
+    flex-shrink: 0;
+}
+
+.live-active .live-dot {
+    background: #D97706;
+    animation: pulse-live 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-live {
+    0%   { opacity: 1; transform: scale(1); }
+    50%  { opacity: 0.5; transform: scale(1.35); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Active-mode badge for LIVE */
+.kpi-val.highlight-live {
+    color: #D97706;
+}
+
+/* ── ROS 2 NOTICE BANNER ────────────────────────────────────────────────── */
+.ros2-notice {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: #FFFBEB;
+    border: 1px solid #FCD34D;
+    border-radius: var(--radius-md);
+    padding: 0.55rem 1rem;
+    font-size: 0.8rem;
+    color: #92400E;
+    flex-wrap: wrap;
+}
+
+.ros2-notice strong {
+    color: #B45309;
+}
+
+.ros2-notice code {
+    background: #FEF3C7;
+    border: 1px solid #FDE68A;
+    border-radius: 3px;
+    padding: 0.05rem 0.3rem;
+    font-size: 0.75rem;
+    color: #92400E;
+}
+
+.ros2-notice-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #B45309;
+    font-size: 0.85rem;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+.ros2-notice-close:hover {
+    opacity: 1;
+    background: #FDE68A;
+}
+
 /* ── MAIN DASHBOARD GRID ────────────────────────────────────────────────── */
 .dashboard-grid {
     display: grid;
@@ -245,11 +365,17 @@ html, body {
 .map-wrapper {
     position: relative;
     width: 100%;
-    flex: 1;               /* grows to fill the panel body height exactly */
-    min-height: 0;         /* allow shrinking below content size in flex */
+    aspect-ratio: 1 / 1;   /* strictly square 20m x 20m warehouse view */
+    max-height: 620px;
+    max-width: 620px;
+    margin: 0 auto;
+    flex: 1;               /* grows to fill the panel body height */
+    min-height: 400px;
     background: #F1F3F5;
+    border-radius: var(--radius-sm);
     overflow: hidden;
     cursor: crosshair;
+    box-shadow: inset 0 0 0 1px var(--border-subtle);
 }
 
 #warehouse-canvas {
@@ -862,3 +988,172 @@ html, body {
     background: var(--bg-hover);
     color: var(--text-primary);
 }
+
+/* ── ASSIGN TASK BUTTON & MODAL ─────────────────────────────────────────── */
+.btn-assign-task {
+    padding: 0.2rem 0.65rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    background: var(--status-moving);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.3px;
+}
+
+.btn-assign-task:hover {
+    background: #0B5ED7;
+    transform: translateY(-1px);
+}
+
+.btn-assign-task:active {
+    transform: translateY(0);
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    width: 440px;
+    max-width: 90vw;
+    overflow: hidden;
+    animation: modal-slide-in 0.18s ease-out;
+}
+
+@keyframes modal-slide-in {
+    from { opacity: 0; transform: translateY(-12px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.1rem;
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.modal-header h3 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 0.1rem 0.3rem;
+}
+
+.modal-close:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.modal-form {
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.form-row label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.form-select {
+    padding: 0.45rem 0.65rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    border-color: var(--status-moving);
+    background: var(--bg-surface);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.4rem;
+}
+
+.btn-modal-cancel {
+    padding: 0.4rem 0.85rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-modal-cancel:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.btn-modal-submit {
+    padding: 0.4rem 0.95rem;
+    background: var(--status-moving);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #FFFFFF;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-modal-submit:hover {
+    background: #0B5ED7;
+}
+
+.btn-modal-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+

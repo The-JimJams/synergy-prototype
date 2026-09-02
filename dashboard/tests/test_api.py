@@ -138,3 +138,25 @@ def test_no_control_endpoints_exist(client):
     assert client.post("/stop_robot").status_code == 404
     assert client.post("/api/assign_task").status_code == 404
     assert client.post("/api/reserve_resource").status_code == 404
+
+
+def test_api_mode_switch(client):
+    """Test hot-swapping modes via /api/mode/switch."""
+    # Invalid mode
+    res = client.post("/api/mode/switch", json={"mode": "invalid"})
+    assert res.status_code == 400
+
+    # Switch to mock
+    res = client.post("/api/mode/switch", json={"mode": "mock", "scenario": "normal"})
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["status"] == "success"
+    assert data["mode"] == "mock"
+    assert data["scenario"] == "normal"
+
+    # Switch to same mode
+    res = client.post("/api/mode/switch", json={"mode": "mock"})
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["status"] == "no_change"
+

@@ -108,6 +108,86 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ── Mode Toggle (MOCK ↔ LIVE ROS 2) ──────────────────────────────────────
+    const btnMock        = document.getElementById('btn-mode-mock');
+    const btnLive        = document.getElementById('btn-mode-live');
+    const ros2Notice     = document.getElementById('ros2-notice');
+    const ros2NoticeClose= document.getElementById('ros2-notice-close');
+    const scenarioPill   = document.getElementById('scenario-pill');
+
+    let isSwitching = false;
+
+    async function switchMode(targetMode) {
+        if (isSwitching) return;
+        isSwitching = true;
+        setModeButtonBusy(targetMode);
+
+        const scenarioVal = scenarioSelector?.value || 'full_demo';
+        const payload = targetMode === 'ros2'
+            ? { mode: 'ros2' }
+            : { mode: 'mock', scenario: scenarioVal };
+
+        try {
+            const res = await fetch('/api/mode/switch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            const actualMode = data.mode || targetMode;
+            applyModeUI(actualMode);
+            if (data.status !== 'success' && data.status !== 'no_change') {
+                showModeError(data.message || 'Mode switch failed. Check ROS 2 stack.');
+            } else {
+                console.log('[Mode]', data.message);
+            }
+            fetchTelemetry();
+        } catch (err) {
+            console.error('[Mode] Switch request failed:', err);
+            applyModeUI('mock');
+            showModeError('Could not reach backend during mode switch.');
+        } finally {
+            isSwitching = false;
+        }
+    }
+
+    function setModeButtonBusy(targetMode) {
+        if (btnMock) btnMock.disabled = true;
+        if (btnLive) btnLive.disabled = true;
+        if (targetMode === 'ros2' && btnLive) btnLive.textContent = '…';
+        if (targetMode === 'mock' && btnMock) btnMock.textContent = '…';
+    }
+
+    function applyModeUI(mode) {
+        if (btnMock) { btnMock.disabled = false; btnMock.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg> MOCK'; }
+        if (btnLive) { btnLive.disabled = false; btnLive.innerHTML = '<span class="live-dot"></span> LIVE ROS 2'; }
+
+        if (mode === 'ros2') {
+            btnMock?.classList.remove('active');
+            btnLive?.classList.add('active', 'live-active');
+            if (scenarioPill)  scenarioPill.style.display  = 'none';
+            if (ros2Notice)    ros2Notice.style.display    = 'flex';
+            if (systemMode)    { systemMode.textContent = 'LIVE ROS 2'; systemMode.className = 'kpi-val highlight-live'; }
+        } else {
+            btnLive?.classList.remove('active', 'live-active');
+            btnMock?.classList.add('active');
+            if (scenarioPill)  scenarioPill.style.display  = '';
+            if (ros2Notice)    ros2Notice.style.display    = 'none';
+            if (systemMode)    { systemMode.textContent = 'MOCK'; systemMode.className = 'kpi-val highlight'; }
+        }
+    }
+
+    function showModeError(msg) {
+        const prev = backendStatusText?.textContent;
+        if (backendStatusText) backendStatusText.textContent = '⚠ ' + msg;
+        if (backendDot) backendDot.className = 'connection-dot offline';
+        setTimeout(() => { if (backendStatusText) backendStatusText.textContent = prev; }, 6000);
+    }
+
+    btnMock?.addEventListener('click', () => switchMode('mock'));
+    btnLive?.addEventListener('click', () => switchMode('ros2'));
+    ros2NoticeClose?.addEventListener('click', () => { if (ros2Notice) ros2Notice.style.display = 'none'; });
+
     // ── Event Filters ────────────────────────────────────────────────────────
     eventTypeFilter?.addEventListener('change', () => fetchTelemetry());
     eventRobotFilter?.addEventListener('change', () => fetchTelemetry());
@@ -155,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update Connection Status
             backendDot.className = 'connection-dot online';
             backendStatusText.textContent = 'ONLINE';
-            systemMode.textContent = (healthData.mode || 'MOCK').toUpperCase();
+            if (systemMode) systemMode.textContent = (healthData.mode || 'MOCK').toUpperCase();
 
             // Update Telemetry Timestamp
             const now = new Date();
@@ -375,6 +455,71 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }).join('');
     }
+
+    // ── Task Assignment Modal Handlers ───────────────────────────────────────
+    const taskModal        = document.getElementById('task-modal');
+    const btnOpenTaskModal = document.getElementById('btn-open-task-modal');
+    const btnCloseTaskModal= document.getElementById('btn-close-task-modal');
+    const btnCancelTaskModal=document.getElementById('btn-cancel-task-modal');
+    const formAssignTask   = document.getElementById('form-assign-task');
+    const btnSubmitTask    = document.getElementById('btn-submit-task');
+
+    function openTaskModal() {
+        if (taskModal) taskModal.style.display = 'flex';
+    }
+
+    function closeTaskModal() {
+        if (taskModal) taskModal.style.display = 'none';
+    }
+
+    btnOpenTaskModal?.addEventListener('click', openTaskModal);
+    btnCloseTaskModal?.addEventListener('click', closeTaskModal);
+    btnCancelTaskModal?.addEventListener('click', closeTaskModal);
+
+    taskModal?.addEventListener('click', (e) => {
+        if (e.target === taskModal) closeTaskModal();
+    });
+
+    formAssignTask?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pickup = document.getElementById('task-pickup')?.value || 'P1';
+        const dropoff = document.getElementById('task-dropoff')?.value || 'D1';
+        const robotVal = document.getElementById('task-robot')?.value || 'auto';
+
+        const payload = {
+            pickup: pickup,
+            dropoff: dropoff,
+            assigned_robot: robotVal === 'auto' ? null : robotVal,
+        };
+
+        if (btnSubmitTask) {
+            btnSubmitTask.disabled = true;
+            btnSubmitTask.textContent = 'Dispatching...';
+        }
+
+        try {
+            const res = await fetch('/api/tasks/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                closeTaskModal();
+                fetchTelemetry();
+            } else {
+                alert('Task creation failed: ' + (data.message || 'Unknown error'));
+            }
+        } catch (err) {
+            console.error('Task creation error:', err);
+            alert('Failed to connect to backend.');
+        } finally {
+            if (btnSubmitTask) {
+                btnSubmitTask.disabled = false;
+                btnSubmitTask.textContent = '🚀 Dispatch Task';
+            }
+        }
+    });
 
     // ── Initial Start ────────────────────────────────────────────────────────
     fetchTelemetry();

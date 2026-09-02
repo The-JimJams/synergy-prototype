@@ -22,6 +22,8 @@ setup(
     description='Nav2 launch and configuration for AMR A',
     license='Apache-2.0',
     entry_points={
-        'console_scripts': [],
+        'console_scripts': [
+            'dynamic_lidar_tf = synergy_nav2.dynamic_lidar_tf:main',
+        ],
     },
 )

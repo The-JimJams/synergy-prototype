@@ -29,7 +29,7 @@ def generate_launch_description():
                         parameters=[{
                             'robot_id': robot_name,
                             'is_announcer': robot_name == 'amr_a',
-                            'nav_enabled': robot_name == 'amr_a',
+                            'nav_enabled': True,
                         }],
                         output='screen',
                     ),

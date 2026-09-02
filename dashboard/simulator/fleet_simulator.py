@@ -157,6 +157,12 @@ class FleetSimulator:
         data = dict(action.get("data", {}))
 
         if atype == "update_robot":
+            rid = data.get("robot_id")
+            # If robot is actively executing an assigned task, do not overwrite with static scenario positions
+            active_tasks = self.data_store.get_tasks()
+            if any(t.get("assigned_robot") == rid and t.get("status") == "IN_PROGRESS" for t in active_tasks):
+                return
+
             if "timestamp" not in data:
                 data["timestamp"] = _now_iso()
             self.data_store.update_robot(RobotState.from_dict(data))
