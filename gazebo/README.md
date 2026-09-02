@@ -3,7 +3,7 @@
 > **High-Fidelity Autonomous Mobile Robot (AMR) Physics Simulation built on Gazebo Sim (SDF 1.9) with ROS 2 Bridge & Nav2 Navigation Support**
 
 [![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic%20(SDF%201.9)-blueviolet.svg)](https://gazebosim.org/)
-[![ROS 2](https://img.shields.io/badge/ROS_2-Humble%20%7C%20Iron%20%7C%20Jazzy-orange.svg)](https://docs.ros.org/)
+[![ROS 2](https://img.shields.io/badge/ROS_2-Humble%20%7C%20Iron%20%7C%20Jazzy%20%7C%20Lyrical-orange.svg)](https://docs.ros.org/)
 [![Physics](https://img.shields.io/badge/Physics%20Engine-ODE%20(1000%20Hz)-brightgreen.svg)]()
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-blue.svg)]()
 

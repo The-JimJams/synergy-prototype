@@ -3,7 +3,7 @@
 > **Edge-AI Based Distributed Fleet Coordination, High-Fidelity Physics Simulation & Live Industrial Operations Command Center for Autonomous Mobile Robots (AMRs)**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![ROS 2](https://img.shields.io/badge/ROS_2-Humble%20%7C%20Iron%20%7C%20Jazzy-orange.svg)](https://docs.ros.org/)
+[![ROS 2](https://img.shields.io/badge/ROS_2-Humble%20%7C%20Iron%20%7C%20Jazzy%20%7C%20Lyrical-orange.svg)](https://docs.ros.org/)
 [![Gazebo](https://img.shields.io/badge/Gazebo-Harmonic%20(SDF%201.9)-blueviolet.svg)](https://gazebosim.org/)
 [![Tests](https://img.shields.io/badge/tests-402%20passing-brightgreen.svg)]()
 [![Architecture](https://img.shields.io/badge/architecture-100%25%20Decentralized-success.svg)]()
