@@ -1,2 +1,0 @@
-[console_scripts]
-task_allocator_node = task_allocator.task_allocator_node:main
