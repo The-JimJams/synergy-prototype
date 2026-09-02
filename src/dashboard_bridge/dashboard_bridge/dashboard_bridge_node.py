@@ -14,7 +14,7 @@ from fleet_msgs.msg import Heartbeat, ResourceClaim, RobotIntent, RobotState
 class DashboardBridgeNode(Node):
     """Subscribe to each robot's state, intent, heartbeat, and reservation topic."""
 
-    ROBOT_IDS = ['robot_a', 'robot_b', 'robot_c']
+    ROBOT_IDS = ['amr_a', 'amr_b', 'amr_c']
 
     def __init__(self):
         super().__init__('dashboard_bridge_node')
@@ -61,10 +61,17 @@ class DashboardBridgeNode(Node):
         self.state_cache[robot_id] = {
             'robot_id': msg.robot_id,
             'timestamp': float(msg.timestamp),
-            'position': [float(v) for v in msg.position],
-            'velocity': float(msg.velocity),
-            'battery': float(msg.battery),
-            'current_task': msg.current_task,
+            'position': [float(msg.x), float(msg.y)],
+            'x': float(msg.x),
+            'y': float(msg.y),
+            'theta': float(msg.theta),
+            'velocity': float(msg.linear_velocity),
+            'linear_velocity': float(msg.linear_velocity),
+            'angular_velocity': float(msg.angular_velocity),
+            'battery': float(msg.battery_percent),
+            'battery_percent': float(msg.battery_percent),
+            'current_task': msg.current_task_id,
+            'current_task_id': msg.current_task_id,
             'status': msg.status,
         }
 
@@ -118,9 +125,16 @@ class DashboardBridgeNode(Node):
                 'robot_id': state.get('robot_id', robot_id),
                 'timestamp': state.get('timestamp'),
                 'position': state.get('position', []),
+                'x': state.get('x'),
+                'y': state.get('y'),
+                'theta': state.get('theta'),
                 'velocity': state.get('velocity'),
+                'linear_velocity': state.get('linear_velocity'),
+                'angular_velocity': state.get('angular_velocity'),
                 'battery': state.get('battery'),
+                'battery_percent': state.get('battery_percent'),
                 'current_task': state.get('current_task'),
+                'current_task_id': state.get('current_task_id'),
                 'status': state.get('status', 'unknown'),
             },
             'intent': {

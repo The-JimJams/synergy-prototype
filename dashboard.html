@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AMR Radar</title>
+    <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #0a0a0f; color: white; font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
+        h1 { font-size: 22px; letter-spacing: 2px; color: #00ffcc; padding: 12px; text-transform: uppercase; }
+        #status { font-size: 14px; font-weight: bold; padding: 4px 16px; border-radius: 20px; margin-bottom: 8px; }
+        .connected { background: rgba(0,255,100,0.2); color: #00ff64; border: 1px solid #00ff64; }
+        .error     { background: rgba(255,50,50,0.2); color: #ff5050; border: 1px solid #ff5050; }
+        canvas { border: 1px solid #1e3a3a; border-radius: 12px; }
+        #coords { margin-top: 10px; font-size: 13px; color: #aaa; font-family: monospace; }
+        #trail-toggle { margin-top: 8px; background: #1a2a2a; border: 1px solid #00ffcc; color: #00ffcc; padding: 6px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+        #trail-toggle:hover { background: #00ffcc; color: #000; }
+    </style>
+</head>
+<body>
+    <h1>🤖 AMR Radar Dashboard</h1>
+    <div id="status" class="error">Connecting to ROS...</div>
+    <canvas id="radar"></canvas>
+    <div id="coords">Position: waiting...</div>
+    <button id="trail-toggle" onclick="clearTrail()">Clear Trail</button>
+
+    <script>
+        // --- Config ---
+        const CANVAS_SIZE = Math.min(window.innerWidth - 20, window.innerHeight - 130);
+        const SCALE = 25; // pixels per meter — auto-centering means scale doesn't need to be huge
+        const TRAIL_LENGTH = 300;
+
+        const canvas = document.getElementById('radar');
+        canvas.width = CANVAS_SIZE;
+        canvas.height = CANVAS_SIZE;
+        const ctx = canvas.getContext('2d');
+        const statusEl = document.getElementById('status');
+        const coordsEl = document.getElementById('coords');
+
+        let robotX = 0, robotY = 0, robotYaw = 0;
+        let trail = [];
+        let viewX = 0, viewY = 0; // world coords at canvas center
+
+        function clearTrail() { trail = []; }
+
+        // --- ROS ---
+        const ros = new ROSLIB.Ros({ url: 'ws://localhost:9090' });
+        ros.on('connection', () => { statusEl.className='connected'; statusEl.innerHTML='✅ Connected to AMR!'; });
+        ros.on('error',      () => { statusEl.className='error';     statusEl.innerHTML='❌ ROS connection error.'; });
+        ros.on('close',      () => { statusEl.className='error';     statusEl.innerHTML='🔌 Connection closed.'; });
+
+        new ROSLIB.Topic({ ros, name: '/amr_a/odom', messageType: 'nav_msgs/Odometry' })
+            .subscribe(function(msg) {
+                robotX = msg.pose.pose.position.x;
+                robotY = msg.pose.pose.position.y;
+                // Extract yaw from quaternion
+                const q = msg.pose.pose.orientation;
+                robotYaw = Math.atan2(2*(q.w*q.z + q.x*q.y), 1-2*(q.y*q.y+q.z*q.z));
+
+                trail.push({ x: robotX, y: robotY });
+                if (trail.length > TRAIL_LENGTH) trail.shift();
+
+                // Smoothly pan view to follow robot
+                viewX += (robotX - viewX) * 0.1;
+                viewY += (robotY - viewY) * 0.1;
+
+                coordsEl.innerHTML = `Position: x=${robotX.toFixed(3)}m, y=${robotY.toFixed(3)}m  |  Yaw: ${(robotYaw * 180/Math.PI).toFixed(1)}°`;
+            });
+
+        // --- World to canvas coords ---
+        function toCanvas(wx, wy) {
+            return {
+                x: CANVAS_SIZE/2 + (wx - viewX) * SCALE,
+                y: CANVAS_SIZE/2 - (wy - viewY) * SCALE
+            };
+        }
+
+        // --- Drawing ---
+        function draw() {
+            ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+            // Background
+            ctx.fillStyle = '#0d1a1a';
+            ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+            // Grid lines
+            const gridSpacing = SCALE; // 1 meter per cell
+            const offsetX = ((CANVAS_SIZE/2) - viewX * SCALE) % gridSpacing;
+            const offsetY = ((CANVAS_SIZE/2) + viewY * SCALE) % gridSpacing;
+
+            ctx.strokeStyle = '#1a2e2e';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let x = offsetX; x < CANVAS_SIZE; x += gridSpacing) { ctx.moveTo(x, 0); ctx.lineTo(x, CANVAS_SIZE); }
+            for (let y = offsetY; y < CANVAS_SIZE; y += gridSpacing) { ctx.moveTo(0, y); ctx.lineTo(CANVAS_SIZE, y); }
+            ctx.stroke();
+
+            // Crosshair at center
+            ctx.strokeStyle = '#1e3a3a';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(CANVAS_SIZE/2, 0); ctx.lineTo(CANVAS_SIZE/2, CANVAS_SIZE);
+            ctx.moveTo(0, CANVAS_SIZE/2); ctx.lineTo(CANVAS_SIZE, CANVAS_SIZE/2);
+            ctx.stroke();
+
+            // Trail
+            if (trail.length > 1) {
+                ctx.beginPath();
+                for (let i = 0; i < trail.length; i++) {
+                    const c = toCanvas(trail[i].x, trail[i].y);
+                    const alpha = i / trail.length;
+                    if (i === 0) ctx.moveTo(c.x, c.y);
+                    else ctx.lineTo(c.x, c.y);
+                }
+                ctx.strokeStyle = 'rgba(0, 255, 200, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Robot body
+            const rc = toCanvas(robotX, robotY);
+            ctx.save();
+            ctx.translate(rc.x, rc.y);
+            ctx.rotate(-robotYaw);
+
+            // Glow
+            const grd = ctx.createRadialGradient(0,0,4, 0,0,22);
+            grd.addColorStop(0, 'rgba(0,255,200,0.5)');
+            grd.addColorStop(1, 'rgba(0,255,200,0)');
+            ctx.fillStyle = grd;
+            ctx.beginPath(); ctx.arc(0, 0, 22, 0, 2*Math.PI); ctx.fill();
+
+            // Arrow body
+            ctx.fillStyle = '#00ffcc';
+            ctx.beginPath();
+            ctx.moveTo(14, 0);   // front tip
+            ctx.lineTo(-8, 8);   // back-right
+            ctx.lineTo(-4, 0);   // back notch
+            ctx.lineTo(-8, -8);  // back-left
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+
+            // Label
+            ctx.fillStyle = 'rgba(0,255,200,0.9)';
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText('amr_a', rc.x + 18, rc.y - 14);
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+</html>

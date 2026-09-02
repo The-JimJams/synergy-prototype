@@ -53,16 +53,13 @@ except ImportError as e:
     Task = None
     TaskStatus = None
 
-# Warehouse coordinate map: task pickup locations (strings → (x, y))
-PICKUP_COORDS = {
+# Warehouse coordinate map: task locations (strings → (x, y))
+WAYPOINTS = {
     'dock_a':  (-3.5, 5.25),
     'dock_b':  (0.0,  8.0),
-    'default': (-3.5, 5.25),
-}
-DROPOFF_COORDS = {
-    'zone_b':  (0.0, -8.1),
+    'zone_b':  (2.5, -8.0),   # Shifted right to avoid center pillars
     'zone_a':  (0.0,  8.0),
-    'default': (0.0, -8.1),
+    'default': (2.5, -8.0),
 }
 
 # Failure timeout: if no heartbeat seen for this many seconds, robot is FAILED
@@ -75,8 +72,10 @@ class TaskAllocatorNode(Node):
 
         self.declare_parameter('robot_id', 'amr_a')
         self.declare_parameter('is_announcer', False)
+        self.declare_parameter('nav_enabled', True)
         self.robot_id = self.get_parameter('robot_id').value.strip('/')
         self.is_announcer = self.get_parameter('is_announcer').value
+        self.nav_enabled = bool(self.get_parameter('nav_enabled').value)
 
         self.local_robot_state = {
             'robot_id': self.robot_id,
@@ -111,8 +110,15 @@ class TaskAllocatorNode(Node):
                 10
             )
 
-        # Nav2 Action Client
-        self.nav_client = ActionClient(self, NavigateToPose, f'/{self.robot_id}/navigate_to_pose')
+        # Nav2 Action Client. In the current demo only AMR A has a Nav2 stack,
+        # so other robots must not win navigation tasks they cannot execute.
+        self.nav_client = None
+        if self.nav_enabled:
+            self.nav_client = ActionClient(self, NavigateToPose, f'/{self.robot_id}/navigate_to_pose')
+        else:
+            self.get_logger().info(
+                f'Navigation disabled for {self.robot_id}; this allocator will observe tasks without bidding.'
+            )
 
         # ---- P5 components ----
         if P5_AVAILABLE:
@@ -120,6 +126,7 @@ class TaskAllocatorNode(Node):
             self._p5_heartbeat_monitor = HeartbeatMonitor()
             self._p5_failure_detector = FailureDetector(timeout_seconds=HEARTBEAT_TIMEOUT_SEC)
             self._p5_recovery_manager = TaskRecoveryManager()
+            self.demo_task_count = 1
             # Periodic failure check every 5 seconds
             self.create_timer(5.0, self._check_for_failures)
             self.get_logger().info('P5 integration ACTIVE: TaskManager, FailureDetector, TaskRecoveryManager ready.')
@@ -127,7 +134,11 @@ class TaskAllocatorNode(Node):
             self.get_logger().warning(f'P5 not available — running without failure detection.')
 
         if self.is_announcer:
-            self.publish_test_task_announcement()
+            self._startup_announcement_timer = self.create_timer(3.0, self._publish_startup_task_once)
+
+    def _publish_startup_task_once(self):
+        self.publish_test_task_announcement()
+        self._startup_announcement_timer.cancel()
 
     # ------------------------------------------------------------------
     # ROS 2 state / heartbeat callbacks
@@ -180,6 +191,10 @@ class TaskAllocatorNode(Node):
         if task_id not in self.bid_windows:
             self.start_collection_window(task_id)
 
+        if not self.nav_enabled:
+            self.get_logger().info(f'Observed {task_id}; skipping bid because Nav2 is disabled for {self.robot_id}.')
+            return
+
         if task_id in self.task_bids and self.robot_id in self.task_bids[task_id]:
             self.get_logger().info(f'Already bid for {task_id}; skipping duplicate bid.')
             return
@@ -212,6 +227,13 @@ class TaskAllocatorNode(Node):
 
     def publish_bid(self, bid):
         """Publish a computed bid for a task."""
+        if P5_AVAILABLE and self._p5_robot:
+            # We must import RobotStatus locally or just check the string name to avoid import errors if not available at top level
+            # since P5_AVAILABLE guarantees the models are imported.
+            if getattr(self._p5_robot.status, 'name', '') in ('FAILED', 'CHARGING'):
+                self.get_logger().warning(f'Skipping bid for {bid.task_id} because robot status is {self._p5_robot.status.name}')
+                return
+
         self.bid_publisher.publish(bid)
         self.task_bids.setdefault(bid.task_id, {})[self.robot_id] = bid
         self.get_logger().info(
@@ -259,6 +281,10 @@ class TaskAllocatorNode(Node):
 
     def execute_task(self, task_id):
         """Validate eligibility via P5, then send a Nav2 NavigateToPose goal."""
+        if not self.nav_enabled or self.nav_client is None:
+            self.get_logger().warning(f'Cannot execute {task_id}: Nav2 is disabled for {self.robot_id}.')
+            return
+
         announcement = self.task_announcements.get(task_id)
 
         # Build P5 Robot from current state
@@ -286,14 +312,21 @@ class TaskAllocatorNode(Node):
             p5_robot.current_task = task_id
 
         self.get_logger().info(f'Executing task {task_id} via Nav2')
-        if not self.nav_client.wait_for_server(timeout_sec=5.0):
-            self.get_logger().error('Nav2 Action Server not available!')
+        self.get_logger().info('Waiting for Nav2 action server...')
+        if not self.nav_client.wait_for_server(timeout_sec=30.0):
+            self.get_logger().error('Nav2 Action Server not available after 30s!')
+            # Reset robot back to AVAILABLE so it can accept the next task attempt
+            if P5_AVAILABLE and self._p5_robot:
+                self._p5_robot.status = RobotStatus.AVAILABLE
+                self._p5_robot.current_task = None
+            if task_id in self._p5_active_tasks:
+                self._p5_active_tasks.pop(task_id, None)
             return
 
         # Resolve destination coordinates
         pickup_key = announcement.pickup if announcement else 'default'
         dropoff_key = announcement.dropoff if announcement else 'default'
-        goal_x, goal_y = DROPOFF_COORDS.get(dropoff_key, DROPOFF_COORDS['default'])
+        goal_x, goal_y = WAYPOINTS.get(dropoff_key, WAYPOINTS['default'])
 
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose.header.frame_id = 'map'
@@ -334,6 +367,15 @@ class TaskAllocatorNode(Node):
                 if self._p5_robot:
                     self._p5_robot.status = RobotStatus.AVAILABLE
                     self._p5_robot.current_task = None
+
+                # IMPORTANT: Remove task from active tracking so it doesn't get recovered!
+                self._p5_active_tasks.pop(task_id, None)
+
+                # Hackathon Demo: Automatically assign next task!
+                if self.is_announcer:
+                    self.get_logger().info("Demo: Robot finished, announcing next task in 3 seconds...")
+                    import threading
+                    threading.Timer(3.0, self._announce_next_demo_task, args=[task_id]).start()
             else:
                 p5_task.status = TaskStatus.FAILED
                 self.get_logger().warning(f'P5: task {task_id} marked FAILED (Nav2 status={status})')
@@ -351,6 +393,10 @@ class TaskAllocatorNode(Node):
         now = datetime.now(timezone.utc)
 
         failed = self._p5_failure_detector.detect(self._p5_robot, latest_hb, now)
+        if latest_hb:
+            self.get_logger().info(f'P5 Debug: now={now.timestamp()}, hb={latest_hb.timestamp.timestamp()}, diff={(now - latest_hb.timestamp).total_seconds()}s')
+        else:
+            self.get_logger().info('P5 Debug: NO HEARTBEAT RECEIVED YET!')
 
         if failed:
             self.get_logger().warning(f'P5: FAILURE DETECTED for {self.robot_id}')
@@ -428,8 +474,8 @@ class TaskAllocatorNode(Node):
             priority = 3
             required_caps = ('delivery', 'navigation')
 
-        pickup_xy = PICKUP_COORDS.get(pickup_key, PICKUP_COORDS['default'])
-        dropoff_xy = DROPOFF_COORDS.get(dropoff_key, DROPOFF_COORDS['default'])
+        pickup_xy = WAYPOINTS.get(pickup_key, WAYPOINTS['default'])
+        dropoff_xy = WAYPOINTS.get(dropoff_key, WAYPOINTS['default'])
 
         return Task(
             task_id=task_id,
@@ -443,6 +489,26 @@ class TaskAllocatorNode(Node):
             required_capabilities=required_caps,
         )
 
+
+    def _announce_next_demo_task(self, prev_task_id):
+        self.demo_task_count += 1
+        msg = TaskAnnouncement()
+        msg.task_id = f'task_demo_{self.demo_task_count:03d}'
+
+        prev_ann = self.task_announcements.get(prev_task_id)
+        if prev_ann and 'zone_b' in prev_ann.dropoff:
+            msg.pickup = 'zone_b'
+            msg.dropoff = 'dock_a'
+        else:
+            msg.pickup = 'dock_a'
+            msg.dropoff = 'zone_b'
+
+        import time
+        msg.deadline = time.time() + 90.0
+        msg.priority = 3
+        msg.capability_requirements = ['delivery', 'navigation']
+        self.announcement_publisher.publish(msg)
+        self.get_logger().info(f'Published NEXT demo task announcement: {msg.task_id} to {msg.dropoff}')
 
 def main(args=None):
     rclpy.init(args=args)

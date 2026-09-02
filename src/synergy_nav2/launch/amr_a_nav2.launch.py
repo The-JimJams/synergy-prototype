@@ -43,7 +43,7 @@ def generate_launch_description():
         arguments=[
             '/amr_blue/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
             '/amr_blue/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
-            '/amr_blue/cmd_vel@geometry_msgs/msg/TwistStamped]gz.msgs.Twist',
+            '/amr_blue/cmd_vel@geometry_msgs/msg/Twist]gz.msgs.Twist',
             '/amr_blue/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
         ],

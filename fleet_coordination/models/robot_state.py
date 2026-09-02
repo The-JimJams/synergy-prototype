@@ -18,6 +18,7 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 from enum import Enum, auto
+from typing import Optional
 
 from fleet_coordination.models.pose import Pose2D
 
@@ -58,10 +59,10 @@ class RobotState:
     linear_velocity: float = 0.0  # m/s, magnitude
     angular_velocity: float = 0.0  # rad/s
     battery_percent: float = 100.0  # 0.0–100.0
-    current_task_id: str | None = None
+    current_task_id: Optional[str] = None
     status: RobotStatus = RobotStatus.IDLE
 
-    def age(self, now: float | None = None) -> float:
+    def age(self, now: Optional[float] = None) -> float:
         """How old is this state snapshot (seconds).
 
         Args:

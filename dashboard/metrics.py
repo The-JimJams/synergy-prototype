@@ -31,6 +31,23 @@ from models import ExperimentMetrics
 logger = logging.getLogger("synergy.metrics")
 
 
+def _parse_iso_datetime(value: str) -> datetime:
+    """Parse ISO timestamps consistently across Python 3.9+."""
+    normalized = value
+    if normalized.endswith("Z"):
+        normalized = normalized[:-1] + "+00:00"
+
+    timezone_pos = max(normalized.rfind("+"), normalized.rfind("-"))
+    date_sep = normalized.find("T")
+    if timezone_pos > date_sep and "." in normalized[:timezone_pos]:
+        prefix = normalized[:timezone_pos]
+        suffix = normalized[timezone_pos:]
+        base, fraction = prefix.split(".", 1)
+        normalized = f"{base}.{fraction.ljust(6, '0')[:6]}{suffix}"
+
+    return datetime.fromisoformat(normalized)
+
+
 def calculate_improvement_percent(baseline_time: float, proposed_time: float) -> float:
     """Calculate percentage improvement of proposed system over baseline.
 
@@ -60,7 +77,7 @@ def compute_run_metrics(
         ts_str = ev.get("timestamp")
         if ts_str:
             try:
-                dt = datetime.fromisoformat(ts_str)
+                dt = _parse_iso_datetime(ts_str)
                 if dt.tzinfo is None:
                     dt = dt.replace(tzinfo=timezone.utc)
 

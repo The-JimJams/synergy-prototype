@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
+from typing import List, Optional
 
 from fleet_coordination.models.pose import Pose2D
 
@@ -34,25 +35,25 @@ class RobotIntent:
     timestamp: float = field(default_factory=time.time)
 
     # What task this intent relates to (None if no active task)
-    task_id: str | None = None
+    task_id: Optional[str] = None
 
     # The shared resource this robot intends to use (e.g., "I1", "DOCK_3")
     # This is the PRIMARY field for ConflictDetector v1
-    target_resource_id: str | None = None
+    target_resource_id: Optional[str] = None
 
     # When the robot expects to arrive at / start using the resource
-    eta: float | None = None  # Unix epoch seconds
+    eta: Optional[float] = None  # Unix epoch seconds
 
     # Priority score — computed by PriorityEngine, included for peers
     priority: float = 0.0
 
     # Ordered trajectory waypoints (optional, for future trajectory-based detection)
-    planned_waypoints: list[Pose2D] = field(default_factory=list)
+    planned_waypoints: List[Pose2D] = field(default_factory=list)
 
     # Hard expiry — intent is INVALID after this time, no exceptions
     valid_until: float = 0.0  # Unix epoch seconds
 
-    def is_expired(self, now: float | None = None) -> bool:
+    def is_expired(self, now: Optional[float] = None) -> bool:
         """Check if this intent has passed its hard expiry.
 
         An expired intent must NEVER be treated as valid.
@@ -67,7 +68,7 @@ class RobotIntent:
             now = time.time()
         return now > self.valid_until
 
-    def age(self, now: float | None = None) -> float:
+    def age(self, now: Optional[float] = None) -> float:
         """How old is this intent (seconds since creation)."""
         if now is None:
             now = time.time()

@@ -34,10 +34,11 @@ amr_a:
     ros__parameters:
       use_sim_time: True
       controller_frequency: 20.0
+      enable_stamped_cmd_vel: false
       min_x_velocity_threshold: 0.001
       min_y_velocity_threshold: 0.5
       min_theta_velocity_threshold: 0.001
-      failure_tolerance: 0.3
+      failure_tolerance: 0.2
       progress_checker_plugin: "progress_checker"
       goal_checker_plugins: ["general_goal_checker"]
       controller_plugins: ["FollowPath"]
@@ -56,18 +57,18 @@ amr_a:
       FollowPath:
         plugin: "dwb_core::DWBLocalPlanner"
         debug_trajectory_details: True
-        min_vel_x: -1.2
+        min_vel_x: 0.0
         min_vel_y: 0.0
-        max_vel_x: 1.2
+        max_vel_x: 0.6
         max_vel_y: 0.0
-        max_vel_theta: 2.0
+        max_vel_theta: 1.4
         min_speed_xy: 0.0
-        max_speed_xy: 1.2
+        max_speed_xy: 0.6
         min_speed_theta: 0.0
-        acc_lim_x: 2.5
+        acc_lim_x: 1.2
         acc_lim_y: 0.0
         acc_lim_theta: 3.2
-        decel_lim_x: -2.5
+        decel_lim_x: -1.2
         decel_lim_y: 0.0
         decel_lim_theta: -3.2
         vx_samples: 20

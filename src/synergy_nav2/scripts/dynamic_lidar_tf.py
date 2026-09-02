@@ -4,9 +4,12 @@ from rclpy.node import Node
 from tf2_ros import TransformBroadcaster
 from geometry_msgs.msg import TransformStamped
 
+from rclpy.parameter import Parameter
+
 class DynamicTfPublisher(Node):
     def __init__(self):
-        super().__init__('dynamic_lidar_tf_publisher')
+        super().__init__('dynamic_lidar_tf_publisher',
+                         parameter_overrides=[Parameter('use_sim_time', Parameter.Type.BOOL, True)])
         self.br = TransformBroadcaster(self)
         self.timer = self.create_timer(0.01, self.publish_tf) # 100 Hz
         

@@ -14,7 +14,7 @@ import argparse
 import logging
 import os
 import sys
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
@@ -38,7 +38,7 @@ def create_app(
     scenario: str = config.DEFAULT_SCENARIO,
     sim_speed: float = config.SIM_SPEED,
     store: DataStore = None,
-) -> tuple[Flask, DataStore, FleetSimulator | None]:
+) -> tuple[Flask, DataStore, Optional[FleetSimulator]]:
     """App factory for Flask server and background telemetry provider."""
 
     app = Flask(
@@ -55,7 +55,8 @@ def create_app(
 
     exp_logger = ExperimentLogger()
     audit_logger = EventAuditLogger()
-    simulator: FleetSimulator | None = None
+    simulator: Optional[FleetSimulator] = None
+    live_adapter = None
 
     if mode == "mock":
         logger.info(f"Initializing Standalone Mock Mode (scenario='{scenario}')")
@@ -67,7 +68,14 @@ def create_app(
         simulator.load_scenario(scenario)
         simulator.start()
     elif mode == "ros2":
-        logger.info("Initializing ROS 2 Integration Mode (ROS 2 adapter standby)")
+        logger.info("Initializing ROS 2 Integration Mode")
+        try:
+            from adapters.rosbridge_live_adapter import RosbridgeLiveAdapter
+
+            live_adapter = RosbridgeLiveAdapter(store)
+            live_adapter.start()
+        except Exception as exc:
+            logger.exception(f"Failed to start ROS 2 dashboard adapter: {exc}")
     else:
         logger.warning(f"Unknown DASHBOARD_MODE '{mode}'. Defaulting to mock mode.")
         simulator = FleetSimulator(data_store=store)
@@ -75,6 +83,7 @@ def create_app(
 
     app.config["DASHBOARD_MODE"] = mode
     app.config["CURRENT_SCENARIO"] = scenario
+    app.config["LIVE_ADAPTER"] = live_adapter
 
     # ── READ-ONLY MONITORING ROUTES ─────────────────────────────────────────
 
@@ -281,6 +290,9 @@ def main():
     finally:
         if simulator:
             simulator.stop()
+        live_adapter = app.config.get("LIVE_ADAPTER")
+        if live_adapter:
+            live_adapter.stop()
 
 
 if __name__ == "__main__":

@@ -73,13 +73,10 @@ class WarehouseMapRenderer {
             'C': { primary: '#EA580C', light: '#FFEDD5', dark: '#C2410C' }  // Orange
         };
 
-        // ── Viewport & Transform State ───────────────────────────────────────
-        this.scale = 24.0; // pixels per metre default
-        this.panX = 0;
-        this.panY = 0;
-        this.isPanning = false;
-        this.panStartX = 0;
-        this.panStartY = 0;
+        // ── Viewport & Transform State (Auto-Framing) ────────────────────
+        this.scale = 24.0; // dynamic
+        this.offsetX = 0;
+        this.offsetY = 0;
 
         // ── Visual Layer Toggles ─────────────────────────────────────────────
         this.showPaths = true;
@@ -122,10 +119,10 @@ class WarehouseMapRenderer {
         const ro = new ResizeObserver(() => {
             this.resize();
             if (!hasFitOnce && this.screenWidth > 10 && this.screenHeight > 10) {
-                this.fitWarehouse();
+                this.updateViewportTransform();
                 hasFitOnce = true;
             } else if (hasFitOnce) {
-                this.fitWarehouse();
+                this.updateViewportTransform();
             }
         });
 
@@ -135,7 +132,7 @@ class WarehouseMapRenderer {
 
         window.addEventListener('resize', () => {
             this.resize();
-            this.fitWarehouse();
+            this.updateViewportTransform();
         });
     }
 
@@ -147,71 +144,35 @@ class WarehouseMapRenderer {
         this.canvas.height = rect.height * dpr;
         this.ctx.resetTransform?.();
         this.ctx.scale(dpr, dpr);
+        this.updateViewportTransform();
         this.screenWidth = rect.width;
         this.screenHeight = rect.height;
     }
 
-    // ── Coordinate Conversions (World Metres <-> Screen Pixels) ──────────────
+    // ── Coordinate Conversions (Auto-Framing) ──────────────
 
-    worldToScreen(wx, wy) {
-        const centerX = this.screenWidth / 2 + this.panX;
-        const centerY = this.screenHeight / 2 + this.panY;
-        const sx = centerX + wx * this.scale;
-        const sy = centerY - wy * this.scale;
-        return { x: sx, y: sy };
+    updateViewportTransform() {
+        if (!this.canvas) return;
+        const padding = 24; // pixels
+        const availableW = this.screenWidth - padding * 2;
+        const availableH = this.screenHeight - padding * 2;
+        this.scale = Math.min(availableW, availableH) / this.world.width; // 20.0
+        this.offsetX = this.screenWidth / 2;
+        this.offsetY = this.screenHeight / 2;
+    }
+
+    worldToScreen(gx, gy) {
+        return {
+            x: this.offsetX + gx * this.scale,
+            y: this.offsetY - gy * this.scale // Invert Y for Canvas
+        };
     }
 
     screenToWorld(sx, sy) {
-        const centerX = this.screenWidth / 2 + this.panX;
-        const centerY = this.screenHeight / 2 + this.panY;
-        const wx = (sx - centerX) / this.scale;
-        const wy = (centerY - sy) / this.scale;
-        return { x: wx, y: wy };
-    }
-
-    // ── Viewport Control Functions ───────────────────────────────────────────
-
-    zoomIn() {
-        this.zoom(1.2);
-    }
-
-    zoomOut() {
-        this.zoom(0.833);
-    }
-
-    zoom(factor, pivotX = this.screenWidth / 2, pivotY = this.screenHeight / 2) {
-        const worldBefore = this.screenToWorld(pivotX, pivotY);
-        this.scale = Math.min(70.0, Math.max(12.0, this.scale * factor));
-        const worldAfter = this.screenToWorld(pivotX, pivotY);
-        this.panX += (worldAfter.x - worldBefore.x) * this.scale;
-        this.panY -= (worldAfter.y - worldBefore.y) * this.scale;
-    }
-
-    resetView() {
-        this.panX = 0;
-        this.panY = 0;
-        this.fitWarehouse();
-    }
-
-    fitWarehouse() {
-        if (!this.screenWidth || !this.screenHeight) return;
-        const padding = 28;
-        const availWidth = this.screenWidth - padding * 2;
-        const availHeight = this.screenHeight - padding * 2;
-
-        const scaleX = availWidth / (this.world.width + 1.6);
-        const scaleY = availHeight / (this.world.height + 1.6);
-
-        this.scale = Math.min(scaleX, scaleY);
-        this.panX = 0;
-        this.panY = 0;
-    }
-
-    centerOnRobot(robotId) {
-        const r = this.visualRobots[robotId] || this.liveRobots[robotId];
-        if (!r) return;
-        this.panX = -r.x * this.scale;
-        this.panY = r.y * this.scale;
+        return {
+            x: (sx - this.offsetX) / this.scale,
+            y: (this.offsetY - sy) / this.scale
+        };
     }
 
     // ── Mouse & Touch Event Handlers ─────────────────────────────────────────
@@ -219,24 +180,10 @@ class WarehouseMapRenderer {
     initEvents() {
         if (!this.canvas) return;
 
-        this.canvas.addEventListener('mousedown', (e) => {
-            if (e.button === 0) {
-                this.isPanning = true;
-                this.panStartX = e.clientX - this.panX;
-                this.panStartY = e.clientY - this.panY;
-                this.canvas.style.cursor = 'grabbing';
-            }
-        });
-
         window.addEventListener('mousemove', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
-
-            if (this.isPanning) {
-                this.panX = e.clientX - this.panStartX;
-                this.panY = e.clientY - this.panStartY;
-            }
 
             if (mouseX >= 0 && mouseX <= rect.width && mouseY >= 0 && mouseY <= rect.height) {
                 this.cursorWorldCoords = this.screenToWorld(mouseX, mouseY);
@@ -248,28 +195,12 @@ class WarehouseMapRenderer {
             }
         });
 
-        window.addEventListener('mouseup', () => {
-            if (this.isPanning) {
-                this.isPanning = false;
-                this.canvas.style.cursor = 'crosshair';
-            }
-        });
-
         this.canvas.addEventListener('click', (e) => {
             const rect = this.canvas.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
             this.handleClick(mouseX, mouseY);
         });
-
-        this.canvas.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            const rect = this.canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
-            const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
-            this.zoom(zoomFactor, mouseX, mouseY);
-        }, { passive: false });
     }
 
     checkHover(screenX, screenY) {

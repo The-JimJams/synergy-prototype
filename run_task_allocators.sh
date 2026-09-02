@@ -1,8 +1,8 @@
 #!/bin/bash
-source ~/amr_ws/install/setup.bash
+source /workspace/synergy-prototype/install/setup.bash
 
-ros2 run task_allocator task_allocator_node --ros-args -r __ns:=/robot_a -p robot_id:=robot_a -p is_announcer:=true &
-ros2 run task_allocator task_allocator_node --ros-args -r __ns:=/robot_b -p robot_id:=robot_b &
-ros2 run task_allocator task_allocator_node --ros-args -r __ns:=/robot_c -p robot_id:=robot_c &
+ros2 run task_allocator task_allocator_node --ros-args -r __ns:=/amr_a -p robot_id:=amr_a -p is_announcer:=true -p nav_enabled:=true &
+ros2 run task_allocator task_allocator_node --ros-args -r __ns:=/amr_b -p robot_id:=amr_b -p nav_enabled:=false &
+ros2 run task_allocator task_allocator_node --ros-args -r __ns:=/amr_c -p robot_id:=amr_c -p nav_enabled:=false &
 
 wait

@@ -15,6 +15,7 @@ ISOLATION & SAFETY GUARANTEES
 """
 
 import logging
+import threading
 from typing import Dict, Any, Optional
 
 import config
@@ -45,15 +46,16 @@ except ImportError:
 def robot_state_from_ros(msg: Any, robot_id: str = "A") -> RobotState:
     """Convert raw ROS message object or dict to normalized RobotState."""
     data = msg if isinstance(msg, dict) else getattr(msg, "__dict__", {})
+    linear_velocity = data.get("linear_velocity", data.get("velocity", data.get("speed", 0.0)))
     return RobotState(
         robot_id=str(data.get("robot_id", robot_id)),
         x=float(data.get("x", data.get("position_x", 0.0))),
         y=float(data.get("y", data.get("position_y", 0.0))),
-        yaw=float(data.get("yaw", data.get("heading", 0.0))),
-        velocity=float(data.get("velocity", data.get("speed", 0.0))),
-        battery=float(data.get("battery", data.get("battery_percentage", 100.0))),
+        yaw=float(data.get("theta", data.get("yaw", data.get("heading", 0.0)))),
+        velocity=float(abs(linear_velocity)),
+        battery=float(data.get("battery_percent", data.get("battery", data.get("battery_percentage", 100.0)))),
         status=str(data.get("status", data.get("state", "UNKNOWN"))),
-        task_id=data.get("task_id"),
+        task_id=data.get("current_task_id", data.get("task_id")),
     )
 
 
@@ -71,7 +73,7 @@ def reservation_from_ros(msg: Any) -> Reservation:
     """Convert raw ROS message object or dict to normalized Reservation."""
     data = msg if isinstance(msg, dict) else getattr(msg, "__dict__", {})
     return Reservation(
-        resource_id=str(data.get("resource_id", "UNKNOWN")),
+        resource_id=str(data.get("resource", data.get("resource_id", "UNKNOWN"))),
         robot_id=data.get("robot_id"),
         status=str(data.get("status", "FREE")),
     )
@@ -111,6 +113,7 @@ class ROS2Adapter:
         self.topics = topic_config or config.ROS2_TOPICS
         self.node = None
         self._is_active = False
+        self._spin_thread: Optional[threading.Thread] = None
 
         if not HAS_ROS2:
             logger.warning("ROS 2 (rclpy) is NOT available on this system. ROS2Adapter standing by.")
@@ -123,10 +126,40 @@ class ROS2Adapter:
             return
 
         try:
+            from fleet_msgs.msg import ResourceClaim, RobotIntent as FleetRobotIntent, RobotState as FleetRobotState
+
             if not rclpy.ok():
                 rclpy.init()
 
             self.node = rclpy.create_node("synergy_dashboard_adapter")
+            for robot_id in ("amr_a", "amr_b", "amr_c"):
+                dashboard_id = {"amr_a": "A", "amr_b": "B", "amr_c": "C"}[robot_id]
+                self.node.create_subscription(
+                    FleetRobotState,
+                    f"/{robot_id}/state",
+                    lambda msg, rid=dashboard_id: self.data_store.update_robot(robot_state_from_ros(msg, rid)),
+                    10,
+                )
+                self.node.create_subscription(
+                    FleetRobotIntent,
+                    f"/{robot_id}/intent",
+                    lambda msg, rid=dashboard_id: self.data_store.update_intent(robot_intent_from_ros(msg, rid)),
+                    10,
+                )
+
+            self.node.create_subscription(
+                ResourceClaim,
+                "/fleet/reservations",
+                lambda msg: self.data_store.update_reservation(reservation_from_ros(msg)),
+                10,
+            )
+            self._spin_thread = threading.Thread(
+                target=rclpy.spin,
+                args=(self.node,),
+                daemon=True,
+                name="ros2-dashboard-adapter",
+            )
+            self._spin_thread.start()
             logger.info("ROS 2 node 'synergy_dashboard_adapter' initialized.")
             self._is_active = True
         except Exception as e:
@@ -138,6 +171,8 @@ class ROS2Adapter:
         if self.node and HAS_ROS2:
             try:
                 self.node.destroy_node()
+                if self._spin_thread and self._spin_thread.is_alive():
+                    self._spin_thread.join(timeout=1.0)
                 logger.info("ROS 2 adapter node destroyed.")
             except Exception as e:
                 logger.warning(f"Error destroying ROS 2 node: {e}")
