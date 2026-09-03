@@ -5,8 +5,10 @@ SYNERGY Dashboard — Configuration
 Central configuration with sensible defaults.
 Override via environment variables or by modifying this file.
 
-Nothing here is a confirmed ROS 2 topic name or real system parameter.
-All values are defaults for the standalone mock/demo mode.
+The warehouse layout constants and ROS 2 topic names below are the REAL ones:
+the layout is read from gazebo/simulation/worlds/warehouse.sdf and agrees with
+src/synergy_nav2/maps/warehouse_map.pgm; the topics are the ones the nodes in
+src/ actually publish on. Server/simulator settings above them are demo defaults.
 """
 
 import os
@@ -48,46 +50,77 @@ MAP_MAX_Y = 10.0
 MAP_WIDTH = 20.0    # metres (-10.0 to +10.0)
 MAP_HEIGHT = 20.0   # metres (-10.0 to +10.0)
 
-# Named stations (Pickup / Dropoff / Charging locations from Gazebo warehouse)
+# ── Warehouse layout — GROUND TRUTH from gazebo/simulation/worlds/warehouse.sdf
+#
+# Every coordinate below is the object's actual pose in the Gazebo world and
+# agrees with the Nav2 occupancy grid in src/synergy_nav2/maps/warehouse_map.pgm.
+# Keep these in sync with WAYPOINTS in task_allocator_node.py and with the
+# layout constants in static/js/map.js — a robot drawn against a warehouse that
+# does not exist is what made live AMRs look like they drove through shelving.
+
+# Named stations. Station goal poses (what a robot navigates to) are in
+# WAYPOINTS; these are where the station pads are drawn.
 STATIONS = {
-    "P1": (-7.2, 0.0),    # Pickup Station 1 (West Central Aisle)
-    "P2": (-7.2, -7.5),   # Pickup Station 2 (South-West)
-    "D1": (6.8, 0.0),     # Drop Station 1 (East Central Aisle)
-    "CHG": (6.0, 6.0),    # Charging Bay (North-East with dock & lightning terminal)
+    "P1": (0.0, 8.0),      # pickup_P1  — north bay
+    "P2": (-5.5, -7.0),    # pickup_P2  — south-west bay
+    "D1": (0.0, -8.1),     # drop_pack_D1 — south bay
+    "CHG": (5.5, -7.5),    # charging_bay — south-east
 }
 
-# Shared intersections / chokepoints with bollards
+# Shared intersections / chokepoints, each flanked by a pair of bollards
+# at x = +/- 0.75 in the central corridor.
 INTERSECTIONS = {
-    "I1": (-4.3, 0.0),    # Intersection 1 (West-Central Chokepoint)
-    "I2": (0.8, 0.0),     # Intersection 2 (East-Central Chokepoint)
+    "I1": (0.0, 5.2),      # north chokepoint
+    "I2": (0.0, -0.7),     # central chokepoint
 }
 
-# 8 Industrial Shelving Racks (S1 - S8 arranged vertically per simulation world)
+# 8 high-bay shelving racks. Each rack is 5.0 m (X) x 1.0 m (Y) x 2.2 m,
+# standing in two columns at x = -4.8 and x = +4.8.
 RACKS = {
-    "S1": (-6.5, -5.5),   # Bottom-Left
-    "S2": (-6.5, 5.5),    # Top-Left
-    "S3": (-2.1, -5.5),   # Bottom-Mid-West
-    "S4": (-2.1, 5.5),    # Top-Mid-West
-    "S5": (-0.7, -5.5),   # Bottom-Mid-East
-    "S6": (-0.7, 5.5),    # Top-Mid-East
-    "S7": (3.2, -5.5),    # Bottom-Right
-    "S8": (3.2, 5.5),     # Top-Right
+    "S1": (-4.8, 7.5),
+    "S2": (4.8, 7.5),
+    "S3": (-4.8, 3.0),
+    "S4": (4.8, 3.0),
+    "S5": (-4.8, 1.5),
+    "S6": (4.8, 1.5),
+    "S7": (-4.8, -3.0),
+    "S8": (4.8, -3.0),
 }
 
-# Static Obstacles & Pallets (from Gazebo simulation world)
+# Rack footprint in metres (same for every rack), used for drawing.
+RACK_SIZE = (5.0, 1.0)
+
+# Where a robot actually stops to service each rack.
+#
+# RACKS above holds rack CENTRES, which is what the map draws -- but a centre is
+# inside a 5.0 x 1.0 x 2.2 m solid and is not a pose any robot can occupy.  These
+# aisle-side approach poses mirror task_allocator_node.WAYPOINTS, so a task to
+# "S1" resolves to the same destination in mock mode as it does on the live fleet.
+RACK_APPROACHES = {
+    "S1": (-4.8, 6.0),     # rack (-4.8,  7.5), approached from the south aisle
+    "S2": (4.8, 6.0),      # rack ( 4.8,  7.5)
+    "S3": (-4.8, 4.3),     # rack (-4.8,  3.0), approached from the north aisle
+    "S4": (4.8, 4.3),      # rack ( 4.8,  3.0)
+    "S5": (-4.8, 0.0),     # rack (-4.8,  1.5)
+    "S6": (4.8, 0.0),      # rack ( 4.8,  1.5)
+    "S7": (-4.8, -4.5),    # rack (-4.8, -3.0)
+    "S8": (4.8, -4.5),     # rack ( 4.8, -3.0)
+}
+
+# Static obstacles and props.
 OBSTACLES = {
-    "OBS_AISLE": (-1.5, 0.0),    # Orange Blocked Aisle Container (Center)
-    "DUMPSTER": (6.2, -2.5),     # Green Waste Container (East)
-    "PALLET_SE": (6.2, -5.5),    # Pallet Stack (South-East zone)
-    "PALLET_NW": (-8.2, 5.5),    # Pallet Stack (North-West by S2)
-    "PALLET_SW": (-3.7, -7.8),   # Pallet Stack (South by S3)
+    "OBS_AISLE": (-0.2, 0.75),   # blocked_aisle_obstacle (movable, 0.8 x 1.2)
+    "DUMPSTER": (-2.8, -7.3),    # green_dumpster_container (1.2 x 0.8)
+    "PALLET_SW": (-5.2, -7.3),   # pallet_tower_1
+    "PALLET_NE": (5.2, 8.75),    # pallet_tower_2
+    "PALLET_NW": (-8.0, 5.25),   # pallet_tower_3
 }
 
-# Robot home / spawn positions (from Gazebo warehouse world)
+# Robot spawn poses, straight from the world file's <include> blocks.
 ROBOT_HOMES = {
-    "A": (-7.5, 0.8),    # AMR Blue (Spawns West by Pickup)
-    "B": (-4.3, -3.2),   # AMR Green (Spawns South Aisle)
-    "C": (5.0, 3.5),     # AMR Orange (Spawns North-East by Charging Bay)
+    "A": (-3.5, 5.25),     # amr_blue
+    "B": (0.5, 8.5),       # amr_green
+    "C": (3.5, -6.5),      # amr_orange
 }
 
 
@@ -112,15 +145,25 @@ EXPERIMENTS_DIR = os.path.join(DATA_DIR, "experiments")
 EVENTS_DIR = os.path.join(DATA_DIR, "events")
 
 
-# ── ROS 2 (placeholder — only used when MODE == "ros2") ────────────────────
-# These are NOT confirmed real topic names.  They are placeholders that the
-# ros2_adapter will read when integration mode is activated.
+# ── ROS 2 live topics ──────────────────────────────────────────────────────
+# The names the fleet actually publishes on. Verified against the publishers in
+# src/: fleet_agent_node.py (state, heartbeat), task_allocator_node.py
+# (announcements, bids) and dashboard_bridge_node.py (telemetry, reservations).
+#
+# The default live path is adapters/rosbridge_live_adapter.py, which subscribes
+# to these over rosbridge on :9090. adapters/ros2_adapter.py is the direct-rclpy
+# alternative and reads this table.
+#
+# {robot_id} is the ROS namespace (amr_a / amr_b / amr_c), NOT the dashboard's
+# single-letter id (A / B / C).
 
 ROS2_TOPICS = {
-    "robot_state":  "/synergy/{robot_id}/state",
-    "robot_intent": "/synergy/{robot_id}/intent",
-    "reservation":  "/synergy/reservations",
-    "event":        "/synergy/events",
-    "task":         "/synergy/tasks",
-    "network":      "/synergy/network_status",
+    "robot_state":  "/{robot_id}/state",
+    "heartbeat":    "/{robot_id}/heartbeat",
+    "odom":         "/{robot_id}/odom",
+    "scan":         "/{robot_id}/scan",
+    "task_announce": "/tasks/announcements",
+    "task_bid":     "/tasks/bids",
+    "reservation":  "/fleet/reservations",
+    "telemetry":    "/fleet/telemetry",
 }

@@ -43,19 +43,60 @@ def _now_iso() -> str:
 
 
 def get_location_coords(name: str) -> tuple[float, float]:
-    """Resolve landmark name (station or rack) to warehouse map (x, y) coordinates."""
+    """Resolve a landmark name to the (x, y) a robot can actually stop at.
+
+    Rack names resolve to their aisle-side approach pose, not the rack centre:
+    a centre is inside a 5.0 x 1.0 x 2.2 m solid.  This keeps a mock task to "S1"
+    pointing at the same place the live allocator sends a robot for "S1".
+    """
     name = str(name).upper().strip()
     if name in config.STATIONS:
         return config.STATIONS[name]
+    if name in config.RACK_APPROACHES:
+        return config.RACK_APPROACHES[name]
     if name in config.RACKS:
         return config.RACKS[name]
+    if name in config.INTERSECTIONS:
+        return config.INTERSECTIONS[name]
     return (0.0, 0.0)
 
 
-def dispatch_robot_task_execution(store: DataStore, robot_id: str, task_id: str, pickup: str, dropoff: str) -> None:
-    """Simulate real AMR movement, cargo loading, and dropoff for assigned tasks in real-time."""
+def dispatch_mock_task_execution(
+    store: DataStore,
+    robot_id: str,
+    task_id: str,
+    pickup: str,
+    dropoff: str,
+    is_cancelled=None,
+) -> None:
+    """MOCK MODE ONLY. Scripted straight-line playback of a task for the standalone demo.
+
+    This writes synthetic robot poses into the DataStore.  It must never run while
+    the dashboard is in live mode: the poses it produces are interpolated between
+    two landmarks and would overwrite the real Gazebo/Nav2 telemetry arriving from
+    the live adapter, which is what previously made live robots appear to slide in
+    a straight line through shelving instead of following their Nav2 route.
+
+    In live mode the equivalent action is to announce the task to the fleet and let
+    the robots' own bidding and Nav2 stacks execute it -- see ``_announce_task_live``.
+
+    Not starting the thread in live mode is not sufficient on its own: a playback
+    already in flight when the operator switches to LIVE would keep writing
+    synthetic poses over real telemetry for the rest of its run.  ``is_cancelled``
+    is polled between every pose write so a mode switch stops playback within one
+    100 ms step; without it the dashboard reported ``is_simulated: false`` while a
+    mock thread was still driving the robot down the map.
+    """
+    def _cancelled() -> bool:
+        try:
+            return bool(is_cancelled and is_cancelled())
+        except Exception:
+            return False
+
     def _run():
         time.sleep(0.4)
+        if _cancelled():
+            return
         p_coords = get_location_coords(pickup)
         d_coords = get_location_coords(dropoff)
 
@@ -108,6 +149,8 @@ def dispatch_robot_task_execution(store: DataStore, robot_id: str, task_id: str,
             ))
 
             for i in range(1, steps + 1):
+                if _cancelled():
+                    return
                 fraction = i / steps
                 curr_x = start_x + dx * fraction
                 curr_y = start_y + dy * fraction
@@ -130,6 +173,8 @@ def dispatch_robot_task_execution(store: DataStore, robot_id: str, task_id: str,
 
         # Navigate to pickup station
         _move_to(p_coords[0], p_coords[1], pickup)
+        if _cancelled():
+            return
 
         # Loading cargo pause
         store.update_robot(RobotState(
@@ -149,6 +194,8 @@ def dispatch_robot_task_execution(store: DataStore, robot_id: str, task_id: str,
             message=f"AMR {robot_id} arrived at {pickup} — loading cargo",
         ))
         time.sleep(1.4)
+        if _cancelled():
+            return
 
         # Navigate to dropoff station
         store.add_event(Event(
@@ -158,6 +205,8 @@ def dispatch_robot_task_execution(store: DataStore, robot_id: str, task_id: str,
             message=f"AMR {robot_id} transiting with payload from {pickup} to {dropoff}",
         ))
         _move_to(d_coords[0], d_coords[1], dropoff)
+        if _cancelled():
+            return
 
         # Delivered cargo
         final_status = "CHARGING" if dropoff == "CHG" else "IDLE"
@@ -187,7 +236,7 @@ def dispatch_robot_task_execution(store: DataStore, robot_id: str, task_id: str,
             message=f"AMR {robot_id} delivered cargo at {dropoff}! Task {task_id} COMPLETED.",
         ))
 
-    threading.Thread(target=_run, daemon=True, name=f"dispatch-task-{task_id}").start()
+    threading.Thread(target=_run, daemon=True, name=f"mock-task-{task_id}").start()
 
 
 def create_app(
@@ -239,6 +288,10 @@ def create_app(
         simulator.start()
 
     app.config["DASHBOARD_MODE"] = mode
+    # Bumped whenever the data source changes. Mock playback threads captured the
+    # value they started under and abort as soon as it moves, so a switch to LIVE
+    # cannot leave synthetic poses being written over real telemetry.
+    app.config["DATA_SOURCE_GENERATION"] = 0
     app.config["CURRENT_SCENARIO"] = scenario
     app.config["LIVE_ADAPTER"] = live_adapter
     app.config["SIMULATOR"] = simulator
@@ -252,7 +305,7 @@ def create_app(
         if os.path.exists(template_path):
             return render_template(
                 "index.html",
-                mode=mode,
+                mode=app.config.get("DASHBOARD_MODE", mode),
                 scenario=scenario,
                 poll_interval=config.POLL_INTERVAL_MS,
             )
@@ -260,10 +313,27 @@ def create_app(
 
     @app.route("/api/health", methods=["GET"])
     def api_health():
+        # Read the live values, not the ones captured when the app was built:
+        # /api/mode/switch changes them at runtime.
+        active_mode = app.config.get("DASHBOARD_MODE", mode)
+        active_sim = app.config.get("SIMULATOR")
+        active_adapter = app.config.get("LIVE_ADAPTER")
+
         summary = store.get_summary()
-        summary["mode"] = mode
-        if simulator:
-            summary["simulator"] = simulator.get_status()
+        summary["mode"] = active_mode
+        summary["data_source"] = "live_ros" if active_mode == "ros2" else "mock_simulator"
+        summary["is_simulated"] = active_mode != "ros2"
+        if active_sim:
+            summary["simulator"] = active_sim.get_status()
+        if active_mode == "ros2":
+            # is_active() only says the reconnect thread is alive; it stays True
+            # while the adapter retries a refused connection. Report the socket.
+            summary["live_adapter_connected"] = bool(
+                active_adapter is not None and active_adapter.is_connected()
+            )
+            summary["live_adapter_running"] = bool(
+                active_adapter is not None and active_adapter.is_active()
+            )
         return jsonify(summary)
 
     @app.route("/api/state", methods=["GET"])
@@ -272,7 +342,14 @@ def create_app(
         return jsonify({
             "timestamp": store.get_summary()["last_update"],
             "robots": robots,
+            # Planned routes ride along with the poses so the fast pose poll
+            # keeps the drawn path in step with the robot that is following it.
+            "paths": store.get_paths(),
         })
+
+    @app.route("/api/paths", methods=["GET"])
+    def api_paths():
+        return jsonify({"paths": store.get_paths()})
 
     @app.route("/api/robots", methods=["GET"])
     def api_robots():
@@ -292,26 +369,76 @@ def create_app(
 
     @app.route("/api/tasks/create", methods=["POST"])
     def api_tasks_create():
+        """Inject a task into the system.
+
+        This is a task *source*, not a fleet manager.  In live mode it does exactly
+        one thing: publish a TaskAnnouncement onto the real /tasks/announcements
+        topic.  Which robot wins it is decided by the robots themselves, through the
+        existing decentralised bidding; the dashboard never picks a winner, never
+        assigns, and never moves anything.
+        """
+        active_mode = app.config.get("DASHBOARD_MODE", "mock")
         req_data = request.get_json(silent=True) or {}
         pickup = req_data.get("pickup", "P1").strip().upper()
         dropoff = req_data.get("dropoff", "D1").strip().upper()
+
+        existing_tasks = store.get_tasks()
+        task_id = req_data.get("task_id")
+        if not task_id:
+            task_id = f"T{len(existing_tasks) + 1:02d}"
+        else:
+            task_id = str(task_id).strip().upper()
+
+        # ── LIVE MODE: announce to the fleet and stop there ─────────────────
+        if active_mode == "ros2":
+            adapter = app.config.get("LIVE_ADAPTER")
+            if adapter is None:
+                return jsonify({
+                    "status": "error",
+                    "message": "Live adapter is not connected; cannot announce task to the fleet.",
+                }), 503
+
+            ok, detail = adapter.announce_task(
+                task_id=task_id,
+                pickup=pickup,
+                dropoff=dropoff,
+                priority=int(req_data.get("priority", 3)),
+            )
+            if not ok:
+                return jsonify({"status": "error", "message": detail}), 503
+
+            # The real winner arrives back over /tasks/announcements and /tasks/bids
+            # and is written to the store by the live adapter, not here.
+            note = (f"Task {task_id} ({pickup} -> {dropoff}) announced to the fleet; "
+                    f"robots will bid and select a winner.")
+            requested = req_data.get("assigned_robot")
+            if requested:
+                # Say so rather than silently dropping it: directing a task at one
+                # AMR in live mode looked like it had been accepted and then
+                # "un-assigned" itself, because the fleet auctions every task and
+                # the winner may be a different robot.
+                note += (f" NOTE: live mode allocates by decentralized auction, so the "
+                         f"request for AMR {str(requested).upper()} was announced to all "
+                         f"peers rather than forced.")
+            return jsonify({
+                "status": "success",
+                "mode": "ros2",
+                "targeted_assignment_honoured": False if requested else None,
+                "task": {"task_id": task_id, "pickup": pickup, "dropoff": dropoff,
+                         "status": "ANNOUNCED", "assigned_robot": None},
+                "message": note,
+            })
+
+        # ── MOCK MODE: the scripted standalone demo ─────────────────────────
         robot_id = req_data.get("assigned_robot")
         if robot_id:
             robot_id = str(robot_id).strip().upper().replace("AMR", "").strip()
             if robot_id not in ("A", "B", "C"):
                 robot_id = None
 
-        existing_tasks = store.get_tasks()
-        task_id = req_data.get("task_id")
-        if not task_id:
-            next_num = len(existing_tasks) + 1
-            task_id = f"T{next_num:02d}"
-        else:
-            task_id = str(task_id).strip().upper()
-
         if robot_id:
             status = "ASSIGNED"
-            msg = f"Task {task_id} ({pickup} → {dropoff}) assigned to AMR {robot_id}"
+            msg = f"[MOCK] Task {task_id} ({pickup} -> {dropoff}) assigned to AMR {robot_id}"
             event_type = "TASK_ASSIGNED"
         else:
             robots = store.get_all_robots()
@@ -325,12 +452,12 @@ def create_app(
             if best_robot:
                 robot_id = best_robot
                 status = "ASSIGNED"
-                msg = f"Task {task_id} ({pickup} → {dropoff}) won by AMR {robot_id}"
+                msg = f"[MOCK] Task {task_id} ({pickup} -> {dropoff}) won by AMR {robot_id}"
                 event_type = "TASK_ASSIGNED"
             else:
                 robot_id = None
                 status = "ANNOUNCED"
-                msg = f"Task {task_id} ({pickup} → {dropoff}) announced to fleet"
+                msg = f"[MOCK] Task {task_id} ({pickup} -> {dropoff}) announced to fleet"
                 event_type = "TASK_ANNOUNCED"
 
         new_task = Task(
@@ -347,12 +474,23 @@ def create_app(
             message=msg,
         ))
 
-        # Start live movement and cargo handling for the assigned AMR
         if robot_id:
-            dispatch_robot_task_execution(store, robot_id, task_id, pickup, dropoff)
+            started_generation = app.config.get("DATA_SOURCE_GENERATION", 0)
+
+            def _playback_cancelled() -> bool:
+                return (
+                    app.config.get("DASHBOARD_MODE") != "mock"
+                    or app.config.get("DATA_SOURCE_GENERATION", 0) != started_generation
+                )
+
+            dispatch_mock_task_execution(
+                store, robot_id, task_id, pickup, dropoff,
+                is_cancelled=_playback_cancelled,
+            )
 
         return jsonify({
             "status": "success",
+            "mode": "mock",
             "task": new_task.to_dict(),
             "message": msg,
         })
@@ -374,9 +512,12 @@ def create_app(
     def api_network():
         net = store.get_network()
         # Clearly flag mock telemetry in standalone mode (Phase 11)
-        if mode == "mock":
+        if app.config.get("DASHBOARD_MODE", mode) != "ros2":
             net["is_simulated"] = True
             net["note"] = "Simulated mock network telemetry"
+        else:
+            net["is_simulated"] = False
+            net["note"] = "Live ROS 2 fleet telemetry"
         return jsonify(net)
 
     @app.route("/api/map/layout", methods=["GET"])
@@ -393,6 +534,8 @@ def create_app(
             "stations": config.STATIONS,
             "intersections": config.INTERSECTIONS,
             "racks": config.RACKS,
+            "rack_size": config.RACK_SIZE,
+            "rack_approaches": config.RACK_APPROACHES,
             "obstacles": config.OBSTACLES,
             "robot_homes": config.ROBOT_HOMES,
         })
@@ -473,6 +616,9 @@ def create_app(
             req_data = request.get_json(silent=True) or {}
             target_scenario = req_data.get("scenario")
             if target_scenario in AVAILABLE_SCENARIOS:
+                # Same reasoning as the mode switch: a playback thread from the
+                # previous scenario must not keep writing into the reset store.
+                app.config["DATA_SOURCE_GENERATION"] = app.config.get("DATA_SOURCE_GENERATION", 0) + 1
                 store.reset()
                 active_sim.load_scenario(target_scenario)
                 active_sim.start()
@@ -511,6 +657,9 @@ def create_app(
                 "mode": current_mode,
                 "message": f"Already running in '{current_mode}' mode.",
             })
+
+        # Retire in-flight mock playback threads before the source changes.
+        app.config["DATA_SOURCE_GENERATION"] = app.config.get("DATA_SOURCE_GENERATION", 0) + 1
 
         # ── Tear down current data source ──────────────────────────────────
         old_sim = app.config.get("SIMULATOR")

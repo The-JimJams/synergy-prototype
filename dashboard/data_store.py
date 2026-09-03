@@ -148,6 +148,12 @@ class DataStore:
         self._experiment_runs: deque[ExperimentMetrics] = deque(
             maxlen=max_experiment_runs
         )
+        # Planned route per robot, as [(x, y), ...] in warehouse metres.
+        # Populated by whichever side is driving: the mock motion engine plans
+        # over the same occupancy grid Nav2 uses, and live mode can carry Nav2's
+        # own plan. The map draws it so an operator can see the intended route
+        # instead of inferring it from where the robot has already been.
+        self._paths: dict[str, list] = {}
         # Timestamp of last store mutation (any kind)
         self._last_update: str = _now_iso()
 
@@ -190,6 +196,25 @@ class DataStore:
     # ─────────────────────────────────────────────────────────────────────
     # Intents
     # ─────────────────────────────────────────────────────────────────────
+
+    def update_path(self, robot_id: str, points) -> None:
+        """Store a robot's planned route (list of (x, y) pairs)."""
+        with self._lock:
+            if points:
+                self._paths[robot_id] = [[round(float(x), 3), round(float(y), 3)]
+                                         for x, y in points]
+            else:
+                self._paths.pop(robot_id, None)
+            self._last_update = _now_iso()
+
+    def clear_path(self, robot_id: str) -> None:
+        with self._lock:
+            self._paths.pop(robot_id, None)
+            self._last_update = _now_iso()
+
+    def get_paths(self) -> dict:
+        with self._lock:
+            return {rid: [list(pt) for pt in pts] for rid, pts in self._paths.items()}
 
     def update_intent(self, intent: RobotIntent) -> None:
         """Record the latest intent for a robot."""
@@ -359,6 +384,7 @@ class DataStore:
         """Clear all state.  Useful between demo scenarios."""
         with self._lock:
             self._robots.clear()
+            self._paths.clear()
             self._intents.clear()
             self._reservations.clear()
             self._tasks.clear()

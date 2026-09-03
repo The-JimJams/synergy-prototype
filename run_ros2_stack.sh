@@ -87,31 +87,35 @@ success "Install overlay sourced."
 # ── Launch task allocator nodes ────────────────────────────────────────────────
 echo ""
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-echo -e "${BOLD}  Step 3/3 — Spawning 3 AMR task allocator nodes${RESET}"
+echo -e "${BOLD}  Step 3/3 — Launching the fleet stack (agents, allocators, bridge)${RESET}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
 echo ""
 
-info "Launching AMR A (announcer, nav_enabled=true)..."
-ros2 run task_allocator task_allocator_node \
-    --ros-args -r __ns:=/amr_a -p robot_id:=amr_a \
-    -p is_announcer:=true -p nav_enabled:=true &
+# The bringup launch starts, per robot: fleet_agent_node (map-frame telemetry on
+# /<id>/state + heartbeat) and task_allocator_node (announce/bid/win/Nav2 goal),
+# plus the read-only dashboard_bridge_node.  Launching the allocators on their own
+# left /<id>/state silent, so every bid scored from a default (0,0) position and
+# the dashboard had no live pose to draw.
+info "Launching fleet agents + task allocators + dashboard bridge (bringup.launch.py)..."
+ros2 launch robot_bringup bringup.launch.py &
 
-info "Launching AMR B (nav_enabled=true)..."
-ros2 run task_allocator task_allocator_node \
-    --ros-args -r __ns:=/amr_b -p robot_id:=amr_b \
-    -p is_announcer:=false -p nav_enabled:=true &
+# rosbridge is what the Flask dashboard's live adapter connects to on :9090.
+# It is optional: the fleet coordinates perfectly well without it.
+if ros2 pkg prefix rosbridge_server &>/dev/null; then
+    info "Launching rosbridge_server on :9090 (dashboard live telemetry)..."
+    ros2 launch rosbridge_server rosbridge_websocket_launch.xml &
+else
+    echo -e "${YELLOW}[WARN]${RESET}  rosbridge_server not installed; the dashboard cannot enter LIVE mode."
+    echo -e "         Install with: ${BOLD}sudo apt install ros-${DISTRO}-rosbridge-suite${RESET}"
+fi
 
-info "Launching AMR C (nav_enabled=true)..."
-ros2 run task_allocator task_allocator_node \
-    --ros-args -r __ns:=/amr_c -p robot_id:=amr_c \
-    -p is_announcer:=false -p nav_enabled:=true &
-
-success "All 3 AMR nodes launched. Press Ctrl+C to stop all."
+success "Fleet stack launched. Press Ctrl+C to stop all."
 echo ""
 echo -e "${YELLOW}[TIP]${RESET}  Monitor topics with:"
 echo -e "         ${BOLD}ros2 topic list${RESET}"
-echo -e "         ${BOLD}ros2 topic echo /fleet/robot_state${RESET}"
-echo -e "         ${BOLD}ros2 topic echo /fleet/tasks/announce${RESET}"
+echo -e "         ${BOLD}ros2 topic echo /amr_a/state${RESET}          # map-frame pose"
+echo -e "         ${BOLD}ros2 topic echo /tasks/announcements${RESET}  # task announcements"
+echo -e "         ${BOLD}ros2 topic echo /tasks/bids${RESET}           # distributed bids"
 echo ""
 
 # ── Wait and clean up on exit ──────────────────────────────────────────────────

@@ -52,7 +52,14 @@ amr_a:
         stateful: True
         plugin: "nav2_controller::SimpleGoalChecker"
         xy_goal_tolerance: 0.25
-        yaw_goal_tolerance: 0.25
+        # Heading on arrival is irrelevant for a pickup/dropoff transport task,
+        # and _send_nav2_goal() always requests yaw 0, so a robot that had
+        # already arrived still owed a large in-place rotation. Rotating in
+        # place is not translation, so SimpleProgressChecker (0.5 m in 10 s)
+        # scored it as no progress and aborted the goal ON ARRIVAL with
+        # error 105 "Failed to make progress" -- measured with the robot
+        # 0.23 m from a 0.25 m tolerance. Accept any final heading.
+        yaw_goal_tolerance: 3.15
 
       FollowPath:
         plugin: "dwb_core::DWBLocalPlanner"
@@ -82,6 +89,21 @@ amr_a:
         short_circuit_trajectory_evaluation: True
         stateful: True
         critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+        # DWB's BaseObstacle weight defaults to 0.02, i.e. obstacle cost barely
+        # influences which trajectory is chosen -- clearance is left almost
+        # entirely to inflation. In 2.6 m perimeter corridors and 1.5 m bollard
+        # gates that let robots graze the racking: one ended a leg at (7.35,
+        # 2.59), 0.05 m from the east rack, and NavFn then refused to plan at
+        # all because the start cell was lethal ("Failed to create plan with
+        # tolerance of 0.500000") while backup recovery could not escape.
+        # Weighting clearance properly keeps them off the shelving instead.
+        BaseObstacle.scale: 0.5
+        PathDist.scale: 32.0
+        GoalDist.scale: 24.0
+        PathAlign.scale: 32.0
+        GoalAlign.scale: 24.0
+        PathAlign.forward_point_distance: 0.20
+        GoalAlign.forward_point_distance: 0.20
 
   local_costmap:
     local_costmap:
@@ -92,8 +114,10 @@ amr_a:
         robot_base_frame: "amr_blue/base_link"
         use_sim_time: True
         rolling_window: true
-        width: 3
-        height: 3
+        # Must be at least 2 x obstacle_max_range (2.5 m) so observations the
+        # obstacle layer marks are not clipped straight back out of the window.
+        width: 6
+        height: 6
         resolution: 0.05
         footprint: "[[-0.31, -0.26], [-0.31, 0.26], [0.31, 0.26], [0.31, -0.26]]"
         plugins: ["obstacle_layer", "inflation_layer"]
@@ -113,8 +137,18 @@ amr_a:
             obstacle_min_range: 0.0
         inflation_layer:
           plugin: "nav2_costmap_2d::InflationLayer"
-          cost_scaling_factor: 3.0
-          inflation_radius: 0.55
+          # Tuned to this warehouse's chokepoints, not left at the Nav2 default.
+          # The I1/I2 bollard gates and the channels beside them offer at most
+          # 0.50-0.65 m clearance. With inflation_radius 0.55 every cell on those
+          # routes stayed permanently inflated, so the planner had no zero-cost
+          # channel and the controller no gradient to hold the centre-line: the
+          # robot drifted onto the west I2 bollard (measured clearance at the
+          # stall point 0.22 m, inside its own 0.26 m inscribed radius) and DWB
+          # reported "0 valid trajectories out of 419".
+          # 0.45 m still exceeds the 0.405 m circumscribed radius, which Nav2
+          # requires, while leaving the gate centres genuinely free.
+          cost_scaling_factor: 5.0
+          inflation_radius: 0.45
         always_send_full_costmap: True
 
   global_costmap:
@@ -148,8 +182,18 @@ amr_a:
             obstacle_min_range: 0.0
         inflation_layer:
           plugin: "nav2_costmap_2d::InflationLayer"
-          cost_scaling_factor: 3.0
-          inflation_radius: 0.55
+          # Tuned to this warehouse's chokepoints, not left at the Nav2 default.
+          # The I1/I2 bollard gates and the channels beside them offer at most
+          # 0.50-0.65 m clearance. With inflation_radius 0.55 every cell on those
+          # routes stayed permanently inflated, so the planner had no zero-cost
+          # channel and the controller no gradient to hold the centre-line: the
+          # robot drifted onto the west I2 bollard (measured clearance at the
+          # stall point 0.22 m, inside its own 0.26 m inscribed radius) and DWB
+          # reported "0 valid trajectories out of 419".
+          # 0.45 m still exceeds the 0.405 m circumscribed radius, which Nav2
+          # requires, while leaving the gate centres genuinely free.
+          cost_scaling_factor: 5.0
+          inflation_radius: 0.45
         always_send_full_costmap: True
 
   bt_navigator:
@@ -159,7 +203,14 @@ amr_a:
       robot_base_frame: "amr_blue/base_link"
       odom_frame: "amr_blue/odom"
       bt_loop_duration: 10
-      default_server_timeout: 20
+      # Raised from the 20 ms / 1000 ms defaults. Three Nav2 stacks activating
+      # at once could not stand up their action/service servers inside those
+      # windows: bt_navigator aborted with "Service server
+      # global_costmap/clear_entirely_global_costmap not available" and, once
+      # running, goals failed with error 107 "Behavior Tree action client timed
+      # out waiting". These are startup/ load tolerances, not control rates.
+      default_server_timeout: 200
+      wait_for_service_timeout: 5000
       navigators: ['navigate_to_pose', 'navigate_through_poses']
       navigate_to_pose:
         plugin: "nav2_bt_navigator::NavigateToPoseNavigator"
@@ -171,6 +222,12 @@ amr_a:
       use_sim_time: True
       global_frame: "map"
       robot_base_frame: "amr_blue/base_link"
+      # nav2_behaviors reads `local_frame`, not `odom_frame`; the latter was
+      # silently ignored, so backup/spin fell back to the default frame "odom",
+      # which does not exist in this multi-robot TF tree. Every recovery aborted
+      # with error 712 "Initial robot pose is not available", leaving a stuck
+      # robot with no way out.
+      local_frame: "amr_blue/odom"
       odom_frame: "amr_blue/odom"
       behavior_plugins: ["spin", "backup", "wait"]
       spin:
@@ -184,5 +241,10 @@ amr_a:
     ros__parameters:
       use_sim_time: True
       autostart: true
-      node_names: ['map_server', 'amcl', 'planner_server', 'controller_server', 'bt_navigator', 'behavior_server']
+      # Order matters: bt_navigator builds its behaviour tree on activation and
+      # that tree references the costmap-clearing services owned by
+      # planner_server/controller_server and the recovery actions owned by
+      # behavior_server. With bt_navigator ahead of behavior_server it raced
+      # them and bringup aborted. This is Nav2's documented activation order.
+      node_names: ['map_server', 'amcl', 'controller_server', 'planner_server', 'behavior_server', 'bt_navigator']
       bond_timeout: 0.0

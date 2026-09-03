@@ -6,12 +6,40 @@
     <!-- Single efficient bounding collision for ODE physics -->
     <link name="shelf_link">
       <collision name="shelf_collision">
+        <!-- Sits on the floor: box centre at half its height, not at z=0. -->
+        <pose>0 0 1.1 0 0 0</pose>
         <geometry>
           <box>
             <size>5.0 1.0 2.2</size>
           </box>
         </geometry>
       </collision>
+
+      <!-- ============================================ -->
+      <!-- GROUND-LEVEL RACK BODY                       -->
+      <!--                                              -->
+      <!-- The 2D LiDAR scans at z = 0.26 m. Without    -->
+      <!-- geometry at that height the rack is sensed   -->
+      <!-- as six 80 mm posts while physics treats it   -->
+      <!-- as a solid 5.0 x 1.0 x 2.2 box, so Nav2      -->
+      <!-- plans straight through it. These base rails  -->
+      <!-- and ground-level pallet loads are ordinary   -->
+      <!-- racking hardware and make the sensed shape   -->
+      <!-- agree with the collision shape.              -->
+      <!-- ============================================ -->
+
+      <!-- Base protection rails along both aisle faces (z 0.00 - 0.36) -->
+      <visual name="base_rail_front"><pose>0 0.46 0.18 0 0 0</pose><geometry><box><size>4.98 0.08 0.36</size></box></geometry><material><ambient>0.88 0.68 0.04 1</ambient><diffuse>0.96 0.76 0.06 1</diffuse></material></visual>
+      <visual name="base_rail_rear"><pose>0 -0.46 0.18 0 0 0</pose><geometry><box><size>4.98 0.08 0.36</size></box></geometry><material><ambient>0.88 0.68 0.04 1</ambient><diffuse>0.96 0.76 0.06 1</diffuse></material></visual>
+      <!-- End-frame base plates (z 0.00 - 0.36) -->
+      <visual name="base_rail_left"><pose>-2.46 0 0.18 0 0 0</pose><geometry><box><size>0.08 0.92 0.36</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+      <visual name="base_rail_right"><pose>2.46 0 0.18 0 0 0</pose><geometry><box><size>0.08 0.92 0.36</size></box></geometry><material><ambient>0.12 0.12 0.14 1</ambient><diffuse>0.18 0.18 0.20 1</diffuse></material></visual>
+
+      <!-- Ground-level pallet bay loads (floor to the tier-1 deck) -->
+      <visual name="box_gl_1"><pose>-1.78 0 0.22 0 0 0</pose><geometry><box><size>1.15 0.88 0.44</size></box></geometry><material><ambient>0.60 0.42 0.24 1</ambient><diffuse>0.70 0.50 0.32 1</diffuse></material></visual>
+      <visual name="box_gl_2"><pose>-0.60 0 0.20 0 0 0</pose><geometry><box><size>1.10 0.88 0.40</size></box></geometry><material><ambient>0.56 0.38 0.20 1</ambient><diffuse>0.66 0.46 0.28 1</diffuse></material></visual>
+      <visual name="box_gl_3"><pose>0.60 0 0.23 0 0 0</pose><geometry><box><size>1.10 0.88 0.46</size></box></geometry><material><ambient>0.62 0.44 0.26 1</ambient><diffuse>0.72 0.54 0.34 1</diffuse></material></visual>
+      <visual name="box_gl_4"><pose>1.78 0 0.21 0 0 0</pose><geometry><box><size>1.15 0.88 0.42</size></box></geometry><material><ambient>0.58 0.40 0.22 1</ambient><diffuse>0.68 0.48 0.30 1</diffuse></material></visual>
 
       <!-- ============================================ -->
       <!-- INDUSTRIAL RACK STRUCTURAL FRAME             -->

@@ -19,17 +19,24 @@ Usage:
 
 import json
 import logging
+from datetime import datetime, timezone
 import math
 import threading
 import time
 from typing import Optional
 
-from models import RobotState, Event
+from models import RobotState, Event, Task, Reservation
 from data_store import DataStore
 
 logger = logging.getLogger("synergy.adapters.rosbridge")
 
-# Map from ROS robot namespace → dashboard robot_id
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+TASK_ANNOUNCE_TOPIC = "/tasks/announcements"
+
+# Map from ROS robot namespace -> dashboard robot_id
 ROBOT_MAP = {
     "amr_a": "A",
     "amr_b": "B",
@@ -38,7 +45,7 @@ ROBOT_MAP = {
 
 
 def _quat_to_yaw(ox: float, oy: float, oz: float, ow: float) -> float:
-    """Extract yaw from quaternion."""
+    """Extract yaw from a quaternion."""
     return math.atan2(2.0 * (ow * oz + ox * oy), 1.0 - 2.0 * (oy * oy + oz * oz))
 
 
@@ -51,6 +58,8 @@ class RosbridgeLiveAdapter:
         self._thread: Optional[threading.Thread] = None
         self._stop_event = threading.Event()
         self._ws = None
+        self._connected = threading.Event()
+        self._announce_advertised = False
 
     def start(self) -> None:
         self._stop_event.clear()
@@ -68,7 +77,16 @@ class RosbridgeLiveAdapter:
         logger.info("Rosbridge live adapter stopped.")
 
     def is_active(self) -> bool:
+        """True while the adapter's reconnect thread is running.
+
+        This stays True when rosbridge is unreachable, because the thread keeps
+        retrying. Use is_connected() to tell whether data is actually arriving.
+        """
         return self._thread is not None and self._thread.is_alive()
+
+    def is_connected(self) -> bool:
+        """True only while the rosbridge WebSocket is actually open."""
+        return self._connected.is_set()
 
     # ── Internal ─────────────────────────────────────────────────────────────
 
@@ -109,10 +127,22 @@ class RosbridgeLiveAdapter:
 
     def _on_open(self, ws) -> None:
         logger.info("Connected to rosbridge.")
+        self._connected.set()
+        # Advertise the task announcement topic so an operator can inject a task.
+        # Publishing an announcement is a task *source*; the robots still run the
+        # bidding and pick the winner themselves.
+        ws.send(json.dumps({
+            "op": "advertise",
+            "topic": TASK_ANNOUNCE_TOPIC,
+            "type": "fleet_msgs/TaskAnnouncement",
+        }))
+        self._announce_advertised = True
         # Subscribe to all active robot namespaces
         for ns in ROBOT_MAP:
-            self._subscribe(ws, f"/{ns}/odom", "nav_msgs/Odometry", throttle=50)
-            self._subscribe(ws, f"/{ns}/state", "fleet_msgs/RobotState", throttle=100)
+            # /state carries the map-frame pose (see _handle_fleet_state).
+            # /odom is deliberately NOT subscribed: it is an odom-frame pose that
+            # starts at zero regardless of where the robot spawned.
+            self._subscribe(ws, f"/{ns}/state", "fleet_msgs/RobotState", throttle=50)
         # Subscribe to global fleet channels
         self._subscribe(ws, "/tasks/announcements", "fleet_msgs/TaskAnnouncement", throttle=0)
         self._subscribe(ws, "/tasks/bids", "fleet_msgs/TaskBid", throttle=0)
@@ -134,6 +164,8 @@ class RosbridgeLiveAdapter:
         logger.warning(f"Rosbridge WS error: {error}")
 
     def _on_close(self, ws, code, reason) -> None:
+        self._connected.clear()
+        self._announce_advertised = False
         logger.info(f"Rosbridge WS closed (code={code}).")
 
     def _dispatch(self, topic: str, msg: dict) -> None:
@@ -159,47 +191,8 @@ class RosbridgeLiveAdapter:
 
         dashboard_id = ROBOT_MAP[robot_ns]
 
-        if topic.endswith("/odom"):
-            self._handle_odom(dashboard_id, msg)
-        elif topic.endswith("/state"):
+        if topic.endswith("/state"):
             self._handle_fleet_state(dashboard_id, msg)
-
-    def _handle_odom(self, robot_id: str, msg: dict) -> None:
-        """Parse nav_msgs/Odometry and update DataStore robot position."""
-        try:
-            pose = msg["pose"]["pose"]
-            twist = msg["twist"]["twist"]
-            pos = pose["position"]
-            ori = pose["orientation"]
-
-            x = float(pos.get("x", 0.0))
-            y = float(pos.get("y", 0.0))
-            yaw = _quat_to_yaw(
-                float(ori.get("x", 0.0)),
-                float(ori.get("y", 0.0)),
-                float(ori.get("z", 0.0)),
-                float(ori.get("w", 1.0)),
-            )
-            vx = float(twist.get("linear", {}).get("x", 0.0))
-            vy = float(twist.get("linear", {}).get("y", 0.0))
-            velocity = math.hypot(vx, vy)
-
-            # Merge with existing state dict
-            existing_obj = self.data_store.get_robot_state(robot_id)
-            existing = existing_obj if isinstance(existing_obj, dict) else (existing_obj.__dict__ if existing_obj else {})
-            state = RobotState(
-                robot_id=robot_id,
-                x=x,
-                y=y,
-                yaw=yaw,
-                velocity=velocity,
-                battery=float(existing.get("battery", 100.0)),
-                status=existing.get("status", "MOVING" if velocity > 0.05 else "IDLE"),
-                task_id=existing.get("task_id"),
-            )
-            self.data_store.update_robot(state)
-        except (KeyError, TypeError, ValueError, AttributeError) as exc:
-            logger.debug(f"Odom parse error for {robot_id}: {exc}")
 
     def _handle_fleet_state(self, robot_id: str, msg: dict) -> None:
         """Parse fleet_msgs/RobotState and update status / battery / task."""
@@ -227,54 +220,148 @@ class RosbridgeLiveAdapter:
             logger.debug(f"FleetState parse error for {robot_id}: {exc}")
 
     def _handle_task_announcement(self, msg: dict) -> None:
+        """fleet_msgs/TaskAnnouncement -> a task row plus a TASK_ANNOUNCED event.
+
+        The Task model has no priority field, so priority is carried in the event
+        message rather than silently dropped.
+        """
         try:
-            from dashboard.models import Task, Event
-            task_id = msg.get("task_id", "")
-            pickup = msg.get("pickup", "")
-            dropoff = msg.get("dropoff", "")
+            task_id = str(msg.get("task_id", ""))
+            if not task_id:
+                return
+            pickup = str(msg.get("pickup", ""))
+            dropoff = str(msg.get("dropoff", ""))
             priority = int(msg.get("priority", 1))
-            task = Task(
+
+            self.data_store.update_task(Task(
                 task_id=task_id,
                 pickup=pickup,
                 dropoff=dropoff,
-                priority=priority,
+                assigned_robot=None,      # the fleet decides this, not the dashboard
                 status="ANNOUNCED",
-            )
-            self.data_store.add_task(task)
+            ))
             self.data_store.add_event(Event(
                 event_type="TASK_ANNOUNCED",
                 robot_id="FLEET",
                 task_id=task_id,
-                details=f"Task {task_id}: {pickup} -> {dropoff} (priority {priority})",
+                message=f"Task {task_id}: {pickup} -> {dropoff} (priority {priority})",
             ))
-        except Exception as exc:
-            logger.debug(f"Task announcement parse error: {exc}")
+        except (KeyError, TypeError, ValueError) as exc:
+            logger.warning(f"Malformed TaskAnnouncement dropped: {exc} ({msg!r})")
 
     def _handle_task_bid(self, msg: dict) -> None:
+        """fleet_msgs/TaskBid -> a BID_SUBMITTED event in the coordination feed."""
         try:
-            from dashboard.models import Event
-            robot_id = msg.get("robot_id", "")
-            task_id = msg.get("task_id", "")
+            robot_ns = str(msg.get("robot_id", ""))
+            task_id = str(msg.get("task_id", ""))
             est_time = float(msg.get("estimated_time", 0.0))
+            distance = float(msg.get("distance", 0.0))
+
             self.data_store.add_event(Event(
                 event_type="BID_SUBMITTED",
-                robot_id=robot_id.upper(),
+                robot_id=ROBOT_MAP.get(robot_ns, robot_ns.upper()),
                 task_id=task_id,
-                details=f"Bid on {task_id}: est_time={est_time:.2f}s",
+                message=f"Bid on {task_id}: est_time={est_time:.2f}s, dist={distance:.2f}m",
             ))
-        except Exception as exc:
-            logger.debug(f"Task bid parse error: {exc}")
+        except (KeyError, TypeError, ValueError) as exc:
+            logger.warning(f"Malformed TaskBid dropped: {exc} ({msg!r})")
 
     def _handle_reservation(self, msg: dict) -> None:
+        """fleet_msgs/ResourceClaim -> a reservation row plus an event.
+
+        Recording the row as well as the event is what lets the reservations table
+        show live intersection claims; previously only the event was produced and
+        the table stayed empty in live mode.
+        """
         try:
-            from dashboard.models import Event
-            resource = msg.get("resource", "")
-            robot_id = msg.get("robot_id", "")
-            status = msg.get("status", "CLAIMED")
+            resource = str(msg.get("resource", ""))
+            if not resource:
+                return
+            robot_ns = str(msg.get("robot_id", ""))
+            robot_id = ROBOT_MAP.get(robot_ns, robot_ns.upper())
+            status = str(msg.get("status", "CLAIMED")).upper()
+
+            # A claim whose resource names a task the fleet announced is the
+            # winner declaring the assignment it computed for itself. Reflect it
+            # on the task so the queue stops showing every live task as
+            # ANNOUNCED with no owner -- the dashboard reports the fleet's
+            # decision here, it never makes one.
+            known_task = self.data_store.get_task(resource)
+            if known_task is not None:
+                if status in ("COMPLETED",):
+                    task_status = "COMPLETED"
+                elif status in ("RELEASED", "FREE"):
+                    # A release after a failed Nav2 leg is not the same thing as
+                    # a fresh announcement. Flipping the row back to ANNOUNCED
+                    # made a task that had visibly started look like it had never
+                    # been picked up, and it then sat there with no owner and no
+                    # explanation. Show it as FAILED and keep the robot that was
+                    # working it, so the queue says what actually happened.
+                    already = str(known_task.get("status", "")).upper()
+                    task_status = "COMPLETED" if already == "COMPLETED" else "FAILED"
+                else:
+                    task_status = "ASSIGNED"
+                self.data_store.update_task(Task(
+                    task_id=resource,
+                    pickup=known_task.get("pickup", ""),
+                    dropoff=known_task.get("dropoff", ""),
+                    assigned_robot=robot_id,
+                    status=task_status,
+                    created_at=known_task.get("created_at") or _now_iso(),
+                    completed_at=_now_iso() if task_status == "COMPLETED" else None,
+                ))
+
+            if status in ("RELEASED", "FREE", "COMPLETED"):
+                self.data_store.release_reservation(resource)
+            elif known_task is None:
+                # Only physical resources (intersections, aisles) belong in the
+                # reservations table; task claims are shown on the task queue.
+                self.data_store.update_reservation(Reservation(
+                    resource_id=resource,
+                    robot_id=robot_id,
+                    status=status,
+                ))
+
             self.data_store.add_event(Event(
                 event_type="RESERVATION",
-                robot_id=robot_id.upper(),
-                details=f"Resource {resource} {status} by {robot_id}",
+                robot_id=robot_id,
+                resource_id=resource,
+                message=f"Resource {resource} {status} by {robot_id}",
             ))
-        except Exception as exc:
-            logger.debug(f"Reservation parse error: {exc}")
+        except (KeyError, TypeError, ValueError) as exc:
+            logger.warning(f"Malformed ResourceClaim dropped: {exc} ({msg!r})")
+
+    # ── Task injection (the only thing this adapter writes to ROS) ───────────
+
+    def announce_task(self, task_id: str, pickup: str, dropoff: str,
+                      priority: int = 3, deadline_sec: float = 90.0) -> tuple[bool, str]:
+        """Publish one TaskAnnouncement onto the live fleet topic.
+
+        Returns ``(ok, detail)``.  This does not assign the task, choose a winner,
+        or command any robot -- those decisions stay with the robots' own
+        allocators.  It is the operator equivalent of a new order arriving.
+        """
+        if not self._connected.is_set() or self._ws is None:
+            return False, "Not connected to rosbridge; is rosbridge_server running on :9090?"
+        if not self._announce_advertised:
+            return False, "Task announcement topic has not been advertised yet."
+
+        payload = {
+            "op": "publish",
+            "topic": TASK_ANNOUNCE_TOPIC,
+            "msg": {
+                "task_id": str(task_id),
+                "pickup": str(pickup),
+                "dropoff": str(dropoff),
+                "deadline": time.time() + float(deadline_sec),
+                "priority": int(priority),
+                "capability_requirements": ["delivery", "navigation"],
+            },
+        }
+        try:
+            self._ws.send(json.dumps(payload))
+        except Exception as exc:  # noqa: BLE001 - surface the reason to the caller
+            return False, f"Failed to publish task announcement: {exc}"
+
+        logger.info(f"Announced task {task_id} ({pickup} -> {dropoff}) to the live fleet.")
+        return True, "announced"

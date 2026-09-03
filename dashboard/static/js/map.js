@@ -11,6 +11,14 @@
  * - Top-down industrial AMR geometric model with real-time telemetry
  */
 
+// Gap in CSS pixels between the wrapper edge and the square drawing surface.
+const MAP_EDGE_INSET = 6;
+
+// Largest distance a robot can plausibly cover between two telemetry samples.
+// Top speed is 0.6 m/s (max_vel_x) and poses arrive at roughly 10 Hz, so ~0.06 m
+// is normal; anything past this is a gap in the stream, not movement.
+const TELEMETRY_JUMP_METRES = 0.75;
+
 class WarehouseMapRenderer {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
@@ -27,43 +35,61 @@ class WarehouseMapRenderer {
             height: 20.0,
         };
 
-        // ── Stations & Infrastructure (from Gazebo visual layout) ────────────
+        // ═══════════════════════════════════════════════════════════════════
+        // WAREHOUSE LAYOUT — GROUND TRUTH
+        //
+        // Every coordinate and footprint below is read from
+        // gazebo/simulation/worlds/warehouse.sdf and agrees cell-for-cell with
+        // the Nav2 occupancy grid (src/synergy_nav2/maps/warehouse_map.pgm).
+        //
+        // This panel is a view of the live world, so drawing furniture the world
+        // does not contain makes correct robots look broken: with the previous
+        // (invented) layout an AMR driving down the real central corridor was
+        // painted straight through racks that only existed on this canvas.
+        //
+        // Mirrors STATIONS / INTERSECTIONS / RACKS / OBSTACLES in
+        // dashboard/config.py and WAYPOINTS in task_allocator_node.py.
+        // ═══════════════════════════════════════════════════════════════════
+
+        // Station pads. P1/P2 are pickup, D1 dropoff, CHG the charging bay.
         this.stations = {
-            'P1': { x: -7.2, y: 0.0, label: 'Pickup Station (P)', type: 'pickup', code: 'P', color: '#16A34A' },
-            'D1': { x: 6.8, y: 0.0, label: 'Dropoff Station (D)', type: 'dropoff', code: 'D', color: '#0284C7' },
-            'CHG': { x: 6.0, y: 6.0, label: 'Charging Bay (CHG)', type: 'charging', code: '⚡', color: '#EAB308' }
+            'P1': { x: 0.0, y: 8.0, w: 2.4, h: 1.8, label: 'Pickup Station 1 (P1)', type: 'pickup', code: 'P1', color: '#16A34A' },
+            'P2': { x: -5.5, y: -7.0, w: 2.4, h: 1.8, label: 'Pickup Station 2 (P2)', type: 'pickup', code: 'P2', color: '#16A34A' },
+            'D1': { x: 0.0, y: -8.1, w: 2.8, h: 2.0, label: 'Dropoff Station (D1)', type: 'dropoff', code: 'D1', color: '#0284C7' },
+            'CHG': { x: 5.5, y: -7.5, w: 2.4, h: 2.2, label: 'Charging Bay (CHG)', type: 'charging', code: '⚡', color: '#EAB308' }
         };
 
-        // Shared Intersections with Red Cross markers & Bollards
+        // Shared intersections. Each is a 2.7 x 2.7 m marked square in the
+        // central corridor, flanked by a bollard at x = +/- 0.75.
         this.intersections = {
-            'I1': { x: -4.3, y: 0.0, label: 'Intersection 1', bollards: [-0.85, 0.85] },
-            'I2': { x: 0.8, y: 0.0, label: 'Intersection 2', bollards: [-0.85, 0.85] }
+            'I1': { x: 0.0, y: 5.2, label: 'Intersection 1', bollards: [-0.75, 0.75] },
+            'I2': { x: 0.0, y: -0.7, label: 'Intersection 2', bollards: [-0.75, 0.75] }
         };
 
-        // 8 Vertical Shelving Racks (S1 to S8) matching Gazebo layout
-        // Top row: S2, S4, S6, S8 (y = 5.5) | Bottom row: S1, S3, S5, S7 (y = -5.5)
+        // 8 high-bay racks in two columns at x = -4.8 / +4.8.
+        // Each is 5.0 m across (X) by 1.0 m deep (Y) — they run ALONG the
+        // aisles, they are not vertical blocks.
         this.racks = [
-            { id: 'S2', x: -6.5, y: 5.5, w: 1.5, h: 4.4, label: 'S2' },
-            { id: 'S4', x: -2.1, y: 5.5, w: 1.5, h: 4.4, label: 'S4' },
-            { id: 'S6', x: -0.7, y: 5.5, w: 1.5, h: 4.4, label: 'S6' },
-            { id: 'S8', x: 3.2, y: 5.5, w: 1.5, h: 4.4, label: 'S8' },
-
-            { id: 'S1', x: -6.5, y: -5.5, w: 1.5, h: 4.4, label: 'S1' },
-            { id: 'S3', x: -2.1, y: -5.5, w: 1.5, h: 4.4, label: 'S3' },
-            { id: 'S5', x: -0.7, y: -5.5, w: 1.5, h: 4.4, label: 'S5' },
-            { id: 'S7', x: 3.2, y: -5.5, w: 1.5, h: 4.4, label: 'S7' }
+            { id: 'S1', x: -4.8, y: 7.5, w: 5.0, h: 1.0, label: 'S1' },
+            { id: 'S2', x: 4.8, y: 7.5, w: 5.0, h: 1.0, label: 'S2' },
+            { id: 'S3', x: -4.8, y: 3.0, w: 5.0, h: 1.0, label: 'S3' },
+            { id: 'S4', x: 4.8, y: 3.0, w: 5.0, h: 1.0, label: 'S4' },
+            { id: 'S5', x: -4.8, y: 1.5, w: 5.0, h: 1.0, label: 'S5' },
+            { id: 'S6', x: 4.8, y: 1.5, w: 5.0, h: 1.0, label: 'S6' },
+            { id: 'S7', x: -4.8, y: -3.0, w: 5.0, h: 1.0, label: 'S7' },
+            { id: 'S8', x: 4.8, y: -3.0, w: 5.0, h: 1.0, label: 'S8' }
         ];
 
-        // Static Obstacles & Environmental Props
+        // Static obstacles & environmental props.
         this.staticObstacles = [
-            // Orange container in central corridor
-            { id: 'OBS_AISLE', x: -1.5, y: 0.0, w: 1.2, h: 1.0, label: 'Obstacle Box', color: '#F97316' },
-            // Green Dumpster (East side)
-            { id: 'DUMPSTER', x: 6.2, y: -2.5, w: 1.4, h: 1.1, label: 'Waste Container', color: '#15803D' },
-            // Cardboard Pallet Stacks
-            { id: 'PALLET_SE', x: 6.2, y: -5.5, w: 1.3, h: 1.3, label: 'Pallet Stack', color: '#B45309', isZone: true },
-            { id: 'PALLET_NW', x: -8.2, y: 5.5, w: 1.1, h: 1.1, label: 'Pallet', color: '#B45309' },
-            { id: 'PALLET_SW', x: -3.7, y: -7.8, w: 1.2, h: 1.2, label: 'Pallet', color: '#B45309' }
+            // Movable container parked in the central corridor — the blocked-aisle prop
+            { id: 'OBS_AISLE', x: -0.2, y: 0.75, w: 0.8, h: 1.2, label: 'Blocked Aisle Container', color: '#F97316' },
+            // Green waste container, south-west
+            { id: 'DUMPSTER', x: -2.8, y: -7.3, w: 1.2, h: 0.8, label: 'Waste Container', color: '#15803D' },
+            // Cardboard pallet towers
+            { id: 'PALLET_SW', x: -5.2, y: -7.3, w: 1.5, h: 1.5, label: 'Pallet Stack', color: '#B45309' },
+            { id: 'PALLET_NE', x: 5.2, y: 8.75, w: 1.5, h: 1.5, label: 'Pallet Stack', color: '#B45309' },
+            { id: 'PALLET_NW', x: -8.0, y: 5.25, w: 1.5, h: 1.5, label: 'Pallet Stack', color: '#B45309' }
         ];
 
         // ── Robot Palette (Industrial identifiable colors) ───────────────────
@@ -88,6 +114,8 @@ class WarehouseMapRenderer {
         // ── Live Telemetry & Interpolation State ──────────────────────────────
         this.liveRobots = {};
         this.visualRobots = {};
+        // robot_id -> planned route [[x, y], ...] still ahead of the robot
+        this.plannedPaths = {};
         this.reservations = [];
         this.intents = [];
         this.events = [];
@@ -115,48 +143,96 @@ class WarehouseMapRenderer {
     }
 
     initCanvas() {
-        let hasFitOnce = false;
-        const ro = new ResizeObserver(() => {
-            this.resize();
-            if (!hasFitOnce && this.screenWidth > 10 && this.screenHeight > 10) {
-                this.updateViewportTransform();
-                hasFitOnce = true;
-            } else if (hasFitOnce) {
-                this.updateViewportTransform();
-            }
-        });
-
+        // Observe the wrapper only. The canvas size is derived from the wrapper, so
+        // observing the canvas too would re-enter resize() on every size we set.
+        const ro = new ResizeObserver(() => this.resize());
         if (this.canvas.parentElement) {
             ro.observe(this.canvas.parentElement);
         }
 
-        window.addEventListener('resize', () => {
+        window.addEventListener('resize', () => this.resize());
+
+        // The first ResizeObserver callback can arrive while the flex layout is
+        // still resolving, at which point the wrapper measures 0 and resize() bails.
+        // Retry until we get a real size, so the viewport is never left on its
+        // placeholder transform. A hidden tab gets no animation frames, so fall
+        // back to a timer there rather than waiting for the tab to be focused.
+        let tries = 0;
+        const fit = () => {
             this.resize();
-            this.updateViewportTransform();
+            if (this.screenWidth && this.screenWidth >= 10) return;
+            if (tries++ >= 120) return;
+            if (document.hidden) {
+                setTimeout(fit, 100);
+            } else {
+                requestAnimationFrame(fit);
+            }
+        };
+        fit();
+
+        // Re-fit when the tab becomes visible again; a tab that was hidden the
+        // whole time it was loading has never had a real layout to measure.
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) this.resize();
         });
     }
 
+    /**
+     * Size the canvas as the largest square that fits its wrapper.
+     *
+     * The wrapper is whatever shape the dashboard grid gives it (usually wide).
+     * Taking min(width, height) makes the drawing surface square, which combined
+     * with the single `scale` in updateViewportTransform() is what guarantees the
+     * 20 m x 20 m world is drawn as a square with equal X and Y scale.
+     *
+     * Width and height are written as explicit pixels rather than left to CSS: a
+     * canvas takes its intrinsic size from its width/height attributes, so an auto
+     * CSS width lets the backing store feed back into layout and the element grows
+     * on each pass.
+     */
     resize() {
         if (!this.canvas) return;
-        const rect = this.canvas.parentElement.getBoundingClientRect();
+        const host = this.canvas.parentElement;
+        if (!host) return;
+
+        const hostRect = host.getBoundingClientRect();
+        const side = Math.floor(Math.min(hostRect.width, hostRect.height)) - MAP_EDGE_INSET * 2;
+        if (side < 10) return;   // layout not resolved yet; the caller retries
+
+        this.canvas.style.width = side + 'px';
+        this.canvas.style.height = side + 'px';
+
         const dpr = window.devicePixelRatio || 1;
-        this.canvas.width = rect.width * dpr;
-        this.canvas.height = rect.height * dpr;
+        const backing = Math.round(side * dpr);
+        if (this.canvas.width !== backing || this.canvas.height !== backing) {
+            this.canvas.width = backing;
+            this.canvas.height = backing;
+        }
         this.ctx.resetTransform?.();
         this.ctx.scale(dpr, dpr);
+
+        // Must be assigned before updateViewportTransform(), which reads them.
+        this.screenWidth = side;
+        this.screenHeight = side;
         this.updateViewportTransform();
-        this.screenWidth = rect.width;
-        this.screenHeight = rect.height;
     }
 
     // ── Coordinate Conversions (Auto-Framing) ──────────────
 
     updateViewportTransform() {
-        if (!this.canvas) return;
-        const padding = 24; // pixels
-        const availableW = this.screenWidth - padding * 2;
-        const availableH = this.screenHeight - padding * 2;
-        this.scale = Math.min(availableW, availableH) / this.world.width; // 20.0
+        if (!this.canvas || !this.screenWidth || !this.screenHeight) return;
+        const padding = 18; // pixels of breathing room around the world square
+
+        const availableW = Math.max(1, this.screenWidth - padding * 2);
+        const availableH = Math.max(1, this.screenHeight - padding * 2);
+
+        // ONE scale for both axes. Never derive an independent scaleX/scaleY:
+        // a metre of X and a metre of Y must occupy the same number of pixels,
+        // so the 20 x 20 world always renders as a true square.
+        this.scale = Math.min(availableW / this.world.width,
+                              availableH / this.world.height);
+
+        // Centre the world square (which is centred on the origin) in the view.
         this.offsetX = this.screenWidth / 2;
         this.offsetY = this.screenHeight / 2;
     }
@@ -256,6 +332,10 @@ class WarehouseMapRenderer {
 
     // ── Telemetry Ingestion ──────────────────────────────────────────────────
 
+    setPlannedPaths(paths = {}) {
+        this.plannedPaths = paths || {};
+    }
+
     updateTelemetry(robots = {}, reservations = [], intents = [], events = [], tasks = []) {
         this.liveRobots = robots;
         this.reservations = reservations;
@@ -279,25 +359,61 @@ class WarehouseMapRenderer {
                     targetX: r.x,
                     targetY: r.y,
                     targetYaw: r.yaw || 0.0,
+                    fromX: r.x,
+                    fromY: r.y,
+                    fromYaw: r.yaw || 0.0,
+                    legDuration: 500,
+                    legElapsed: 500,
                     lastTargetTime: now
                 };
             } else {
                 const vr = this.visualRobots[rid];
-                vr.targetX = r.x;
-                vr.targetY = r.y;
-                vr.targetYaw = r.yaw !== undefined ? r.yaw : vr.targetYaw;
+                const moved = Math.hypot(r.x - vr.targetX, r.y - vr.targetY) > 1e-6
+                           || Math.abs((r.yaw || 0) - vr.targetYaw) > 1e-6;
+
+                if (moved) {
+                    // A target metres away from where we are drawing is a
+                    // telemetry gap (adapter reconnect, backgrounded tab, node
+                    // restart, AMCL correction), not travel. Smoothstepping to
+                    // it slides the icon in a straight line over racks and
+                    // stations, which reads as the AMR driving through them.
+                    // Snap instead: the robot is simply somewhere else now.
+                    if (Math.hypot(r.x - vr.x, r.y - vr.y) > TELEMETRY_JUMP_METRES) {
+                        vr.x = r.x; vr.y = r.y;
+                        vr.yaw = r.yaw !== undefined ? r.yaw : vr.yaw;
+                    }
+                    // Start this leg from where the robot is being drawn right now,
+                    // so playback is continuous even if the last leg had not finished.
+                    vr.fromX = vr.x;
+                    vr.fromY = vr.y;
+                    vr.fromYaw = vr.yaw;
+                    vr.targetX = r.x;
+                    vr.targetY = r.y;
+                    vr.targetYaw = r.yaw !== undefined ? r.yaw : vr.targetYaw;
+
+                    // Measured telemetry interval, clamped so one late packet
+                    // cannot stall or fast-forward the animation.
+                    const measured = now - vr.lastTargetTime;
+                    vr.legDuration = Math.min(1500, Math.max(60, measured));
+                    vr.legElapsed = 0;
+                    vr.lastTargetTime = now;
+                }
+
                 vr.velocity = r.velocity || 0.0;
                 vr.battery = r.battery !== undefined ? r.battery : 100.0;
                 vr.status = r.status || 'IDLE';
                 vr.task_id = r.task_id || null;
-                vr.lastTargetTime = now;
             }
 
             if (!this.history[rid]) this.history[rid] = [];
             const hist = this.history[rid];
             const lastPt = hist[hist.length - 1];
-            if (!lastPt || Math.hypot(lastPt.x - r.x, lastPt.y - r.y) > 0.15) {
-                hist.push({ x: r.x, y: r.y });
+            const step = lastPt ? Math.hypot(lastPt.x - r.x, lastPt.y - r.y) : 0;
+            if (!lastPt || step > 0.15) {
+                // Same reasoning as the leg snap above: joining the two sides of
+                // a telemetry gap draws a dashed line straight through the
+                // racking. Flag the break so the trail shows a gap instead.
+                hist.push({ x: r.x, y: r.y, discontinuity: !!lastPt && step > TELEMETRY_JUMP_METRES });
                 if (hist.length > this.maxHistoryLength) hist.shift();
             }
         });
@@ -318,17 +434,42 @@ class WarehouseMapRenderer {
         requestAnimationFrame(loop);
     }
 
+    /**
+     * Advance the DISPLAYED pose of each robot.
+     *
+     * Purely a rendering concern. `visualRobots` is never read back as robot
+     * state and is never sent anywhere -- `liveRobots` holds the authoritative
+     * telemetry exactly as it arrived, and every panel, table and export reads
+     * that. This only decides which pixel to draw between two real samples.
+     *
+     * Telemetry lands in discrete packets (~10 Hz live, 500 ms fallback). The
+     * previous exponential ease had a ~100 ms time constant, so the robot
+     * snapped most of the way to the new sample and then sat still until the
+     * next one -- the "hop and wait" stutter. Playing each leg out at constant
+     * speed over the measured interval turns the same samples into continuous
+     * motion.
+     */
     interpolateRobots(dt) {
-        const easeFactor = Math.min(1.0, dt * 10.0);
-
         Object.values(this.visualRobots).forEach(r => {
-            r.x += (r.targetX - r.x) * easeFactor;
-            r.y += (r.targetY - r.y) * easeFactor;
+            r.legElapsed = (r.legElapsed || 0) + dt * 1000.0;
+            const duration = r.legDuration || 500;
+            const t = Math.min(1.0, r.legElapsed / duration);
 
-            let deltaYaw = r.targetYaw - r.yaw;
+            // smoothstep: no velocity discontinuity at the seam between legs
+            const e = t * t * (3.0 - 2.0 * t);
+
+            const fromX = (r.fromX !== undefined) ? r.fromX : r.targetX;
+            const fromY = (r.fromY !== undefined) ? r.fromY : r.targetY;
+            const fromYaw = (r.fromYaw !== undefined) ? r.fromYaw : r.targetYaw;
+
+            r.x = fromX + (r.targetX - fromX) * e;
+            r.y = fromY + (r.targetY - fromY) * e;
+
+            // shortest-arc yaw
+            let deltaYaw = r.targetYaw - fromYaw;
             while (deltaYaw < -Math.PI) deltaYaw += Math.PI * 2;
             while (deltaYaw > Math.PI) deltaYaw -= Math.PI * 2;
-            r.yaw += deltaYaw * easeFactor;
+            r.yaw = fromYaw + deltaYaw * e;
         });
     }
 
@@ -366,9 +507,10 @@ class WarehouseMapRenderer {
         // 6. Perimeter walls & structural pillars
         this.renderPerimeterWalls(ctx);
 
-        // 7. Trajectory breadcrumb paths
+        // 7. Breadcrumb history, then the route still to be driven
         if (this.showPaths) {
             this.renderTrajectoryPaths(ctx);
+            this.renderPlannedPaths(ctx);
         }
 
         // 8. AMRs with top-down industrial geometry & charging state
@@ -449,12 +591,16 @@ class WarehouseMapRenderer {
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        // Horizontal navigation lanes
+        // Lane markings painted on the warehouse floor, taken from the
+        // `lane_*` floor visuals in warehouse.sdf so the canvas shows the same
+        // markings Gazebo renders. Horizontal lanes are 18.4 m long (x +/- 9.2),
+        // vertical lanes 18.2 m (y +/- 9.1).
         const hLanes = [
-            8.5,    // Top bypass lane
-            1.6,    // Central highway upper line
-            -1.6,   // Central highway lower line
-            -8.5    // Bottom bypass lane
+            9.1,    // lane_a1_t — north bypass, top edge
+            5.9,    // lane_a1_b — north bypass, bottom edge
+            4.5,    // lane_a2_t — main north aisle, top edge
+            0.0,    // lane_a2_b — main north aisle, bottom edge
+            -1.4    // lane_a3_t — central cross-aisle
         ];
 
         hLanes.forEach(y => {
@@ -466,19 +612,16 @@ class WarehouseMapRenderer {
             ctx.stroke();
         });
 
-        // Vertical aisle navigation lanes
         const vLanes = [
-            -7.5,   // West perimeter lane (near Pickup P)
-            -4.3,   // Aisle between S1/S2 and S3/S4 (I1 corridor)
-            -1.4,   // Between S3/S4 and S5/S6
-            1.2,    // Between S5/S6 and S7/S8 (I2 corridor)
-            4.8,    // Aisle next to S7/S8
-            8.2     // East perimeter lane
+            -8.2,   // lane_bp_w — west perimeter bypass
+            -1.4,   // lane_cv_l — central corridor, west edge
+            1.4,    // lane_cv_r — central corridor, east edge
+            8.2     // lane_bp_e — east perimeter bypass
         ];
 
         vLanes.forEach(x => {
-            const sp1 = this.worldToScreen(x, 8.5);
-            const sp2 = this.worldToScreen(x, -8.5);
+            const sp1 = this.worldToScreen(x, 9.1);
+            const sp2 = this.worldToScreen(x, -9.1);
             ctx.beginPath();
             ctx.moveTo(sp1.x, sp1.y);
             ctx.lineTo(sp2.x, sp2.y);
@@ -493,20 +636,24 @@ class WarehouseMapRenderer {
     renderStationZones(ctx) {
         Object.entries(this.stations).forEach(([id, st]) => {
             const sp = this.worldToScreen(st.x, st.y);
-            const size = 1.8 * this.scale;
+            // Pad footprint in metres, from the world file; `size` stays the
+            // icon/'font' scale so the glyphs keep their previous proportions.
+            const padW = (st.w || 1.8) * this.scale;
+            const padH = (st.h || 1.8) * this.scale;
+            const size = Math.min(padW, padH);
 
             ctx.save();
             ctx.translate(sp.x, sp.y);
 
             // White concrete bay pad
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(-size / 2, -size / 2, size, size);
+            ctx.fillRect(-padW / 2, -padH / 2, padW, padH);
 
             // Yellow/Black dashed hazard boundary
             ctx.strokeStyle = '#EAB308';
             ctx.lineWidth = 2.5;
             ctx.setLineDash([5, 4]);
-            ctx.strokeRect(-size / 2, -size / 2, size, size);
+            ctx.strokeRect(-padW / 2, -padH / 2, padW, padH);
             ctx.setLineDash([]);
 
             // Station Identity Icon/Letter
@@ -533,14 +680,14 @@ class WarehouseMapRenderer {
                 ctx.font = `bold ${Math.round(size * 0.55)}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('P', 0, 0);
+                ctx.fillText(st.code || 'P', 0, 0);
             } else if (st.type === 'dropoff') {
                 // Cyan/Blue Bold 'D'
                 ctx.fillStyle = '#0284C7';
                 ctx.font = `bold ${Math.round(size * 0.55)}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('D', 0, 0);
+                ctx.fillText(st.code || 'D', 0, 0);
             }
 
             ctx.restore();
@@ -630,29 +777,35 @@ class WarehouseMapRenderer {
             ctx.lineWidth = 1.5;
             ctx.strokeRect(-w / 2, -h / 2, w, h);
 
-            // Top end caps (Dark metallic strip)
+            // Dark metallic end frames on the rack's short ends. A rack is
+            // 5.0 m long by 1.0 m deep, so the end frames are the left/right
+            // edges -- the aisle faces are the long sides.
+            const cap = Math.max(2, Math.min(4, w * 0.02));
             ctx.fillStyle = '#1E293B';
-            ctx.fillRect(-w / 2, -h / 2, w, 4);
-            ctx.fillRect(-w / 2, h / 2 - 4, w, 4);
+            ctx.fillRect(-w / 2, -h / 2, cap, h);
+            ctx.fillRect(w / 2 - cap, -h / 2, cap, h);
 
-            // Shelf divider crossbars
-            ctx.strokeStyle = '#EAB308';
+            // Bay uprights along the rack's length
+            ctx.strokeStyle = '#CA8A04';
             ctx.lineWidth = 1;
-            const divCount = 4;
-            for (let i = 1; i < divCount; i++) {
-                const dy = -h / 2 + (h / divCount) * i;
+            const bays = 4;
+            for (let i = 1; i < bays; i++) {
+                const dx = -w / 2 + (w / bays) * i;
                 ctx.beginPath();
-                ctx.moveTo(-w / 2, dy);
-                ctx.lineTo(w / 2, dy);
+                ctx.moveTo(dx, -h / 2);
+                ctx.lineTo(dx, h / 2);
                 ctx.stroke();
             }
 
-            // Bold Rack ID Banner (e.g. S1, S2, S4...)
-            ctx.fillStyle = '#000000';
-            ctx.font = `bold ${Math.max(12, Math.round(w * 0.4))}px sans-serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(rk.label, 0, 0);
+            // Rack ID. Sized off the SHORT side so the label stays inside the
+            // 1.0 m depth instead of spilling across the aisle.
+            if (this.showLabels) {
+                ctx.fillStyle = '#000000';
+                ctx.font = `bold ${Math.max(8, Math.round(Math.min(h * 0.62, w * 0.14)))}px sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(rk.label, 0, 0);
+            }
 
             ctx.restore();
         });
@@ -774,10 +927,61 @@ class WarehouseMapRenderer {
             ctx.beginPath();
             pts.forEach((pt, i) => {
                 const sp = this.worldToScreen(pt.x, pt.y);
-                if (i === 0) ctx.moveTo(sp.x, sp.y);
+                if (i === 0 || pt.discontinuity) ctx.moveTo(sp.x, sp.y);
                 else ctx.lineTo(sp.x, sp.y);
             });
             ctx.stroke();
+        });
+        ctx.restore();
+    }
+
+    /**
+     * The route each robot still has to drive.
+     *
+     * Drawn from the same waypoints the robot is actually following, so the
+     * line bends through the aisles instead of cutting across racking. The
+     * breadcrumb trail behind it shows where the robot has been; this shows
+     * where it is going.
+     */
+    renderPlannedPaths(ctx) {
+        ctx.save();
+        Object.entries(this.plannedPaths).forEach(([rid, pts]) => {
+            if (!pts || pts.length < 2) return;
+            const col = this.robotColors[rid]?.primary || '#64748B';
+
+            // Soft halo so the route reads over the floor grid.
+            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+            ctx.lineWidth = 5;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            pts.forEach((pt, i) => {
+                const sp = this.worldToScreen(pt[0], pt[1]);
+                if (i === 0) ctx.moveTo(sp.x, sp.y); else ctx.lineTo(sp.x, sp.y);
+            });
+            ctx.stroke();
+
+            ctx.strokeStyle = col;
+            ctx.globalAlpha = 0.9;
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([7, 5]);
+            ctx.lineDashOffset = -(performance.now() / 45) % 12;   // gentle flow toward the goal
+            ctx.beginPath();
+            pts.forEach((pt, i) => {
+                const sp = this.worldToScreen(pt[0], pt[1]);
+                if (i === 0) ctx.moveTo(sp.x, sp.y); else ctx.lineTo(sp.x, sp.y);
+            });
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Goal marker at the end of the route.
+            const goal = this.worldToScreen(pts[pts.length - 1][0], pts[pts.length - 1][1]);
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = col;
+            ctx.beginPath(); ctx.arc(goal.x, goal.y, 4.5, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.arc(goal.x, goal.y, 4.5, 0, Math.PI * 2); ctx.stroke();
         });
         ctx.restore();
     }

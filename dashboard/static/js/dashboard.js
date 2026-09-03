@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Components ───────────────────────────────────────────────────────────
     const mapRenderer = new WarehouseMapRenderer('warehouse-canvas');
+    // Exposed for inspection and for the square-view regression check
+    // (tools/check_square_view.js). Read-only handle; nothing writes through it.
+    window.mapRenderer = mapRenderer;
     const metricsEvaluator = new MetricsEvaluator();
 
     // ── Global State ─────────────────────────────────────────────────────────
@@ -116,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scenarioPill   = document.getElementById('scenario-pill');
 
     let isSwitching = false;
+    let lastAppliedMode = null;
 
     async function switchMode(targetMode) {
         if (isSwitching) return;
@@ -227,15 +231,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Cache data
             currentRobots = stateData.robots || {};
+            mapRenderer.setPlannedPaths(stateData.paths || {});
             currentIntents = intentsData.intents || [];
             currentReservations = resData.reservations || [];
             currentTasks = tasksData.tasks || [];
             currentEvents = eventsData.events || [];
 
-            // Update Connection Status
-            backendDot.className = 'connection-dot online';
-            backendStatusText.textContent = 'ONLINE';
+            // Update Connection Status.
+            //
+            // In live mode "ONLINE" only means the Flask backend answered. The
+            // thing an operator actually needs to know is whether ROS telemetry
+            // is arriving, so report the rosbridge socket separately: live mode
+            // with no bridge shows an empty map, and without this it looked
+            // identical to a live fleet that simply was not moving.
+            if (healthData.mode === 'ros2' && healthData.live_adapter_connected === false) {
+                backendDot.className = 'connection-dot offline';
+                backendStatusText.textContent = 'LIVE — NO ROS DATA';
+            } else {
+                backendDot.className = 'connection-dot online';
+                backendStatusText.textContent = healthData.mode === 'ros2' ? 'LIVE ROS 2' : 'ONLINE';
+            }
             if (systemMode) systemMode.textContent = (healthData.mode || 'MOCK').toUpperCase();
+
+            // Reflect the backend's actual mode in the toggle. Starting the
+            // server with --mode ros2 previously left MOCK highlighted, so the
+            // header disagreed with the data source it was showing.
+            if (!isSwitching && healthData.mode && healthData.mode !== lastAppliedMode) {
+                lastAppliedMode = healthData.mode;
+                applyModeUI(healthData.mode);
+            }
 
             // Update Telemetry Timestamp
             const now = new Date();
@@ -266,7 +290,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateRobotCards() {
         ['A', 'B', 'C'].forEach(rid => {
             const r = currentRobots[rid];
-            if (!r) return;
+
+            // No telemetry for this robot. The card markup ships with example
+            // values, so returning early here left a stale-looking pose on
+            // screen that read as live data -- in live mode with no bridge that
+            // meant three robots sitting at plausible coordinates that nothing
+            // had actually reported. Blank the card instead.
+            if (!r) {
+                const st = document.getElementById(`robot-${rid}-status`);
+                if (st) { st.textContent = 'NO DATA'; st.className = 'status-badge tag-idle'; }
+                const pos = document.getElementById(`robot-${rid}-pos`);
+                if (pos) pos.textContent = '—';
+                const spd = document.getElementById(`robot-${rid}-speed`);
+                if (spd) spd.textContent = '—';
+                const bv = document.getElementById(`robot-${rid}-bat-val`);
+                const bb = document.getElementById(`robot-${rid}-bat-bar`);
+                if (bv) bv.textContent = '—';
+                if (bb) { bb.style.width = '0%'; bb.className = 'battery-bar-fill'; }
+                return;
+            }
 
             // Status Tag
             const statusTag = document.getElementById(`robot-${rid}-status`);
@@ -521,7 +563,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    /**
+     * Pose-only poll.
+     *
+     * Robot poses need a much higher rate than tables and event feeds do. Driving
+     * everything off one slow loop (500 ms x 8 endpoints) starved the map: the
+     * renderer only ever had 2 pose samples per second to interpolate between,
+     * which is what made the motion look stepped. This fetches /api/state alone
+     * on a fast timer and leaves the full refresh on the original cadence.
+     *
+     * Read-only, like every other call the dashboard makes.
+     */
+    async function fetchPoses() {
+        try {
+            const res = await fetch('/api/state');
+            if (!res.ok) return;
+            const data = await res.json();
+            currentRobots = data.robots || {};
+            mapRenderer.setPlannedPaths(data.paths || {});
+            mapRenderer.updateTelemetry(
+                currentRobots, currentReservations, currentIntents, currentEvents, currentTasks
+            );
+            updateRobotCards();
+            updateInspector();
+        } catch (err) {
+            // The full poll owns connection-status reporting; stay quiet here.
+        }
+    }
+
     // ── Initial Start ────────────────────────────────────────────────────────
     fetchTelemetry();
     setInterval(fetchTelemetry, pollIntervalMs);
+    setInterval(fetchPoses, Math.max(100, Math.round(pollIntervalMs / 5)));
 });

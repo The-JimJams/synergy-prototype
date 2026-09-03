@@ -362,29 +362,44 @@ html, body {
     flex-direction: column;
 }
 
+/* The wrapper is just the centring box; the CANVAS is the square.
+   Previously the wrapper carried `aspect-ratio: 1/1` together with `flex: 1`
+   (i.e. flex-basis: 0%) and `width: 100%`.  That gives the box a definite size
+   on BOTH axes, so aspect-ratio is ignored and the 20 m x 20 m world was drawn
+   into a wide rectangle.  Keeping the square on the canvas itself -- sized by
+   height with a max-width clamp -- means the square survives any panel shape. */
 .map-wrapper {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;   /* strictly square 20m x 20m warehouse view */
-    max-height: 620px;
-    max-width: 620px;
-    margin: 0 auto;
     flex: 1;               /* grows to fill the panel body height */
-    min-height: 400px;
-    background: #F1F3F5;
+    min-height: 420px;     /* the canvas is out of flow, so give the box a floor */
+    background: var(--bg-app, #E9ECEF);
     border-radius: var(--radius-sm);
     overflow: hidden;
     cursor: crosshair;
-    box-shadow: inset 0 0 0 1px var(--border-subtle);
 }
 
+/* Square viewport for the square 20 m x 20 m world: equal metres-per-pixel on X
+   and Y, so (-10,-10) (10,-10) (-10,10) (10,10) render as an actual square.
+
+   The side length is set in pixels by WarehouseMapRenderer.resize(), which takes
+   min(wrapperWidth, wrapperHeight). It is NOT done with `aspect-ratio` + `width:
+   auto` here: a canvas has an intrinsic size from its width/height attributes, so
+   an auto width feeds the backing store back into layout and the element grows on
+   every resize pass (measured: 865 -> 1730 -> 2099 px backing store). Explicit
+   pixel dimensions break that loop. */
 #warehouse-canvas {
+    /* Absolutely positioned so it contributes nothing to its wrapper's content
+       size. In normal flow the wrapper grew with the canvas and the canvas was
+       then re-fitted to the larger wrapper, drifting a pixel per resize pass. */
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: block;
+    background: #F1F3F5;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--border-subtle);
 }
 
 /* Floating Map Controls Toolbar */

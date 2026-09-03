@@ -72,7 +72,8 @@
         <div class="ros2-notice" id="ros2-notice" style="display:none;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <strong>LIVE ROS 2 MODE</strong> — Receiving data from fleet nodes via
-            <code>/fleet/robot_state</code>, <code>/fleet/tasks/announce</code>, <code>/fleet/reservations</code>.
+            <code>/amr_&lt;id&gt;/state</code>, <code>/tasks/announcements</code>, <code>/tasks/bids</code>,
+            <code>/fleet/reservations</code>, bridged over rosbridge on :9090.
             Ensure <code>./run_ros2_stack.sh</code> is running.
             <button class="ros2-notice-close" id="ros2-notice-close" title="Dismiss">✕</button>
         </div>

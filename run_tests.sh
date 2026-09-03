@@ -59,20 +59,56 @@ run_suite() {
 
 case "$SUITE" in
     fleet)
-        run_suite "Fleet Coordination Algorithm Tests (323 tests)" "fleet_coordination/tests"
+        run_suite "Fleet Coordination Algorithm Tests" "fleet_coordination/tests"
         ;;
     dashboard)
-        run_suite "Dashboard REST API & Telemetry Tests (79 tests)" "dashboard/tests"
+        run_suite "Dashboard REST API, Telemetry & Live Adapter Tests" "dashboard/tests"
         ;;
     p5)
         run_suite "P5 Task Failure & Recovery Tests" "p5_task_failure/tests"
         ;;
+    allocator)
+        run_suite "Task Allocation & Bidding Regression" "src/task_allocator/test"
+        ;;
     all|*)
-        run_suite "Fleet Coordination Algorithm Tests (323 tests)" "fleet_coordination/tests"
-        run_suite "Dashboard REST API & Telemetry Tests (79 tests)"  "dashboard/tests"
-        run_suite "P5 Task Failure & Recovery Tests"                 "p5_task_failure/tests"
+        run_suite "Fleet Coordination Algorithm Tests"                "fleet_coordination/tests"
+        run_suite "Task Allocation & Bidding Regression"              "src/task_allocator/test"
+        run_suite "Dashboard REST API, Telemetry & Live Adapter Tests" "dashboard/tests"
+        run_suite "P5 Task Failure & Recovery Tests"                  "p5_task_failure/tests"
         ;;
 esac
+
+# ── Simulation checks that need a running Gazebo / warehouse map ───────────────
+# The map/costmap check is pure offline analysis and always runs.
+run_suite_cmd() {
+    local name="$1"; shift
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+    echo -e "${BOLD}  🔬 Running: ${name}${RESET}"
+    echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+    if "$@"; then
+        echo -e "${GREEN}  ✅ ${name} — PASSED${RESET}"; PASS=$((PASS + 1))
+    else
+        echo -e "${RED}  ❌ ${name} — FAILED${RESET}"; FAIL=$((FAIL + 1))
+    fi
+    echo ""
+}
+
+if [[ "$SUITE" == "all" || "$SUITE" == "map" ]]; then
+    run_suite_cmd "Warehouse Map / Costmap / Route Feasibility" \
+        python3 "$PROJECT_ROOT/src/synergy_nav2/tools/verify_map_routes.py"
+fi
+
+# LiDAR obstacle visibility needs a live Gazebo server; skipped when none is up.
+if [[ "$SUITE" == "all" || "$SUITE" == "lidar" ]]; then
+    if GZ_IP=127.0.0.1 gz topic -l 2>/dev/null | grep -q "/amr_blue/scan"; then
+        run_suite_cmd "LiDAR Obstacle Visibility (live Gazebo)" \
+            env GZ_IP=127.0.0.1 python3 "$PROJECT_ROOT/gazebo/scripts/verify_lidar_obstacles.py"
+    else
+        echo -e "${YELLOW}[SKIP]${RESET}  LiDAR obstacle check — no Gazebo server publishing /amr_blue/scan."
+        echo -e "         Start one with: ${BOLD}./run_gazebo.sh --server${RESET}"
+        echo ""
+    fi
+fi
 
 # ── Summary ────────────────────────────────────────────────────────────────────
 echo -e "${BOLD}╔══════════════════════════════════════════════════════════════╗${RESET}"

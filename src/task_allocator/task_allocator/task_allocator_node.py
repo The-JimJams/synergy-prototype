@@ -21,7 +21,7 @@ try:
     from rclpy.action import ActionClient
     from nav2_msgs.action import NavigateToPose
     from geometry_msgs.msg import PoseStamped
-    from fleet_msgs.msg import RobotState, TaskAnnouncement, TaskBid, Heartbeat
+    from fleet_msgs.msg import RobotState, TaskAnnouncement, TaskBid, Heartbeat, ResourceClaim
     ROS2_AVAILABLE = True
 except ImportError:
     ROS2_AVAILABLE = False
@@ -58,6 +58,10 @@ except ImportError:
         estimated_time, distance, battery_cost, confidence = 0.0, 0.0, 0.0, 1.0
     class Heartbeat:
         robot_id, timestamp = '', 0.0
+    class ResourceClaim:
+        robot_id, resource, claim_id, status = '', '', '', ''
+        start_time, end_time = 0.0, 0.0
+        priority = 0
 
 # ---------------------------------------------------------------------------
 # P5 imports — try multiple candidate paths so this works both locally
@@ -90,31 +94,59 @@ except ImportError as e:
     Task = None
     TaskStatus = None
 
-# Warehouse coordinate map: official warehouse station and rack coordinates
+# ---------------------------------------------------------------------------
+# Warehouse waypoints — GROUND TRUTH from gazebo/simulation/worlds/warehouse.sdf
+#
+# These are Nav2 goal poses, so every entry must be a pose the robot can
+# actually occupy, verified against src/synergy_nav2/maps/warehouse_map.pgm:
+#
+#   * Station entries are the station pads' own coordinates, except P2 — in the
+#     world, pallet_tower_1 (-5.2, -7.3) sits on top of the P2 pad, so P2 uses
+#     the clear north-west corner of the pad instead.
+#   * Shelf entries S1-S8 are AISLE APPROACH poses, not rack centres.  A rack
+#     centre is inside a 5.0 x 1.0 x 2.2 m solid and is not a reachable goal.
+#     Racks stand at x = -4.8 / +4.8, y = 7.5 / 3.0 / 1.5 / -3.0.
+#
+# Every pose below has >= 0.60 m clearance to the nearest occupied cell
+# (robot inscribed radius 0.26 m, circumscribed 0.405 m, inflation 0.55 m) and
+# is reachable from all three spawn poses.
+# ---------------------------------------------------------------------------
 WAYPOINTS = {
-    # Official Stations
-    'P1': (-7.2, 0.0),    'p1': (-7.2, 0.0),
-    'P2': (-7.2, -7.5),  'p2': (-7.2, -7.5),
-    'D1': (6.8, 0.0),     'd1': (6.8, 0.0),
-    'CHG': (6.0, 6.0),    'chg': (6.0, 6.0),
-    # Shared Intersections
-    'I1': (-4.3, 0.0),    'i1': (-4.3, 0.0),
-    'I2': (0.8, 0.0),     'i2': (0.8, 0.0),
-    # High-Bay Shelving Racks S1 - S8
-    'S1': (-6.5, -5.5),   's1': (-6.5, -5.5),
-    'S2': (-6.5, 5.5),    's2': (-6.5, 5.5),
-    'S3': (-2.1, -5.5),   's3': (-2.1, -5.5),
-    'S4': (-2.1, 5.5),    's4': (-2.1, 5.5),
-    'S5': (-0.7, -5.5),   's5': (-0.7, -5.5),
-    'S6': (-0.7, 5.5),    's6': (-0.7, 5.5),
-    'S7': (3.2, -5.5),    's7': (3.2, -5.5),
-    'S8': (3.2, 5.5),     's8': (3.2, 5.5),
-    # Legacy / fallback aliases
-    'dock_a': (-3.5, 5.25),
-    'dock_b': (0.0, 8.0),
-    'zone_b': (2.5, -8.0),
+    # Stations
+    'P1': (0.0, 8.0),     'p1': (0.0, 8.0),        # pickup_P1
+    'P2': (-6.4, -6.3),   'p2': (-6.4, -6.3),      # pickup_P2 pad, clear corner
+    'D1': (0.0, -8.1),    'd1': (0.0, -8.1),       # drop_pack_D1
+    'CHG': (5.5, -7.5),   'chg': (5.5, -7.5),      # charging_bay
+    # Shared intersections (bollard-flanked chokepoints)
+    'I1': (0.0, 5.2),     'i1': (0.0, 5.2),
+    'I2': (0.0, -0.7),    'i2': (0.0, -0.7),
+    # High-bay shelving racks S1 - S8 — aisle-side approach poses
+    'S1': (-4.8, 6.0),    's1': (-4.8, 6.0),       # rack (-4.8,  7.5), aisle S
+    'S2': (4.8, 6.0),     's2': (4.8, 6.0),        # rack ( 4.8,  7.5), aisle S
+    'S3': (-4.8, 4.3),    's3': (-4.8, 4.3),       # rack (-4.8,  3.0), aisle N
+    'S4': (4.8, 4.3),     's4': (4.8, 4.3),        # rack ( 4.8,  3.0), aisle N
+    'S5': (-4.8, 0.0),    's5': (-4.8, 0.0),       # rack (-4.8,  1.5), aisle S
+    'S6': (4.8, 0.0),     's6': (4.8, 0.0),        # rack ( 4.8,  1.5), aisle S
+    'S7': (-4.8, -4.5),   's7': (-4.8, -4.5),      # rack (-4.8, -3.0), aisle S
+    'S8': (4.8, -4.5),    's8': (4.8, -4.5),       # rack ( 4.8, -3.0), aisle S
+    # Spawn docks / legacy aliases
+    'dock_a': (-3.5, 5.25),   # amr_blue spawn
+    'dock_b': (0.5, 8.5),     # amr_green spawn
+    'dock_c': (3.5, -6.5),    # amr_orange spawn
     'zone_a': (0.0, 8.0),
-    'default': (6.8, 0.0),
+    'zone_b': (0.0, -8.1),
+    'default': (0.0, -8.1),
+}
+
+# Where each AMR waits when it has nothing to do. A robot that simply stops on
+# the pad it just delivered to leaves its own footprint sitting on the next
+# task's goal: the following delivery then fails to plan at all, because NavFn
+# refuses a goal whose cell is lethal. Clearing to a dock keeps the stations and
+# the corridor usable.
+STANDBY_DOCKS = {
+    'amr_a': (-3.5, 5.25),
+    'amr_b': (0.5, 8.5),
+    'amr_c': (3.5, -6.5),
 }
 
 # Failure timeout: if no heartbeat seen for this many seconds, robot is FAILED
@@ -160,11 +192,20 @@ class TaskAllocatorNode(Node):
         # Track active P5 Task objects so we can recover them on failure
         self._p5_active_tasks: dict[str, 'Task'] = {}  # task_id -> P5 Task
         self._p5_robot: 'Robot | None' = None
+        # Base ids already released by failure recovery, so the periodic check
+        # re-announces a given task once instead of once every 5 s forever.
+        self._recovered_task_ids: set[str] = set()
+        self._failure_announced = False
 
         # ---- ROS 2 pub/sub ----
         if ROS2_AVAILABLE:
             self.announcement_publisher = self.create_publisher(TaskAnnouncement, '/tasks/announcements', 10)
             self.bid_publisher = self.create_publisher(TaskBid, '/tasks/bids', 10)
+            # The winner announces its own claim. Every peer already computed the
+            # same winner independently; this only makes the outcome observable
+            # so monitors do not have to re-derive it (and so the dashboard never
+            # has to pick a winner itself to display one).
+            self.claim_publisher = self.create_publisher(ResourceClaim, '/fleet/reservations', 10)
 
             self.create_subscription(TaskAnnouncement, '/tasks/announcements', self.handle_task_announcement, 10)
             self.create_subscription(TaskBid, '/tasks/bids', self.handle_task_bid, 10)
@@ -194,6 +235,7 @@ class TaskAllocatorNode(Node):
                 def publish(self, msg): pass
             self.announcement_publisher = MockPub()
             self.bid_publisher = MockPub()
+            self.claim_publisher = MockPub()
             self.nav_client = None
 
         # ---- P5 components ----
@@ -272,6 +314,18 @@ class TaskAllocatorNode(Node):
 
         if not self.nav_enabled:
             self.get_logger().info(f'Observed {task_id}; skipping bid because Nav2 is disabled for {self.robot_id}.')
+            return
+
+        # A robot whose own heartbeat has stopped must not take new work --
+        # including the task its own failure just released. Checked here rather
+        # than only on the P5 Robot object because _build_p5_robot() rebuilds
+        # that object from live ROS state on every announcement and would
+        # otherwise clear the FAILED status set by _check_for_failures().
+        if self._failure_announced:
+            self.get_logger().warning(
+                f'ELIGIBILITY: robot={self.robot_id}, task={task_id}, eligible=False, '
+                f"reasons=['SELF_FAILED_HEARTBEAT_LOST'] — skipping bid."
+            )
             return
 
         if task_id in self.task_bids and self.robot_id in self.task_bids[task_id]:
@@ -386,6 +440,7 @@ class TaskAllocatorNode(Node):
         self.get_logger().info(f'WINNER: {winner.robot_id}')
         if winner.robot_id == self.robot_id:
             self.get_logger().info(f'TASK WON: {task_id}')
+            self._publish_claim(task_id, 'CLAIMED')
             self.execute_task(task_id)
         else:
             self.get_logger().info(f'TASK LOST: {task_id} to {winner.robot_id}')
@@ -467,10 +522,56 @@ class TaskAllocatorNode(Node):
             lambda f, tid=task_id, ph=phase, nc=next_coords: self.goal_response_callback(f, tid, ph, nc)
         )
 
+    def _publish_claim(self, task_id: str, status: str) -> None:
+        """Announce this robot's own claim on a task it won, or its release."""
+        if not ROS2_AVAILABLE:
+            return
+        msg = ResourceClaim()
+        msg.robot_id = self.robot_id
+        msg.resource = task_id
+        msg.claim_id = f'{self.robot_id}:{task_id}'
+        msg.status = status
+        msg.start_time = time.time()
+        msg.end_time = 0.0
+        ann = self.task_announcements.get(task_id)
+        msg.priority = int(getattr(ann, 'priority', 0) or 0)
+        self.claim_publisher.publish(msg)
+
+    def _return_to_standby(self) -> None:
+        """Clear the delivery pad after finishing, so it stays navigable."""
+        dock = STANDBY_DOCKS.get(self.robot_id)
+        if dock is None or not self.nav_enabled or self.nav_client is None:
+            return
+        self.get_logger().info(f'STANDBY: {self.robot_id} clearing the pad, returning to {dock}')
+        self._send_nav2_goal(dock[0], dock[1], f'{self.robot_id}_standby', phase='STANDBY')
+
+    def _release_task(self, task_id: str, reason: str) -> None:
+        """Return this robot to the auction after a task stops making progress.
+
+        _build_p5_robot() reports BUSY while _p5_active_tasks is non-empty, and
+        the capability check refuses to bid for a BUSY robot. Only the success
+        and nav-server-timeout paths used to clear the entry, so a single
+        aborted or rejected Nav2 goal pinned the robot BUSY for the rest of the
+        process: every later announcement was answered with
+        ROBOT_UNAVAILABLE and the robot never bid again. Observed live with all
+        three AMRs simultaneously unavailable and tasks stuck at ANNOUNCED.
+        """
+        self._p5_active_tasks.pop(task_id, None)
+        self._publish_claim(task_id, 'RELEASED')
+        if P5_AVAILABLE and self._p5_robot is not None:
+            if getattr(self._p5_robot.status, 'name', '') != 'FAILED':
+                self._p5_robot.status = RobotStatus.AVAILABLE
+            self._p5_robot.current_task = None
+        self.get_logger().info(
+            f'TASK_RELEASED: {task_id} ({reason}); {self.robot_id} is available for bidding again.'
+        )
+
     def goal_response_callback(self, future, task_id, phase, next_coords):
         goal_handle = future.result()
         if not goal_handle.accepted:
             self.get_logger().warning(f'NAV2_STATUS: REJECTED ({phase} for {task_id})')
+            if phase != 'STANDBY':
+                self._release_task(task_id, f'Nav2 rejected the {phase} goal')
             return
 
         self.get_logger().info(f'NAV2_STATUS: ACCEPTED ({phase} for {task_id})')
@@ -484,6 +585,10 @@ class TaskAllocatorNode(Node):
     def get_result_callback(self, future, task_id, phase, next_coords):
         status = future.result().status
         self.get_logger().info(f'Nav2 goal ({phase}) finished with status: {status}')
+
+        if phase == 'STANDBY':
+            self.get_logger().info(f'STANDBY: {self.robot_id} parked (status={status})')
+            return
 
         # status == 4 means SUCCEEDED in ROS 2 action status
         if status == 4:
@@ -500,6 +605,8 @@ class TaskAllocatorNode(Node):
             else:
                 self.get_logger().info(f'DROPOFF_REACHED: TRUE for {task_id}')
                 self.get_logger().info(f'TASK_COMPLETED: {task_id}')
+                self._publish_claim(task_id, 'COMPLETED')
+                self._return_to_standby()
                 if P5_AVAILABLE and task_id in self._p5_active_tasks:
                     p5_task = self._p5_active_tasks[task_id]
                     p5_task.status = TaskStatus.COMPLETED
@@ -513,6 +620,7 @@ class TaskAllocatorNode(Node):
             if P5_AVAILABLE and task_id in self._p5_active_tasks:
                 self._p5_active_tasks[task_id].status = TaskStatus.FAILED
                 self.get_logger().warning(f'P5: task {task_id} marked FAILED at phase {phase} (status={status})')
+            self._release_task(task_id, f'Nav2 {phase} goal ended with status {status}')
 
     # ------------------------------------------------------------------
     # P5 Failure Detection & Recovery
@@ -533,7 +641,17 @@ class TaskAllocatorNode(Node):
             self.get_logger().info('P5 Debug: NO HEARTBEAT RECEIVED YET!')
 
         if failed:
-            self.get_logger().warning(f'P5: FAILURE DETECTED for {self.robot_id}')
+            # Mark the robot FAILED so publish_bid()'s existing guard stops it
+            # bidding. Without this a robot whose heartbeat had stopped kept
+            # bidding on -- and winning, because it is closest -- the very task
+            # its own failure had just released, so recovery never handed the
+            # work to a healthy peer.
+            self._p5_robot.status = RobotStatus.FAILED
+
+            if not self._failure_announced:
+                self.get_logger().warning(f'P5: FAILURE DETECTED for {self.robot_id}')
+                self._failure_announced = True
+
             # Recover all active tasks assigned to this robot
             for task_id, p5_task in list(self._p5_active_tasks.items()):
                 if p5_task.assigned_robot == self.robot_id:
@@ -541,6 +659,13 @@ class TaskAllocatorNode(Node):
                     self._p5_recovery_manager.recover(p5_task, self._p5_robot)
                     # Re-announce the recovered task so another robot can bid
                     self._reannounce_task(task_id, p5_task)
+        else:
+            # Heartbeat is back: allow this robot to take work again.
+            if self._failure_announced:
+                self.get_logger().info(f'P5: {self.robot_id} heartbeat recovered; returning to service')
+                self._failure_announced = False
+                if getattr(self._p5_robot.status, 'name', '') == 'FAILED':
+                    self._p5_robot.status = RobotStatus.AVAILABLE
 
     def _reannounce_task(self, task_id: str, p5_task: 'Task'):
         """Re-publish a recovered task as a new ROS 2 announcement."""
@@ -549,7 +674,16 @@ class TaskAllocatorNode(Node):
             self.get_logger().warning(f'Cannot re-announce {task_id}: original announcement not found')
             return
 
-        recovered_id = f'{task_id}_recovery_{int(time.time())}'
+        # Recover from the ORIGINAL task id, never from an already-recovered one.
+        # This check runs every 5 s and a genuinely dead robot never recovers, so
+        # appending to the previous id grew it without bound: observed in a live
+        # run as T_NODASH_recovery_<ts>_recovery_<ts>... 40 suffixes deep and
+        # still growing, one re-announcement every 5 s.
+        base_id = task_id.split('_recovery_')[0]
+        if base_id in self._recovered_task_ids:
+            return
+        self._recovered_task_ids.add(base_id)
+        recovered_id = f'{base_id}_recovery_{int(time.time())}'
         msg = TaskAnnouncement()
         msg.task_id = recovered_id
         msg.pickup = original.pickup
