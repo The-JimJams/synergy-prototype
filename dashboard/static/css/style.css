@@ -279,6 +279,42 @@ html, body {
     color: #B45309;
 }
 
+.ros2-notice-body { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+
+.ros2-notice-title {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #B45309;
+}
+
+.ros2-notice-text { line-height: 1.45; }
+
+/* Waiting for a live feed: nothing is being received, so warn rather than inform. */
+.ros2-notice.is-waiting {
+    background: #FEF2F2;
+    border-color: #FCA5A5;
+    color: #991B1B;
+}
+.ros2-notice.is-waiting .ros2-notice-title { color: #B91C1C; }
+.ros2-notice.is-waiting code {
+    background: #FEE2E2;
+    border-color: #FECACA;
+    color: #991B1B;
+}
+
+/* Receiving real telemetry. */
+.ros2-notice.is-connected {
+    background: #ECFDF5;
+    border-color: #6EE7B7;
+    color: #065F46;
+}
+.ros2-notice.is-connected .ros2-notice-title { color: #047857; }
+.ros2-notice.is-connected code {
+    background: #D1FAE5;
+    border-color: #A7F3D0;
+    color: #065F46;
+}
+
 .ros2-notice code {
     background: #FEF3C7;
     border: 1px solid #FDE68A;

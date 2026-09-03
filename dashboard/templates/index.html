@@ -69,13 +69,16 @@
         </header>
 
         <!-- ── ROS 2 NOTICE BANNER (shown only in live mode) ───────────────── -->
+        <!-- Live-mode notice. Two states, driven by /api/health.live_adapter_connected:
+             "waiting" explains that LIVE shows only real robots and what has to be
+             running to produce them; "connected" confirms the feed is real. -->
         <div class="ros2-notice" id="ros2-notice" style="display:none;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <strong>LIVE ROS 2 MODE</strong> — Receiving data from fleet nodes via
-            <code>/amr_&lt;id&gt;/state</code>, <code>/tasks/announcements</code>, <code>/tasks/bids</code>,
-            <code>/fleet/reservations</code>, bridged over rosbridge on :9090.
-            Ensure <code>./run_ros2_stack.sh</code> is running.
-            <button class="ros2-notice-close" id="ros2-notice-close" title="Dismiss">✕</button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div class="ros2-notice-body">
+                <div class="ros2-notice-title" id="ros2-notice-title">LIVE ROS 2 MODE</div>
+                <div class="ros2-notice-text" id="ros2-notice-text"></div>
+            </div>
+            <button class="ros2-notice-close" id="ros2-notice-close" title="Dismiss">&#10005;</button>
         </div>
 
         <!-- ── MAIN DASHBOARD GRID ────────────────────────────────────────── -->

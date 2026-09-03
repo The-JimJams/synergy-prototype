@@ -114,7 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Mode Toggle (MOCK ↔ LIVE ROS 2) ──────────────────────────────────────
     const btnMock        = document.getElementById('btn-mode-mock');
     const btnLive        = document.getElementById('btn-mode-live');
-    const ros2Notice     = document.getElementById('ros2-notice');
+    const ros2Notice      = document.getElementById('ros2-notice');
+    const ros2NoticeTitle = document.getElementById('ros2-notice-title');
+    const ros2NoticeText  = document.getElementById('ros2-notice-text');
+    let   ros2NoticeDismissed = false;
     const ros2NoticeClose= document.getElementById('ros2-notice-close');
     const scenarioPill   = document.getElementById('scenario-pill');
 
@@ -170,7 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
             btnMock?.classList.remove('active');
             btnLive?.classList.add('active', 'live-active');
             if (scenarioPill)  scenarioPill.style.display  = 'none';
-            if (ros2Notice)    ros2Notice.style.display    = 'flex';
+            if (ros2Notice && !ros2NoticeDismissed) {
+                ros2Notice.style.display = 'flex';
+                // Assume "not connected" until health says otherwise, so the
+                // requirements are on screen the instant the operator switches.
+                renderRos2Notice(false);
+            }
             if (systemMode)    { systemMode.textContent = 'LIVE ROS 2'; systemMode.className = 'kpi-val highlight-live'; }
         } else {
             btnLive?.classList.remove('active', 'live-active');
@@ -178,6 +186,41 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scenarioPill)  scenarioPill.style.display  = '';
             if (ros2Notice)    ros2Notice.style.display    = 'none';
             if (systemMode)    { systemMode.textContent = 'MOCK'; systemMode.className = 'kpi-val highlight'; }
+        }
+    }
+
+    /**
+     * Explain what LIVE mode actually is, and why the map may be empty.
+     *
+     * LIVE draws nothing but real robots. If the ROS 2 side is not running there
+     * is no telemetry to draw, and an empty warehouse looks identical to a
+     * broken dashboard -- so say plainly that live mode needs the real stack,
+     * and name what has to be started.
+     */
+    function renderRos2Notice(connected) {
+        if (!ros2Notice || ros2NoticeDismissed) return;
+        ros2Notice.classList.remove('is-waiting', 'is-connected');
+
+        if (connected) {
+            ros2Notice.classList.add('is-connected');
+            if (ros2NoticeTitle) ros2NoticeTitle.textContent = 'LIVE ROS 2 — receiving real telemetry';
+            if (ros2NoticeText) ros2NoticeText.innerHTML =
+                'Every robot pose, task, bid and reservation below comes from the running ROS 2 fleet ' +
+                'over rosbridge on <code>:9090</code> — nothing here is simulated by the dashboard. ' +
+                'Topics: <code>/amr_&lt;id&gt;/state</code>, <code>/tasks/announcements</code>, ' +
+                '<code>/tasks/bids</code>, <code>/fleet/reservations</code>.';
+        } else {
+            ros2Notice.classList.add('is-waiting');
+            if (ros2NoticeTitle) ros2NoticeTitle.textContent = 'LIVE ROS 2 — no live data yet';
+            if (ros2NoticeText) ros2NoticeText.innerHTML =
+                'LIVE mode shows <strong>only real robots</strong> — the dashboard never invents motion here. ' +
+                'Nothing new will appear, and any AMR still on the map is the <strong>last position received</strong>, ' +
+                'now marked STALE. This needs the project repo on a machine with ROS 2 — ' +
+                'it cannot run from the dashboard alone. Start, in order: ' +
+                '<code>./run_gazebo.sh</code> (world + robots), ' +
+                '<code>ros2 launch synergy_nav2 nav2_multi_amr.launch.py</code> (Nav2), ' +
+                '<code>./run_ros2_stack.sh</code> (fleet agents, allocators, rosbridge on <code>:9090</code>). ' +
+                'Switch to <strong>MOCK</strong> for a self-contained demo that needs none of this.';
         }
     }
 
@@ -190,7 +233,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnMock?.addEventListener('click', () => switchMode('mock'));
     btnLive?.addEventListener('click', () => switchMode('ros2'));
-    ros2NoticeClose?.addEventListener('click', () => { if (ros2Notice) ros2Notice.style.display = 'none'; });
+    ros2NoticeClose?.addEventListener('click', () => {
+        ros2NoticeDismissed = true;
+        if (ros2Notice) ros2Notice.style.display = 'none';
+    });
 
     // ── Event Filters ────────────────────────────────────────────────────────
     eventTypeFilter?.addEventListener('change', () => fetchTelemetry());
@@ -244,6 +290,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // is arriving, so report the rosbridge socket separately: live mode
             // with no bridge shows an empty map, and without this it looked
             // identical to a live fleet that simply was not moving.
+            if (healthData.mode === 'ros2') {
+                renderRos2Notice(healthData.live_adapter_connected === true);
+            }
             if (healthData.mode === 'ros2' && healthData.live_adapter_connected === false) {
                 backendDot.className = 'connection-dot offline';
                 backendStatusText.textContent = 'LIVE — NO ROS DATA';
@@ -310,11 +359,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Status Tag
+            // Status Tag. The store already flags telemetry older than its
+            // staleness threshold; show that rather than presenting the last
+            // known pose as if it were current.
             const statusTag = document.getElementById(`robot-${rid}-status`);
             if (statusTag) {
-                statusTag.textContent = r.status || 'IDLE';
-                statusTag.className = `status-badge tag-${(r.status || 'idle').toLowerCase()}`;
+                if (r._stale) {
+                    statusTag.textContent = 'STALE';
+                    statusTag.className = 'status-badge tag-idle';
+                    statusTag.title = 'No telemetry received recently — last known values shown';
+                } else {
+                    statusTag.textContent = r.status || 'IDLE';
+                    statusTag.className = `status-badge tag-${(r.status || 'idle').toLowerCase()}`;
+                    statusTag.title = '';
+                }
             }
 
             // Position & Speed
